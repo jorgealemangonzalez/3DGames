@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="TJE_framework_2017"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SDL2\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TJE_framework_2017">
+				<Option output="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug/TJE_framework_2017" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/SDL2"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 TJE_framework_2017"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TJE_framework_2017/fast">
+				<Option output="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug/TJE_framework_2017" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/SDL2"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 TJE_framework_2017/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/jorgealemangonzalez/clase/Juegos\ Electronicos/TJE_framework_2017/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/stb_easy_font.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/textparser.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/textparser.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/main.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.cpp">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h">
+			<Option target="TJE_framework_2017"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/../../../../../usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\SDL2\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

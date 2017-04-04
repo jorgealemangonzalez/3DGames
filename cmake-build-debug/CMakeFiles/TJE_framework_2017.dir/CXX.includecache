@@ -1,0 +1,220 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.cpp
+camera.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+iostream
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/stb_easy_font.h
+stdlib.h
+-
+math.h
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/textparser.cpp
+textparser.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/textparser.h
+sys/stat.h
+-
+string
+-
+cstring
+-
+algorithm
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/textparser.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.cpp
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+cassert
+-
+cmath
+-
+math.h
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+vector
+-
+cmath
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.cpp
+game.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.h
+utils.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+mesh.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.h
+texture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h
+rendertotexture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.h
+shader.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.h
+cmath
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.h
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+camera.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+windows.h
+-
+GL/glew.h
+-
+SDL2/SDL.h
+-
+SDL2/SDL_opengl.h
+-
+GL/glext.h
+-
+GL/GLU.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/GL/GLU.h
+OpenGL/glu.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/OpenGL/glu.h
+iostream
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/main.cpp
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+mesh.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.h
+camera.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h
+utils.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+game.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.h
+iostream
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.cpp
+mesh.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.h
+cassert
+-
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+shader.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/mesh.h
+vector
+-
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.cpp
+rendertotexture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.h
+iostream
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/rendertotexture.h
+string
+-
+map
+-
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+texture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.cpp
+shader.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.h
+cassert
+-
+iostream
+-
+utils.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+texture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/shader.h
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+string
+-
+map
+-
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.cpp
+texture.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h
+utils.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+iostream
+-
+cmath
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/texture.h
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+map
+-
+string
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.cpp
+utils.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+windows.h
+-
+sys/time.h
+-
+includes.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/includes.h
+game.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/game.h
+camera.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/camera.h
+extra/stb_easy_font.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/extra/stb_easy_font.h
+CoreFoundation/CoreFoundation.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/CoreFoundation/CoreFoundation.h
+direct.h
+-
+unistd.h
+-
+
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/utils.h
+string
+-
+sstream
+-
+vector
+-
+framework.h
+/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/src/framework.h
+
