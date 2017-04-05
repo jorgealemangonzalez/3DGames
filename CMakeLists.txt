@@ -7,8 +7,15 @@ set(CXXFLAGS "-g -Wall")
 set(SDL_LIB "-lSDL2")
 set(GLUT_LIB "-lGL -lGLU")
 set(LIBS "${SDL_LIB} ${GLUT_LIB}")
-set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lSDL2 -lGL -lGLU")
-set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lSDL2 -lGL -lGLU")
+
+if(NOT APPLE)
+    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lSDL2 -lGL -lGLU")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lSDL2 -lGL -lGLU")
+endif()
+if(APPLE)
+    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lSDL2 -framework OpenGL")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lSDL2 -framework OpenGL")
+endif()
 
 set(SOURCE_FILES
         src/extra/stb_easy_font.h

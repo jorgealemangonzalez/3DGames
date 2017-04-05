@@ -6,6 +6,7 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <cstdlib>
 
 #pragma warning(disable: 4996)
 #pragma warning(disable: 4244)

@@ -1,3 +1,0 @@
-/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jorgealemangonzalez/clase/Juegos Electronicos/TJE_framework_2017/cmake-build-debug/CMakeFiles/TJE_framework_2017.dir

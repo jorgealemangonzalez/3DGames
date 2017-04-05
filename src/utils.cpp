@@ -118,7 +118,7 @@ std::string getPath()
     std::string fullpath;
     // ----------------------------------------------------------------------------
     // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
-#ifdef __APPLE__
+#ifdef __APPLE__e444
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
     char path[PATH_MAX];
