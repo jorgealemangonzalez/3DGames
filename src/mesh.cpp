@@ -348,4 +348,59 @@ bool Mesh::loadASE( const char* filename){
     }
     long time2 = getTime();
     printf("Time elapsed: %f ms",(time2-time1));
+
+	return true;
+}
+
+bool Mesh::loadBIN(const char *filename) {
+	long time1 = getTime();
+	FILE* file = fopen(filename, "rb");
+	if(file == NULL){
+		std::cout << "File not found" << std::endl;
+		return false;
+	}
+	unsigned long N_vertices, N_normals, N_uvs, N_colors;
+	fread(&N_vertices, sizeof(unsigned long), 1, file);
+	fread(&N_normals, sizeof(unsigned long), 1, file);
+	fread(&N_uvs, sizeof(unsigned long), 1, file);
+	fread(&N_colors, sizeof(unsigned long), 1, file);
+
+	vertices.resize(N_vertices);
+	normals.resize(N_normals);
+	uvs.resize(N_uvs);
+	colors.resize(N_colors);
+
+	fread(&vertices[0], sizeof(Vector3), N_vertices, file);
+	fread(&normals[0], sizeof(Vector3), N_normals, file);
+	fread(&uvs[0], sizeof(Vector2), N_uvs, file);
+	fread(&colors[0], sizeof(Vector4), N_colors, file);
+
+	long time2 = getTime();
+	printf("Time elapsed: %li ms",(time2-time1));
+}
+
+bool Mesh::storeBIN(const char *filename) {
+	printf("Storing Mesh in .bin format. . .");
+	FILE* file = fopen(filename, "wb");
+	if(file == NULL){
+		std::cout << "An error ocurred while trying to open the file" << std::endl;
+		return false;
+	}
+
+	unsigned long N_vertices = vertices.size(),
+			N_normals = normals.size(),
+			N_uvs = uvs.size(),
+			N_colors = colors.size();
+
+	fwrite(&N_vertices, sizeof(unsigned long), 1, file);
+	fwrite(&N_normals, sizeof(unsigned long), 1, file);
+	fwrite(&N_uvs, sizeof(unsigned long), 1, file);
+	fwrite(&N_colors, sizeof(unsigned long), 1, file);
+
+	fwrite(&vertices[0], sizeof(Vector3), N_vertices, file);
+	fwrite(&normals[0], sizeof(Vector3), N_normals, file);
+	fwrite(&uvs[0], sizeof(Vector2), N_uvs, file);
+	fwrite(&colors[0], sizeof(Vector4), N_colors, file);
+
+	return true;
 }

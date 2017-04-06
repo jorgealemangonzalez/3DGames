@@ -4,12 +4,13 @@
 #include "texture.h"
 #include "rendertotexture.h"
 #include "shader.h"
+#include <sys/stat.h>
 
 #include <cmath>
 
 //some globals
 Mesh* mesh = NULL;
-Mesh* mesh_ase = NULL;	//TODO Quit later
+Mesh* mesh_p38 = NULL;	//TODO Quit later
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
@@ -56,8 +57,17 @@ void Game::init(void)
 	mesh = new Mesh();
 	mesh->createPlane(10);
 
-	mesh_ase = new Mesh();
-	mesh_ase->loadASE("../data/meshes/p38.ASE");
+	mesh_p38 = new Mesh();
+
+	//check if binary exists:
+	struct stat buffer;
+	if(stat ("../data/meshes/p38.bin", &buffer) == 0)
+		mesh_p38->loadBIN("../data/meshes/p38.bin");
+	else{
+		mesh_p38->loadASE("../data/meshes/p38.ASE");
+		mesh_p38->storeBIN("../data/meshes/p38.bin");
+	}
+
 	/*
 	shader = new Shader();
 	if( !shader->load("data/shaders/simple.vs","data/shaders/simple.fs") )
@@ -109,12 +119,12 @@ void Game::render(void)
 		glPointSize(5);
 		glPushMatrix();
 		m.multGL();
-        std::vector<Vector3> &v = mesh_ase->vertices;
+        std::vector<Vector3> &v = mesh_p38->vertices;
         //std::cout<<"------------"<<std::endl;
 		for(int i = 0 ;i < v.size(); ++i ){
             //std::cout<<v[i].x<< " " << v[i].y <<" "<< v[i].z<<std::endl;
 		}
-		mesh_ase->render(GL_TRIANGLES);
+		mesh_p38->render(GL_TRIANGLES);
 		glPopMatrix();
 	}
     

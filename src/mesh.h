@@ -37,6 +37,8 @@ public:
 	void createQuad(float center_x, float center_y, float w, float h, bool flip_uvs = false);
 
 	bool loadASE( const char* filename);
+	bool loadBIN( const char* filename);
+	bool storeBIN( const char* filename);
 };
 
 #endif
