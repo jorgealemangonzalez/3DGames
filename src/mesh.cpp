@@ -292,31 +292,31 @@ void Mesh::createPlane(float size)
 
 
 bool Mesh::loadASE( const char* filename){
-	long time = getTime();
+
+    std::vector<Vector3> all_vertex;
+	long time1 = getTime();
 	TextParser t;
 	if(!t.create(filename)) {
 		std::cout << "File not found" << std::endl;
 		return false;
 	}
 	t.seek("*MESH_NUMVERTEX");
-	std::cout<<"Hola"<<'\n';
-	int num_vertices = t.getint();
+	int num_vertex = t.getint();
 	t.seek("*MESH_NUMFACES");
-	std::cout<<"Hola"<<'\n';
 	int num_faces = t.getint();
 
-	for(int i = 0 ; i < num_vertices ; ++i){
-		std::cout<<"Hola"<<'\n';
+	all_vertex.resize(num_vertex);
+	for(int i = 0 ; i < all_vertex.size() ; ++i){
 		t.seek("*MESH_VERTEX");
 		t.getint();
 		float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
-		Vector3 v( x, y, x );
-		std::cout<<x<<" "<<y<<" "<<z<<'\n';
-		vertices.push_back(v);
+		Vector3 v( z, y, x );
+		//std::cout<<x<<" "<<y<<" "<<z<<'\n';
+        all_vertex[i] = v;
 	}
-	long time2 = getTime();
-	/*
-	for(int i = 0 ; i < num_faces ; ++i){
+
+    vertices.resize(num_faces*3);
+	for(int i = 0 ; i < vertices.size() ;){
 		t.seek("*MESH_FACE");
 		t.getword();t.getword();
 		int A = t.getint();
@@ -325,6 +325,27 @@ bool Mesh::loadASE( const char* filename){
 		t.getword();
 		int C = t.getint();
 
-		vertices.push_back()
-	}*/
+		vertices[i++]= all_vertex[C];
+        vertices[i++]= all_vertex[B];
+        vertices[i++]= all_vertex[A];
+	}
+
+    normals.resize(num_faces);
+    for(int i = 0 ; i < normals.size() ; ++i) {
+        t.seek("*MESH_FACENORMAL");
+        t.getint();
+        float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
+        normals[i]=Vector3(x,y,z);
+    }
+
+	colors.resize(vertices.size());
+	t.reset();
+    for(int i = 0 ; i < colors.size() ; ++i){
+        t.seek("*MESH_VERTEXNORMAL");
+		t.getint();
+		float r = t.getfloat(), g = t.getfloat(), b = t.getfloat();
+        colors[i] = Vector4(b,g,r,1);
+    }
+    long time2 = getTime();
+    printf("Time elapsed: %f ms",(time2-time1));
 }

@@ -52,13 +52,12 @@ void Game::init(void)
 	camera = new Camera();
 	camera->lookAt(Vector3(0.f,25.f,25.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
-
 	//create a plane mesh
 	mesh = new Mesh();
 	mesh->createPlane(10);
 
 	mesh_ase = new Mesh();
-	mesh_ase->loadASE("../data/meshes/box.ASE.txt");
+	mesh_ase->loadASE("../data/meshes/p38.ASE");
 	/*
 	shader = new Shader();
 	if( !shader->load("data/shaders/simple.vs","data/shaders/simple.fs") )
@@ -75,7 +74,6 @@ void Game::init(void)
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	glClearColor(1.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//set the clear color (the background color)
@@ -111,10 +109,12 @@ void Game::render(void)
 		glPointSize(5);
 		glPushMatrix();
 		m.multGL();
-		for(int i = 0 ;i < mesh_ase.size(); ++i ){
-
+        std::vector<Vector3> &v = mesh_ase->vertices;
+        //std::cout<<"------------"<<std::endl;
+		for(int i = 0 ;i < v.size(); ++i ){
+            //std::cout<<v[i].x<< " " << v[i].y <<" "<< v[i].z<<std::endl;
 		}
-		mesh_ase->render(GL_POINT);
+		mesh_ase->render(GL_TRIANGLES);
 		glPopMatrix();
 	}
     
