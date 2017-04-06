@@ -2,6 +2,8 @@
 #include <cassert>
 #include "includes.h"
 #include "shader.h"
+#include "extra/textparser.h"
+#include "utils.h"
 
 Mesh::Mesh()
 {
@@ -288,3 +290,41 @@ void Mesh::createPlane(float size)
 	uvs.push_back( Vector2(0,0) );
 }
 
+
+bool Mesh::loadASE( const char* filename){
+	long time = getTime();
+	TextParser t;
+	if(!t.create(filename)) {
+		std::cout << "File not found" << std::endl;
+		return false;
+	}
+	t.seek("*MESH_NUMVERTEX");
+	std::cout<<"Hola"<<'\n';
+	int num_vertices = t.getint();
+	t.seek("*MESH_NUMFACES");
+	std::cout<<"Hola"<<'\n';
+	int num_faces = t.getint();
+
+	for(int i = 0 ; i < num_vertices ; ++i){
+		std::cout<<"Hola"<<'\n';
+		t.seek("*MESH_VERTEX");
+		t.getint();
+		float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
+		Vector3 v( x, y, x );
+		std::cout<<x<<" "<<y<<" "<<z<<'\n';
+		vertices.push_back(v);
+	}
+	long time2 = getTime();
+	/*
+	for(int i = 0 ; i < num_faces ; ++i){
+		t.seek("*MESH_FACE");
+		t.getword();t.getword();
+		int A = t.getint();
+		t.getword();
+		int B = t.getint();
+		t.getword();
+		int C = t.getint();
+
+		vertices.push_back()
+	}*/
+}

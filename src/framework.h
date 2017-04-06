@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cmath>
+#include <ostream>
 
 #define DEG2RAD 0.0174532925
 
@@ -85,6 +86,7 @@ public:
 	Vector3 cross( const Vector3& v ) const;
 	float dot( const Vector3& v ) const;
 };
+
 
 class Vector4
 {

@@ -9,6 +9,7 @@
 
 //some globals
 Mesh* mesh = NULL;
+Mesh* mesh_ase = NULL;	//TODO Quit later
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
@@ -56,6 +57,8 @@ void Game::init(void)
 	mesh = new Mesh();
 	mesh->createPlane(10);
 
+	mesh_ase = new Mesh();
+	mesh_ase->loadASE("../data/meshes/box.ASE.txt");
 	/*
 	shader = new Shader();
 	if( !shader->load("data/shaders/simple.vs","data/shaders/simple.fs") )
@@ -96,7 +99,6 @@ void Game::render(void)
 	if(shader) //render using shader (enable to test shader)
 	{
 	    Matrix44 mvp = m * camera->viewprojection_matrix;
-
 		shader->enable();
 		shader->setMatrix44("u_model", m );
 		shader->setMatrix44("u_mvp", mvp );
@@ -106,9 +108,13 @@ void Game::render(void)
 	}
 	else //render using fixed pipeline (DEPRECATED, use for debug only)
 	{
+		glPointSize(5);
 		glPushMatrix();
 		m.multGL();
-		mesh->render(GL_TRIANGLES);
+		for(int i = 0 ;i < mesh_ase.size(); ++i ){
+
+		}
+		mesh_ase->render(GL_POINT);
 		glPopMatrix();
 	}
     

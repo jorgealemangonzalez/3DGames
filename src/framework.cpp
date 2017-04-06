@@ -89,7 +89,6 @@ void Vector3::random(Vector3 range)
 	y = (rand() / (float)RAND_MAX) * 2.0f * range.y - range.y; //value between -range and range
 	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
 }
-
 //*********************************
 Matrix44::Matrix44()
 {

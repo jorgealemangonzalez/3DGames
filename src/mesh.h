@@ -35,6 +35,8 @@ public:
 
 	void createPlane( float size );
 	void createQuad(float center_x, float center_y, float w, float h, bool flip_uvs = false);
+
+	bool loadASE( const char* filename);
 };
 
 #endif
