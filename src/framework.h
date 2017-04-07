@@ -99,6 +99,7 @@ public:
     
 	Vector4() { x = y = z = w = 0.0f; }
 	Vector4(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
+	Vector4(Vector3 xyz, float w) { this->x = xyz.x; this->y = xyz.y; this->z = xyz.z; this->w = w; }
 };
 
 //****************************

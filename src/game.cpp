@@ -4,13 +4,11 @@
 #include "texture.h"
 #include "rendertotexture.h"
 #include "shader.h"
-#include <sys/stat.h>
 
 #include <cmath>
 
 //some globals
 Mesh* mesh = NULL;
-Mesh* mesh_p38 = NULL;	//TODO Quit later
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
@@ -56,26 +54,33 @@ void Game::init(void)
 	//create a plane mesh
 	mesh = new Mesh();
 	mesh->createPlane(10);
+    /*
+	mesh = new Mesh();
+	mesh->loadASE("../data/meshes/p38.ASE");
+	//mesh->debugVerticesAsColor();
 
-	mesh_p38 = new Mesh();
+    mesh->uploadToVRAM(); //For meshes that will be used all the time, better rendiment
+    */
 
-	//check if binary exists:
-	struct stat buffer;
-	if(stat ("../data/meshes/p38.bin", &buffer) == 0)
-		mesh_p38->loadBIN("../data/meshes/p38.bin");
-	else{
-		mesh_p38->loadASE("../data/meshes/p38.ASE");
-		mesh_p38->storeBIN("../data/meshes/p38.bin");
-	}
+    mesh = new Mesh();
+    mesh->loadASE("../data/meshes/spitfire/spitfire.ASE");
+    texture = new Texture();
+    if(!texture->load("../data/meshes/spitfire/spitfire_color_spec.tga")){
+        std::cout << "texture not found or error" << std::endl;
+        exit(0);
+    }
 
-	/*
 	shader = new Shader();
-	if( !shader->load("data/shaders/simple.vs","data/shaders/simple.fs") )
+	bool loaded;
+	//loaded = shader->load("../data/shaders/simple.vs","../data/shaders/simple.fs");
+	//loaded = shader->load("../data/shaders/color.vs","../data/shaders/color.fs");
+	loaded = shader->load("../data/shaders/texture.vs","../data/shaders/texture.fs");
+	if( !loaded )
 	{
 		std::cout << "shader not found or error" << std::endl;
 		exit(0);
 	}
-	*/
+	//shader = NULL;
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -108,8 +113,9 @@ void Game::render(void)
 	{
 	    Matrix44 mvp = m * camera->viewprojection_matrix;
 		shader->enable();
-		shader->setMatrix44("u_model", m );
+        shader->setMatrix44("u_model", m );
 		shader->setMatrix44("u_mvp", mvp );
+		shader->setTexture("u_texture", texture);
    
 		mesh->render(GL_TRIANGLES, shader);
 		shader->disable();
@@ -119,12 +125,12 @@ void Game::render(void)
 		glPointSize(5);
 		glPushMatrix();
 		m.multGL();
-        std::vector<Vector3> &v = mesh_p38->vertices;
+        std::vector<Vector3> &v = mesh->vertices;
         //std::cout<<"------------"<<std::endl;
 		for(int i = 0 ;i < v.size(); ++i ){
             //std::cout<<v[i].x<< " " << v[i].y <<" "<< v[i].z<<std::endl;
 		}
-		mesh_p38->render(GL_TRIANGLES);
+		mesh->render(GL_TRIANGLES);
 		glPopMatrix();
 	}
     

@@ -39,6 +39,9 @@ public:
 	bool loadASE( const char* filename);
 	bool loadBIN( const char* filename);
 	bool storeBIN( const char* filename);
+
+	void debugVerticesAsColor();
+	void debugNormalsAsColor();
 };
 
 #endif

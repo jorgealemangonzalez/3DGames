@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "extra/textparser.h"
 #include "utils.h"
+#include <sys/stat.h>
 
 Mesh::Mesh()
 {
@@ -218,7 +219,7 @@ void Mesh::uploadToVRAM()
 	{
 		glGenBuffers( 1, &colors_vbo_id); //generate one handler (id)
 		glBindBuffer( GL_ARRAY_BUFFER, colors_vbo_id ); //bind the handler
-		glBufferData( GL_ARRAY_BUFFER, uvs.size() * 4 * sizeof(float), &colors[0], GL_STATIC_DRAW ); //upload data
+		glBufferData( GL_ARRAY_BUFFER, colors.size() * 4 * sizeof(float), &colors[0], GL_STATIC_DRAW ); //upload data
 	}
 
 }
@@ -292,64 +293,99 @@ void Mesh::createPlane(float size)
 
 
 bool Mesh::loadASE( const char* filename){
+    long time1 = getTime();
 
-    std::vector<Vector3> all_vertex;
-	long time1 = getTime();
-	TextParser t;
-	if(!t.create(filename)) {
-		std::cout << "File not found" << std::endl;
-		return false;
-	}
-	t.seek("*MESH_NUMVERTEX");
-	int num_vertex = t.getint();
-	t.seek("*MESH_NUMFACES");
-	int num_faces = t.getint();
+	//check if binary exists:
+	struct stat buffer;
+	std::string binfilename = ".bin";
+	binfilename = filename + binfilename;
+	if(stat (binfilename.c_str(), &buffer) == 0){
+		loadBIN(binfilename.c_str());
+	}else{
+        std::vector<Vector3> all_vertex;
+        std::vector<Vector2> all_uvs;
+        TextParser t;
+        if(!t.create(filename)) {
+            std::cout << "File not found" << std::endl;
+            return false;
+        }
 
-	all_vertex.resize(num_vertex);
-	for(int i = 0 ; i < all_vertex.size() ; ++i){
-		t.seek("*MESH_VERTEX");
-		t.getint();
-		float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
-		Vector3 v( z, y, x );
-		//std::cout<<x<<" "<<y<<" "<<z<<'\n';
-        all_vertex[i] = v;
-	}
+        t.seek("*MESH_NUMVERTEX");
+        int num_vertex = t.getint();
+        t.seek("*MESH_NUMFACES");
+        int num_faces = t.getint();
 
-    vertices.resize(num_faces*3);
-	for(int i = 0 ; i < vertices.size() ;){
-		t.seek("*MESH_FACE");
-		t.getword();t.getword();
-		int A = t.getint();
-		t.getword();
-		int B = t.getint();
-		t.getword();
-		int C = t.getint();
+        all_vertex.resize(num_vertex);
+        for(int i = 0 ; i < all_vertex.size() ; ++i){
+            t.seek("*MESH_VERTEX");
+            t.getint();
+            float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
+            Vector3 v( z, y, x );
+            //std::cout<<x<<" "<<y<<" "<<z<<'\n';
+            all_vertex[i] = v;
+        }
 
-		vertices[i++]= all_vertex[C];
-        vertices[i++]= all_vertex[B];
-        vertices[i++]= all_vertex[A];
-	}
+        vertices.resize(num_faces*3);
+        for(int i = 0 ; i < vertices.size() ;){
+            t.seek("*MESH_FACE");
+            t.getword();t.getword();
+            int A = t.getint();
+            t.getword();
+            int B = t.getint();
+            t.getword();
+            int C = t.getint();
 
-    normals.resize(num_faces);
-    for(int i = 0 ; i < normals.size() ; ++i) {
-        t.seek("*MESH_FACENORMAL");
-        t.getint();
-        float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
-        normals[i]=Vector3(x,y,z);
-    }
+            vertices[i++]= all_vertex[C];
+            vertices[i++]= all_vertex[B];
+            vertices[i++]= all_vertex[A];
+        }
 
-	colors.resize(vertices.size());
-	t.reset();
-    for(int i = 0 ; i < colors.size() ; ++i){
-        t.seek("*MESH_VERTEXNORMAL");
-		t.getint();
-		float r = t.getfloat(), g = t.getfloat(), b = t.getfloat();
-        colors[i] = Vector4(b,g,r,1);
+        normals.resize(num_faces);
+        for(int i = 0 ; i < normals.size() ; ++i) {
+            t.seek("*MESH_FACENORMAL");
+            t.getint();
+            float x = t.getfloat(), y = t.getfloat(), z = - t.getfloat();
+            normals[i] = Vector3(x, y, z);
+        }
+
+        colors.resize(vertices.size());
+        t.reset();
+        for(int i = 0 ; i < colors.size() ; ++i){
+            t.seek("*MESH_VERTEXNORMAL");
+            t.getint();
+            float r = t.getfloat(), g = t.getfloat(), b = t.getfloat();
+            colors[i] = Vector4(b,g,r,1);
+        }
+
+        t.reset();
+        t.seek("*MESH_NUMTVERTEX");
+        int num_uvvertex = t.getint();
+        all_uvs.resize(num_uvvertex);
+        for(int i = 0 ; i < num_uvvertex ; ++i){
+            t.seek("*MESH_TVERT");
+            t.getint();
+            float u = t.getfloat(), v = t.getfloat();
+            Vector2 uv( u, v );
+            all_uvs[i] = uv;
+        }
+
+        t.seek("*MESH_NUMTVFACES");
+        int num_uvs = t.getint();
+        uvs.resize(num_uvs * 3);
+        for(int i = 0 ; i < num_uvs * 3;){
+            t.seek("*MESH_TFACE");
+            t.getint();
+            int A = t.getint(), B = t.getint(), C = t.getint();
+            uvs[i++] = all_uvs[C];
+            uvs[i++] = all_uvs[B];
+            uvs[i++] = all_uvs[A];
+        }
     }
     long time2 = getTime();
-    printf("Time elapsed: %f ms",(time2-time1));
+    printf("Time elapsed: %f ms\n",(time2-time1));
 
-	return true;
+    storeBIN(binfilename.c_str());
+    return true;
 }
 
 bool Mesh::loadBIN(const char *filename) {
@@ -376,11 +412,12 @@ bool Mesh::loadBIN(const char *filename) {
 	fread(&colors[0], sizeof(Vector4), N_colors, file);
 
 	long time2 = getTime();
-	printf("Time elapsed: %li ms",(time2-time1));
+	printf("Time elapsed: %li ms\n",(time2-time1));
+    return true;
 }
 
 bool Mesh::storeBIN(const char *filename) {
-	printf("Storing Mesh in .bin format. . .");
+	std::cout << "Storing Mesh in .bin format. . ." << std::endl;
 	FILE* file = fopen(filename, "wb");
 	if(file == NULL){
 		std::cout << "An error ocurred while trying to open the file" << std::endl;
@@ -402,5 +439,24 @@ bool Mesh::storeBIN(const char *filename) {
 	fwrite(&uvs[0], sizeof(Vector2), N_uvs, file);
 	fwrite(&colors[0], sizeof(Vector4), N_colors, file);
 
+    fclose(file);
 	return true;
+}
+
+void Mesh::debugVerticesAsColor() {
+	colors.clear();
+	colors.resize(vertices.size());
+
+	for(int i=0; i<vertices.size(); i++){
+		colors[i] = Vector4(vertices[i], 0.0);
+	}
+}
+
+void Mesh::debugNormalsAsColor() {
+	colors.clear();
+	colors.resize(normals.size());
+
+	for(int i=0; i<normals.size(); i++){
+		colors[i] = Vector4(normals[i], 0.0);
+	}
 }
