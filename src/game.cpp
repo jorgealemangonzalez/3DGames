@@ -4,12 +4,17 @@
 #include "texture.h"
 #include "rendertotexture.h"
 #include "shader.h"
+#include "entity.h"
 
 #include <cmath>
 
 //some globals
+Entity* root = NULL;
 Mesh* mesh = NULL;
+Texture* texture = NULL;
 Shader* shader = NULL;
+
+
 float angle = 0;
 RenderToTexture* rt = NULL;
 
@@ -63,12 +68,16 @@ void Game::init(void)
 
     mesh = new Mesh();
     mesh->loadASE("../data/meshes/spitfire/spitfire.ASE");
-    if(Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga") == NULL){
+
+    texture = new Texture();
+    texture->load("../data/meshes/spitfire/spitfire_color_spec.tga");
+
+    /*if(Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga") == NULL){
         std::cout << "texture not found or error" << std::endl;
         exit(0);
-    }
+    }*/
 
-	shader = new Shader();
+	/*shader = new Shader();
 	bool loaded;
 	//loaded = shader->load("../data/shaders/simple.vs","../data/shaders/simple.fs");
 	//loaded = shader->load("../data/shaders/color.vs","../data/shaders/color.fs");
@@ -78,7 +87,13 @@ void Game::init(void)
 		std::cout << "shader not found or error" << std::endl;
 		exit(0);
 	}
-	//shader = NULL;
+	//shader = NULL;*/
+
+    root = new Entity();
+    EntityMesh* plane = new EntityMesh();
+    plane->mesh = mesh;
+    plane->texture = texture;
+    root->addChild(plane);
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -100,13 +115,15 @@ void Game::render(void)
 
 	//Draw out world
 	drawGrid(500); //background grid
-    
+
 	//create model matrix from plane
 	Matrix44 m;
     m.setScale(1.0f, 1.0f, 1.0f);
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
 
-	//draw the plane
+    root->render(camera);
+
+	/*//draw the plane
 	if(shader) //render using shader (enable to test shader)
 	{
 	    Matrix44 mvp = m * camera->viewprojection_matrix;
@@ -130,7 +147,7 @@ void Game::render(void)
 		}
 		mesh->render(GL_TRIANGLES);
 		glPopMatrix();
-	}
+	}*/
     
     glDisable( GL_BLEND );
 

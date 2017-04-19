@@ -1,13 +1,10 @@
-//
-// Created by jorgealemangonzalez on 19/04/17.
-//
-
 #ifndef TJE_FRAMEWORK_2017_ENTITY_H
 #define TJE_FRAMEWORK_2017_ENTITY_H
 
 #include <vector>
 #include "texture.h"
 #include "mesh.h"
+#include "shader.h"
 #include "framework.h"
 #include "camera.h"
 
@@ -24,6 +21,7 @@ public:
     //Entity methods
     void addChild(Entity* ent);
     void removeChild(Entity* ent);
+    Matrix44 getGlobalModel();
 
     //methods overwriten by derived classes
     virtual void render(Camera* camera);
@@ -38,13 +36,14 @@ public:
     EntityMesh();
     ~EntityMesh();
 
-    std::string mesh;
-    std::string texture;
-    std::string shader;
+    Mesh* mesh;
+    Texture* texture;
+    Shader* shader;
     Vector3 color;
-    Shader* default_shader = NULL;
+
+    Shader* default_shader;
 
     void render(Camera* camera);
-    void update();
+    void update(float elapsed_time);
 };
 #endif //TJE_FRAMEWORK_2017_ENTITY_H
