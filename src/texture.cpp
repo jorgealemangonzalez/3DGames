@@ -3,7 +3,7 @@
 
 #include <iostream> //to output
 #include <cmath>
-
+std::map<std::string, Texture*> Texture::s_Textures;
 Texture::Texture()
 {
 	width = 0;
