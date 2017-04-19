@@ -66,6 +66,22 @@ bool Texture::load(const char* filename, bool mipmaps)
 	return false;
 }
 
+Texture* Texture::Load(const char *filename, bool mipmaps) {
+	std::string name = std::string(filename) +"_"+ (mipmaps ? "mip" : "nomip");
+	std::map<std::string,Texture*>::iterator it = s_Textures.find(name);
+
+	if(it != s_Textures.end()){
+		return it->second;
+	}
+
+	Texture* tx = new Texture();
+	if(!tx->load(filename,mipmaps)){
+		return NULL;
+	}
+	s_Textures[name] = tx;
+	return tx;
+}
+
 void Texture::bind()
 {
 	glEnable( GL_TEXTURE_2D ); //enable the textures 

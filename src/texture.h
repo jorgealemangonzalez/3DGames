@@ -34,6 +34,8 @@ public:
 
 	bool load(const char* filename, bool mipmaps = true);
 	void generateMipmaps();
+	static Texture* Load(const char* filename, bool mipmaps = true);
+	static std::map<std::string, Texture*> s_Textures;
 
 protected:
 	TGAInfo* loadTGA(const char* filename);

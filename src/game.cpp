@@ -9,7 +9,6 @@
 
 //some globals
 Mesh* mesh = NULL;
-Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
 RenderToTexture* rt = NULL;
@@ -52,8 +51,8 @@ void Game::init(void)
 	camera->lookAt(Vector3(0.f,25.f,25.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
 	//create a plane mesh
-	mesh = new Mesh();
-	mesh->createPlane(10);
+	//mesh = new Mesh();
+	//mesh->createPlane(10);
     /*
 	mesh = new Mesh();
 	mesh->loadASE("../data/meshes/p38.ASE");
@@ -64,8 +63,7 @@ void Game::init(void)
 
     mesh = new Mesh();
     mesh->loadASE("../data/meshes/spitfire/spitfire.ASE");
-    texture = new Texture();
-    if(!texture->load("../data/meshes/spitfire/spitfire_color_spec.tga")){
+    if(Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga") == NULL){
         std::cout << "texture not found or error" << std::endl;
         exit(0);
     }
@@ -115,7 +113,7 @@ void Game::render(void)
 		shader->enable();
         shader->setMatrix44("u_model", m );
 		shader->setMatrix44("u_mvp", mvp );
-		shader->setTexture("u_texture", texture);
+		shader->setTexture("u_texture", Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga"));
    
 		mesh->render(GL_TRIANGLES, shader);
 		shader->disable();
