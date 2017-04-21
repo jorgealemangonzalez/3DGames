@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "framework.h"
+#include <map>
 
 class Shader;
 
@@ -23,6 +24,10 @@ public:
 	unsigned int uvs_vbo_id;
 	unsigned int colors_vbo_id;
 
+	//Mesh manager
+	static Mesh* Load(const std::string& filename);
+	static std::map<std::string, Mesh*> s_Meshes;
+
 	Mesh();
 	Mesh( const Mesh& m );
 	~Mesh();
@@ -36,7 +41,7 @@ public:
 	void createPlane( float size );
 	void createQuad(float center_x, float center_y, float w, float h, bool flip_uvs = false);
 
-	bool loadASE( const char* filename);
+	bool loadASE( const std::string& filename);
 	bool loadBIN( const char* filename);
 	bool storeBIN( const char* filename);
 

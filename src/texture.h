@@ -32,9 +32,10 @@ public:
 	void unbind();
 	static void UnbindAll();
 
-	bool load(const char* filename, bool mipmaps = true);
+	bool load(const std::string& filename, bool mipmaps = true);
 	void generateMipmaps();
-	static Texture* Load(const char* filename, bool mipmaps = true);
+	//Texture manager
+	static Texture* Load(const std::string& filename, bool mipmaps = true);
 	static std::map<std::string, Texture*> s_Textures;
 
 protected:

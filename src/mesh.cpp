@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <sys/stat.h>
 
+std::map<std::string, Mesh*> Mesh::s_Meshes;
 Mesh::Mesh()
 {
 	vertices_vbo_id = 0;
@@ -292,7 +293,7 @@ void Mesh::createPlane(float size)
 }
 
 
-bool Mesh::loadASE( const char* filename){
+bool Mesh::loadASE( const std::string& filename){
     long time1 = getTime();
 
 	//check if binary exists:
@@ -305,7 +306,7 @@ bool Mesh::loadASE( const char* filename){
         std::vector<Vector3> all_vertex;
         std::vector<Vector2> all_uvs;
         TextParser t;
-        if(!t.create(filename)) {
+        if(!t.create(filename.c_str())) {
             std::cout << "File not found" << std::endl;
             return false;
         }
@@ -386,6 +387,22 @@ bool Mesh::loadASE( const char* filename){
 
     storeBIN(binfilename.c_str());
     return true;
+}
+
+Mesh* Mesh::Load(const std::string& filename){
+	std::string name = std::string(filename);
+	std::map<std::string,Mesh*>::iterator it = s_Meshes.find(name);
+
+	if(it != s_Meshes.end()){
+		return it->second;
+	}
+	std::string location = "../data/meshes/";
+	Mesh* msh = new Mesh();
+	if(!msh->loadASE(location+filename)){
+		return NULL;
+	}
+	s_Meshes[name] = msh;
+	return msh;
 }
 
 bool Mesh::loadBIN(const char *filename) {

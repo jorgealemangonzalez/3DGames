@@ -36,12 +36,13 @@ public:
     EntityMesh();
     ~EntityMesh();
 
-    Mesh* mesh;
-    Texture* texture;
-    Shader* shader;
+    std::string mesh;
+    std::string texture;
+    struct{
+        std::string vs;
+        std::string fs;
+    } shaderDesc;
     Vector3 color;
-
-    Shader* default_shader;
 
     void render(Camera* camera);
     void update(float elapsed_time);

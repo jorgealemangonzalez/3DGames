@@ -66,12 +66,6 @@ void Game::init(void)
     mesh->uploadToVRAM(); //For meshes that will be used all the time, better rendiment
     */
 
-    mesh = new Mesh();
-    mesh->loadASE("../data/meshes/spitfire/spitfire.ASE");
-
-    texture = new Texture();
-    texture->load("../data/meshes/spitfire/spitfire_color_spec.tga");
-
     /*if(Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga") == NULL){
         std::cout << "texture not found or error" << std::endl;
         exit(0);
@@ -91,8 +85,8 @@ void Game::init(void)
 
     root = new Entity();
     EntityMesh* plane = new EntityMesh();
-    plane->mesh = mesh;
-    plane->texture = texture;
+    plane->mesh = "spitfire/spitfire.ASE";
+    plane->texture = "spitfire/spitfire_color_spec.tga";
     root->addChild(plane);
 
 	//hide the cursor

@@ -1,4 +1,5 @@
 #include "entity.h"
+#include <algorithm>    // std::find
 
 Entity::Entity() {
 
@@ -38,22 +39,21 @@ void Entity::update(float elapsed_time){
 }
 
 EntityMesh::EntityMesh(){
-    mesh = NULL;
-    texture = NULL;
-    shader = NULL;
-
-    default_shader = Shader::Load("../data/shaders/texture.vs","../data/shaders/texture.fs");
+    mesh = "";
+    texture = "";
+    shaderDesc.vs = "texture.vs";
+    shaderDesc.fs = "texture.fs";
 }
 
 void EntityMesh::render(Camera* camera){
-    Shader* shader = EntityMesh::default_shader;
+    Shader* shader = Shader::Load(shaderDesc.vs,shaderDesc.fs);
 
     Matrix44 mvp = model * camera->viewprojection_matrix;
     shader->enable();
     shader->setMatrix44("u_model", model);
     shader->setMatrix44("u_mvp", mvp);
-    shader->setTexture("u_texture", Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga"));
-    mesh->render(GL_TRIANGLES, shader);
+    shader->setTexture("u_texture", Texture::Load(texture));
+    Mesh::Load(mesh)->render(GL_TRIANGLES, shader);
     shader->disable();
 
     for(int i=0; i<children.size(); i++){

@@ -11,14 +11,14 @@ Texture::Texture()
 
 }
 
-bool Texture::load(const char* filename, bool mipmaps)
+bool Texture::load(const std::string& filename, bool mipmaps)
 {
 	std::string str = filename;
 	std::string ext = str.substr( str.size() - 4,4 );
 
 	if (ext == ".tga" || ext == ".TGA")
 	{
-		TGAInfo* tgainfo = loadTGA(filename);
+		TGAInfo* tgainfo = loadTGA(filename.c_str());
 		if (tgainfo == NULL)
 			return false;
 
@@ -66,16 +66,16 @@ bool Texture::load(const char* filename, bool mipmaps)
 	return false;
 }
 
-Texture* Texture::Load(const char *filename, bool mipmaps) {
+Texture* Texture::Load(const std::string& filename, bool mipmaps) {
 	std::string name = std::string(filename) +"_"+ (mipmaps ? "mip" : "nomip");
 	std::map<std::string,Texture*>::iterator it = s_Textures.find(name);
 
 	if(it != s_Textures.end()){
 		return it->second;
 	}
-
+    std::string location = "../data/meshes/";
 	Texture* tx = new Texture();
-	if(!tx->load(filename,mipmaps)){
+	if(!tx->load(location+filename,mipmaps)){
 		return NULL;
 	}
 	s_Textures[name] = tx;
