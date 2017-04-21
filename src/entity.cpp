@@ -2,7 +2,8 @@
 #include <algorithm>    // std::find
 
 Entity::Entity() {
-
+    parent = NULL;
+    model.rotateLocal(-M_PI_2/2, Vector3(0.0,0.0,1.0));
 }
 
 Entity::~Entity() {
@@ -47,8 +48,8 @@ EntityMesh::EntityMesh(){
 
 void EntityMesh::render(Camera* camera){
     Shader* shader = Shader::Load(shaderDesc.vs,shaderDesc.fs);
-
-    Matrix44 mvp = model * camera->viewprojection_matrix;
+    Matrix44 globalModel = getGlobalModel();
+    Matrix44 mvp = globalModel * camera->viewprojection_matrix;
     shader->enable();
     shader->setMatrix44("u_model", model);
     shader->setMatrix44("u_mvp", mvp);

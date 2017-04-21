@@ -106,7 +106,6 @@ void Game::render(void)
 
 	//Put the camera matrices on the stack of OpenGL (only for fixed rendering)
 	camera->set();
-
 	//Draw out world
 	drawGrid(500); //background grid
 
