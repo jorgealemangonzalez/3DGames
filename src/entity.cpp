@@ -66,3 +66,14 @@ void EntityMesh::render(Camera* camera){
 void EntityMesh::update(float elapsed_time){
 
 }
+
+void EntityMesh::followWithCamera(Camera* camera){
+    Matrix44 globalModel = getGlobalModel();
+    Vector3 entityPos = globalModel.getTranslationOnly();//Absolute position
+    camera->eye = Vector3(entityPos.x-17,entityPos.y+5,entityPos.z);
+    /*
+    camera->lookAt(Vector3(entityPos.x-17,entityPos.y+5,entityPos.z),
+                   entityPos,
+                   Vector3(1.0,0.0,0.0));  //Hay que calcular como esta la esntity
+    */
+}

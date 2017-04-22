@@ -228,6 +228,10 @@ Matrix44 Matrix44::getRotationOnly()
 	return trans * inv;
 }
 
+Vector3 Matrix44::getTranslationOnly(){
+	return Vector3(m[12],m[13],m[14]);
+}
+
 void Matrix44::lookAt(Vector3& eye, Vector3& center, Vector3& up)
 {
 	Vector3 front = (center - eye);

@@ -54,7 +54,7 @@ void Game::init(void)
 	//create our camera
 	camera = new Camera();
 	camera->lookAt(Vector3(0.f,25.f,25.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
-	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspectives
 	//create a plane mesh
 	//mesh = new Mesh();
 	//mesh->createPlane(10);
@@ -87,9 +87,18 @@ void Game::init(void)
     EntityMesh* plane = new EntityMesh();
     plane->mesh = "spitfire/spitfire.ASE";
     plane->texture = "spitfire/spitfire_color_spec.tga";
+	//plane->model.setTranslation(100.0,0.0,0.0);
     root->addChild(plane);
 
+	//Camera beside plane
+	plane->followWithCamera(camera);
 	//hide the cursor
+
+	EntityMesh* island = new EntityMesh();
+	island->mesh = "island/island.ASE";
+	island->texture = "island/island_color_luz.tga";
+	root->addChild(island);
+
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
 }
 

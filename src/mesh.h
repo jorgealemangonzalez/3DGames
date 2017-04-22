@@ -47,6 +47,7 @@ public:
 
 	void debugVerticesAsColor();
 	void debugNormalsAsColor();
+
 };
 
 #endif

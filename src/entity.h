@@ -46,5 +46,7 @@ public:
 
     void render(Camera* camera);
     void update(float elapsed_time);
+
+    void followWithCamera(Camera* camera);
 };
 #endif //TJE_FRAMEWORK_2017_ENTITY_H
