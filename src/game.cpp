@@ -10,10 +10,6 @@
 
 //some globals
 Entity* root = NULL;
-Mesh* mesh = NULL;
-Texture* texture = NULL;
-Shader* shader = NULL;
-
 
 float angle = 0;
 RenderToTexture* rt = NULL;
@@ -55,39 +51,12 @@ void Game::init(void)
 	camera = new Camera();
 	camera->lookAt(Vector3(0.f,25.f,25.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspectives
-	//create a plane mesh
-	//mesh = new Mesh();
-	//mesh->createPlane(10);
-    /*
-	mesh = new Mesh();
-	mesh->loadASE("../data/meshes/p38.ASE");
-	//mesh->debugVerticesAsColor();
-
-    mesh->uploadToVRAM(); //For meshes that will be used all the time, better rendiment
-    */
-
-    /*if(Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga") == NULL){
-        std::cout << "texture not found or error" << std::endl;
-        exit(0);
-    }*/
-
-	/*shader = new Shader();
-	bool loaded;
-	//loaded = shader->load("../data/shaders/simple.vs","../data/shaders/simple.fs");
-	//loaded = shader->load("../data/shaders/color.vs","../data/shaders/color.fs");
-	loaded = shader->load("../data/shaders/texture.vs","../data/shaders/texture.fs");
-	if( !loaded )
-	{
-		std::cout << "shader not found or error" << std::endl;
-		exit(0);
-	}
-	//shader = NULL;*/
 
     root = new Entity();
     EntityMesh* plane = new EntityMesh();
     plane->mesh = "spitfire/spitfire.ASE";
     plane->texture = "spitfire/spitfire_color_spec.tga";
-	//plane->model.setTranslation(100.0,0.0,0.0);
+	plane->model.setTranslation(0.0,500.0,0.0);
     root->addChild(plane);
 
 	//Camera beside plane
@@ -118,43 +87,14 @@ void Game::render(void)
 	//Draw out world
 	drawGrid(500); //background grid
 
-	//create model matrix from plane
-	Matrix44 m;
-    m.setScale(1.0f, 1.0f, 1.0f);
-	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
-
     root->render(camera);
-
-	/*//draw the plane
-	if(shader) //render using shader (enable to test shader)
-	{
-	    Matrix44 mvp = m * camera->viewprojection_matrix;
-		shader->enable();
-        shader->setMatrix44("u_model", m );
-		shader->setMatrix44("u_mvp", mvp );
-		shader->setTexture("u_texture", Texture::Load("../data/meshes/spitfire/spitfire_color_spec.tga"));
-   
-		mesh->render(GL_TRIANGLES, shader);
-		shader->disable();
-	}
-	else //render using fixed pipeline (DEPRECATED, use for debug only)
-	{
-		glPointSize(5);
-		glPushMatrix();
-		m.multGL();
-        std::vector<Vector3> &v = mesh->vertices;
-        //std::cout<<"------------"<<std::endl;
-		for(int i = 0 ;i < v.size(); ++i ){
-            //std::cout<<v[i].x<< " " << v[i].y <<" "<< v[i].z<<std::endl;
-		}
-		mesh->render(GL_TRIANGLES);
-		glPopMatrix();
-	}*/
     
     glDisable( GL_BLEND );
 
+
+
 	//example to render the FPS every 10 frames
-//	drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
+	//drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -172,12 +112,12 @@ void Game::update(double seconds_elapsed)
 	}
 
 	//async input to move the camera around
-	if(keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
+	if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
 	if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
 	if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
 	if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
 	if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
-    
+
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
 	{

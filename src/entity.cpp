@@ -3,7 +3,6 @@
 
 Entity::Entity() {
     parent = NULL;
-    model.rotateLocal(-M_PI_2/2, Vector3(0.0,0.0,1.0));
 }
 
 Entity::~Entity() {
@@ -28,6 +27,10 @@ Matrix44 Entity::getGlobalModel() {
     if(parent)
         return model * parent->getGlobalModel();
     else return model;
+}
+
+Vector3 Entity::getPosition() {
+    return Vector3(model._41, model._42, model._43);
 }
 
 void Entity::render(Camera* camera){
@@ -68,12 +71,6 @@ void EntityMesh::update(float elapsed_time){
 }
 
 void EntityMesh::followWithCamera(Camera* camera){
-    Matrix44 globalModel = getGlobalModel();
-    Vector3 entityPos = globalModel.getTranslationOnly();//Absolute position
-    camera->eye = Vector3(entityPos.x-17,entityPos.y+5,entityPos.z);
-    /*
-    camera->lookAt(Vector3(entityPos.x-17,entityPos.y+5,entityPos.z),
-                   entityPos,
-                   Vector3(1.0,0.0,0.0));  //Hay que calcular como esta la esntity
-    */
+    Vector3 pos = getPosition();
+    camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
 }

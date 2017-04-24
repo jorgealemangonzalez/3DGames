@@ -321,7 +321,7 @@ bool Mesh::loadASE( const std::string& filename){
             t.seek("*MESH_VERTEX");
             t.getint();
             float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
-            Vector3 v( z, y, x );
+            Vector3 v( x, z, y );
             //std::cout<<x<<" "<<y<<" "<<z<<'\n';
             all_vertex[i] = v;
         }

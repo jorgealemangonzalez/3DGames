@@ -523,6 +523,15 @@ bool Matrix44::inverse()
    return true;
 }
 
+std::ostream& operator<<(std::ostream &out, const Matrix44& m){
+	for(int i=0; i<4; i++){
+		for(int j=0; j<4; j++){
+			out << m.M[i][j] << "\t";
+		}
+		out << "\n";
+	}
+}
+
 float ComputeSignedAngle( Vector2 a, Vector2 b)
 {
 	a.normalize();

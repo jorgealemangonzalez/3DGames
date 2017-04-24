@@ -25,6 +25,8 @@ cmake-build-debug
 *.tar
 *.zip
 
+*ASE.bin
+
 # Logs and databases #
 ######################
 *.log
