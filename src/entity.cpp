@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "mesh.h"
 #include <algorithm>    // std::find
 
 Entity::Entity() {
@@ -23,6 +24,10 @@ void Entity::removeChild(Entity* entity){
     entity->model = entity->model * getGlobalModel();
 }
 
+void Entity::destroy() {
+    //to_destroy.push_back(this);
+}
+
 Matrix44 Entity::getGlobalModel() {
     if(parent)
         return model * parent->getGlobalModel();
@@ -30,7 +35,7 @@ Matrix44 Entity::getGlobalModel() {
 }
 
 Vector3 Entity::getPosition() {
-    return Vector3(model._41, model._42, model._43);
+    return getGlobalModel() * Vector3();
 }
 
 void Entity::render(Camera* camera){
@@ -50,20 +55,23 @@ EntityMesh::EntityMesh(){
 }
 
 void EntityMesh::render(Camera* camera){
-    Shader* shader = Shader::Load(shaderDesc.vs,shaderDesc.fs);
     Matrix44 globalModel = getGlobalModel();
     Matrix44 mvp = globalModel * camera->viewprojection_matrix;
-    shader->enable();
-    shader->setMatrix44("u_model", model);
-    shader->setMatrix44("u_mvp", mvp);
-    shader->setTexture("u_texture", Texture::Load(texture));
-    Mesh::Load(mesh)->render(GL_TRIANGLES, shader);
-    shader->disable();
+    Mesh* m = Mesh::Load(mesh);
+    if(camera->testSphereInFrustum(getPosition(), m->info.radius)){
+        Shader* shader = Shader::Load(shaderDesc.vs,shaderDesc.fs);
+        shader->enable();
+        shader->setMatrix44("u_model", model);
+        shader->setMatrix44("u_mvp", mvp);
+        shader->setTexture("u_texture", Texture::Load(texture));
+        m->render(GL_TRIANGLES, shader);
+        shader->disable();
+    }
 
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
-    
+
 }
 
 void EntityMesh::update(float elapsed_time){

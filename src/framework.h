@@ -178,6 +178,7 @@ Vector3 operator + (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a, const Vector3& b);
 Vector3 operator * (const Vector3& a, float v);
 
+std::ostream& operator << (std::ostream &out, const Vector3& v);
 std::ostream& operator << (std::ostream &out, const Matrix44& m);
 
 float ComputeSignedAngle( Vector2 a, Vector2 b);

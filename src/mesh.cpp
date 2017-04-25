@@ -292,6 +292,21 @@ void Mesh::createPlane(float size)
 	uvs.push_back( Vector2(0,0) );
 }
 
+Mesh* Mesh::Load(const std::string& filename){
+	std::string name = std::string(filename);
+	std::map<std::string,Mesh*>::iterator it = s_Meshes.find(name);
+
+	if(it != s_Meshes.end()){
+		return it->second;
+	}
+	std::string location = "../data/meshes/";
+	Mesh* msh = new Mesh();
+	if(!msh->loadASE(location+filename)){
+		return NULL;
+	}
+	s_Meshes[name] = msh;
+	return msh;
+}
 
 bool Mesh::loadASE( const std::string& filename){
     long time1 = getTime();
@@ -303,6 +318,9 @@ bool Mesh::loadASE( const std::string& filename){
 	if(stat (binfilename.c_str(), &buffer) == 0){
 		loadBIN(binfilename.c_str());
 	}else{
+		Vector3 max_v(100000.f, 100000.f, 100000.f);
+		Vector3 min_v(100000.f, 100000.f, 100000.f);
+
         std::vector<Vector3> all_vertex;
         std::vector<Vector2> all_uvs;
         TextParser t;
@@ -322,8 +340,22 @@ bool Mesh::loadASE( const std::string& filename){
             t.getint();
             float x = t.getfloat(), y= t.getfloat(), z=t.getfloat();
             Vector3 v( x, z, y );
-            //std::cout<<x<<" "<<y<<" "<<z<<'\n';
             all_vertex[i] = v;
+
+			if(v.x < min_v.x)
+				min_v.x = v.x;
+			if (v.x > max_v.x)
+				max_v.x = v.x;
+
+			if(v.y < min_v.y)
+				min_v.y = v.y;
+			if (v.y > max_v.y)
+				max_v.y = v.y;
+
+			if(v.z < min_v.z)
+				min_v.z = v.z;
+			if (v.z > max_v.z)
+				max_v.z = v.z;
         }
 
         vertices.resize(num_faces*3);
@@ -381,28 +413,26 @@ bool Mesh::loadASE( const std::string& filename){
             uvs[i++] = all_uvs[B];
             uvs[i++] = all_uvs[A];
         }
+
+		//mesh info
+		info.min = min_v;
+		info.max = max_v;
+		info.center = (min_v + max_v) * 0.5;
+		info.halfsize = max_v - info.center;
+		info.radius = info.halfsize.length();
     }
+
     long time2 = getTime();
     printf("Time elapsed: %f ms\n",(time2-time1));
 
     storeBIN(binfilename.c_str());
+	std::cout << "\n" << filename << "\n";
+	std::cout << info.min << "\n";
+	std::cout << info.max << "\n";
+	std::cout << info.center << "\n";
+	std::cout << info.halfsize << "\n";
+	std::cout << info.radius << "\n";
     return true;
-}
-
-Mesh* Mesh::Load(const std::string& filename){
-	std::string name = std::string(filename);
-	std::map<std::string,Mesh*>::iterator it = s_Meshes.find(name);
-
-	if(it != s_Meshes.end()){
-		return it->second;
-	}
-	std::string location = "../data/meshes/";
-	Mesh* msh = new Mesh();
-	if(!msh->loadASE(location+filename)){
-		return NULL;
-	}
-	s_Meshes[name] = msh;
-	return msh;
 }
 
 bool Mesh::loadBIN(const char *filename) {
@@ -417,6 +447,8 @@ bool Mesh::loadBIN(const char *filename) {
 	fread(&N_normals, sizeof(unsigned long), 1, file);
 	fread(&N_uvs, sizeof(unsigned long), 1, file);
 	fread(&N_colors, sizeof(unsigned long), 1, file);
+
+	fread(&info, sizeof(sMeshInfo), 1, file);
 
 	vertices.resize(N_vertices);
 	normals.resize(N_normals);
@@ -450,6 +482,8 @@ bool Mesh::storeBIN(const char *filename) {
 	fwrite(&N_normals, sizeof(unsigned long), 1, file);
 	fwrite(&N_uvs, sizeof(unsigned long), 1, file);
 	fwrite(&N_colors, sizeof(unsigned long), 1, file);
+
+	fwrite(&info, sizeof(sMeshInfo), 1, file);
 
 	fwrite(&vertices[0], sizeof(Vector3), N_vertices, file);
 	fwrite(&normals[0], sizeof(Vector3), N_normals, file);

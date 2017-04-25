@@ -523,6 +523,12 @@ bool Matrix44::inverse()
    return true;
 }
 
+std::ostream& operator<<(std::ostream &out, const Vector3& v){
+	for(int i=0; i<3; i++){
+		out << v.v[i] << "\t";
+	}
+}
+
 std::ostream& operator<<(std::ostream &out, const Matrix44& m){
 	for(int i=0; i<4; i++){
 		for(int j=0; j<4; j++){

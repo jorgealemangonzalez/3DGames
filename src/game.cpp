@@ -64,7 +64,7 @@ void Game::init(void) {
         EntityMesh *p = new EntityMesh();
         p->mesh = "spitfire/spitfire.ASE";
         p->texture = "spitfire/spitfire_color_spec.tga";
-        p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 0.0);
+        p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 10.0);
         root->addChild(p);
     }
 

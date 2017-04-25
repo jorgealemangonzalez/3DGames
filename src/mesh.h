@@ -14,6 +14,15 @@ class Shader;
 class Mesh
 {
 public:
+	typedef struct{
+		Vector3 min;		//Bounding Box info
+		Vector3 max;
+		Vector3 center;		//(min+max)*0.5
+		Vector3 halfsize;	//max-center
+		double radius;		//normal(halfsize)
+	} sMeshInfo;
+	sMeshInfo info;
+
 	std::vector< Vector3 > vertices; //here we store the vertices
 	std::vector< Vector3 > normals;	 //here we store the normals
 	std::vector< Vector2 > uvs;	 //here we store the texture coordinates

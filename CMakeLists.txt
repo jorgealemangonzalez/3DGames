@@ -38,7 +38,7 @@ set(SOURCE_FILES
         src/texture.cpp
         src/texture.h
         src/utils.cpp
-        src/utils.h src/entity.cpp src/entity.h)
+        src/utils.h src/entity.cpp src/entity.h src/game_entities.h src/game_entities.cpp)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
 find_package(OpenGL REQUIRED)
