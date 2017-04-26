@@ -52,7 +52,7 @@ void Game::init(void) {
     camera->lookAt(Vector3(0.f, 25.f, 25.f), Vector3(0.f, 0.f, 0.f),
                    Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
-                           10000.f); //set the projection, we want to be perspectives
+                           100000000.f); //set the projection, we want to be perspectives
 
     root = new Entity();
     ///*
