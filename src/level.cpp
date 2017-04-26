@@ -71,6 +71,7 @@ bool Level::load(const char* filename, Entity* root){
         *clone = *e;//Copiar todas las variables ( Si hay punteros la has cagado porque se copiara la referencia
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         root->addChild(clone);
+        
     }
 
 }
