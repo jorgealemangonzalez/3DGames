@@ -84,17 +84,14 @@ char *TextParser::getword()
   p1 = p0+1;
   while (legal(data[p1]))
     p1++;
-  
+
   for (i=p0;i<p1;i++)
     {
-      if ((data[i]<='z') && (data[i]>='a'))
-	data[i] += ('A'-'a');
       g_string_temporal[i-p0] = data[i];
     }
   g_string_temporal[p1-p0] = '\0';
   sl = p1;
 	std::string s(g_string_temporal);
-	std::transform(s.begin(),s.end(),s.begin(),toupper);
   //strupr(g_string_temporal);
 	strcpy(g_string_temporal,s.c_str());
   return g_string_temporal;
@@ -181,7 +178,7 @@ int TextParser::countword(char *s)
   while (!final)
     {
       si=0;
-      while (toupper(data[i])==toupper(s[si]))
+      while (data[i]==s[si])
 	{
 	  i++;
 	  si++;
@@ -208,7 +205,7 @@ int TextParser::countwordfromhere(char *s)
   while (!final)
     {
       si=0;
-      while (toupper(data[i])==toupper(s[si]))
+      while (data[i]==s[si])
 	{
 	  i++;
 	  si++;

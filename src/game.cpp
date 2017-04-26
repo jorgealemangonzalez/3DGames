@@ -5,6 +5,7 @@
 #include "rendertotexture.h"
 #include "shader.h"
 #include "entity.h"
+#include "level.h"
 
 #include <cmath>
 
@@ -15,6 +16,7 @@ float angle = 0;
 RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
+Level* level1;
 
 Game::Game(SDL_Window *window) {
     this->window = window;
@@ -53,30 +55,14 @@ void Game::init(void) {
                            10000.f); //set the projection, we want to be perspectives
 
     root = new Entity();
-    EntityMesh *plane = new EntityMesh();
-    plane->mesh = "spitfire/spitfire.ASE";
-    plane->texture = "spitfire/spitfire_color_spec.tga";
-    plane->model.setTranslation(0.0, 500.0, 0.0);
-    root->addChild(plane);
-
-    //Extra planes
-    for (int i = 0; i < 100; i++) {
-        EntityMesh *p = new EntityMesh();
-        p->mesh = "spitfire/spitfire.ASE";
-        p->texture = "spitfire/spitfire_color_spec.tga";
-        p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 10.0);
-        root->addChild(p);
-    }
-
-    //Camera beside plane
-    plane->followWithCamera(camera);
-    //hide the cursor
-
-    EntityMesh *island = new EntityMesh();
-    island->mesh = "island/island.ASE";
-    island->texture = "island/island_color_luz.tga";
-    root->addChild(island);
-
+    ///*
+    std::cout<<"Load level1"<<std::endl;
+    level1 = new Level();
+    level1->load("../data/level1.txt",root);
+    std::cout<<"Init finish";
+    //*/
+    //level1 = new Level();
+    //level1->createLevel1(root,camera);
     SDL_ShowCursor(!mouse_locked); //hide or show the mouse
 }
 

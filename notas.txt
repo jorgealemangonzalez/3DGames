@@ -1,0 +1,7 @@
+testSphereInFrustrum -> Se usa para comprobar si un objecto se va a ver , si no se ve no lo pintes( No lo mandes  a gpu ). Por lo tanto comprobar en el render(De entity).
+			Hay que usar el radio de la mesh ( bounding box ) para saber si se ve algun trozo o no. El centro de la caja no tiene porque ser el del objeto. ç
+			Para cada vértice calculas los máximos y mínimos de cada componente(x,y,z)
+			
+Usar el spitfire low cuando haces render de un objeto desde lejos
+
+OBJ parser de asignatura de infografia

@@ -11,6 +11,10 @@ Entity::~Entity() {
 }
 
 void Entity::addChild(Entity* ent){
+    if(ent->parent){
+        std::cout<<"This entity already has parent"<<std::endl;
+        return;
+    }
     ent->parent = this;
     children.push_back(ent);
 }

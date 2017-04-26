@@ -1,0 +1,7 @@
+*entities 1
+    island island/island.ASE island/island_color_luz.tga
+
+*scene level1 3
+    *entity island 0 0 0
+    *entity island 14000 0 14000
+    *entity island 0 0 14000
