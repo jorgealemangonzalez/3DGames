@@ -12,7 +12,6 @@
 //some globals
 Entity *root = NULL;
 
-float angle = 0;
 RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
@@ -21,6 +20,8 @@ Level* level1;
 Game::Game(SDL_Window *window) {
     this->window = window;
     instance = this;
+
+    controller = new Controller();
 
     // initialize attributes
     // Warning: DO NOT CREATE STUFF HERE, USE THE INIT
@@ -32,6 +33,7 @@ Game::Game(SDL_Window *window) {
     frame = 0;
     time = 0.0f;
     elapsed_time = 0.0f;
+    angle = 0;
 
     keystate = NULL;
     mouse_locked = false;
@@ -95,36 +97,7 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
-    float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
-
-    //mouse input to rotate the cam
-    if ((mouse_state & SDL_BUTTON_LEFT) || mouse_locked) //is left button pressed?
-    {
-        camera->rotate(mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
-        camera->rotate(mouse_delta.y * 0.005f, camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
-    }
-
-    //async input to move the camera around
-    if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-    if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
-    if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
-
-    //to navigate with the mouse fixed in the middle
-    if (mouse_locked) {
-        int center_x = (int) floor(window_width * 0.5f);
-        int center_y = (int) floor(window_height * 0.5f);
-        //center_x = center_y = 50;
-        SDL_WarpMouseInWindow(this->window, center_x, center_y); //put the mouse back in the middle of the screen
-        //SDL_WarpMouseGlobal(center_x, center_y); //put the mouse back in the middle of the screen
-
-        this->mouse_position.x = (float) center_x;
-        this->mouse_position.y = (float) center_y;
-    }
-
-
-    angle += (float) seconds_elapsed * 10.0f;
+    controller->update(seconds_elapsed);
 }
 
 //Keyboard event handler (sync input)
@@ -132,6 +105,13 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
     switch (event.keysym.sym) {
         case SDLK_ESCAPE:
             exit(0); //ESC key, kill the app
+
+        case SDLK_1:
+            controller->setMode(1);
+            break;
+        case SDLK_2:
+            controller->setMode(2);
+            break;
     }
 }
 

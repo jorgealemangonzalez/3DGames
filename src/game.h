@@ -7,11 +7,14 @@
 
 #include "includes.h"
 #include "camera.h"
+#include "controller.h"
 
 class Game
 {
 public:
 	static Game* instance;
+
+	Controller* controller;
 
 	//window
 	SDL_Window* window;
@@ -22,6 +25,7 @@ public:
     float time;
 	float elapsed_time;
 	int fps;
+	float angle;
 
 	//keyboard state
 	const Uint8* keystate;
