@@ -5,3 +5,15 @@ testSphereInFrustrum -> Se usa para comprobar si un objecto se va a ver , si no 
 Usar el spitfire low cuando haces render de un objeto desde lejos
 
 OBJ parser de asignatura de infografia
+
+
+-----
+
+
+Collisions:
+---
+
+static_colliders : NO se mueven, así que no hay colisiones entre ellas
+dynamic_colliders : Pueden colisionar entre ellas y con static_colliders
+
+virtual onCollision(EntityCollider*) : Depende de la entidad concreta (plane, island, missil, etc) se pueden programar distintas reacciones a la colisión
