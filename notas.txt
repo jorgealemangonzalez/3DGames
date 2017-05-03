@@ -7,7 +7,7 @@ Usar el spitfire low cuando haces render de un objeto desde lejos
 OBJ parser de asignatura de infografia
 
 
------
+---------
 
 
 Collisions:
@@ -17,3 +17,20 @@ static_colliders : NO se mueven, así que no hay colisiones entre ellas
 dynamic_colliders : Pueden colisionar entre ellas y con static_colliders
 
 virtual onCollision(EntityCollider*) : Depende de la entidad concreta (plane, island, missil, etc) se pueden programar distintas reacciones a la colisión
+
+
+---------
+
+POOL:
+
+Bullet bullet_pull[100]
+
+[ b | b | b | b | b |  |  |  |  |  | ... |  ]
+last = 4
+
+Cuando tiempo de vida (ttl) es menor o igual que 0, el slot está "libre"
+
+Para optimizar, se intentan poner todas las balas activas a la izquierda. Cuando se añade una se pone en el primer slot libre (indicador a allí). Cuando se quita una se pone en su lugar la bala de más a la derecha.
+
+update: iterar i=0 : 4
+render: render de varias de golpe (no una a una)
