@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000   Amir Geva
+ *   Copyright (C) 2000-2013   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,19 +17,26 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   photon@photoneffect.com
+ *   amirgeva@gmail.com
  *
- * Or visit the home page: http://photoneffect.com/coldet/
+ * Or visit the home page: http://sourceforge.net/projects/coldet/
  */
-#ifndef H_MATH3D
-#define H_MATH3D
+#ifndef H_cdmath3d
+#define H_cdmath3d
 
-#include <math.h>
+#include <cmath>
+#include <iostream>
+#include <fstream>
 
 struct Vector3D;
 struct Matrix3;
 struct Matrix3D;
-struct Plane; 
+struct Plane;
+
+/*
+template<class T>
+T sqr(const T& a) { return a*a; }
+*/
 
 inline float flabs(float f) { return (f>=0.0f?f:-f); }
 const float epsilon=1e-8f;
@@ -58,13 +65,21 @@ struct Vector3D
   Vector3D& operator/=(float s) { return *this *= (1.0f/s); }
   bool      operator==(const Vector3D& v) { return x==v.x && y==v.y && z==v.z; }
 
+  const float* get() const { return &x; }
+
   Vector3D operator-       () const { return Vector3D(-x,-y,-z); }
   float    SquareMagnitude () const { return x*x+y*y+z*z; }
   float    Magnitude       () const { return (float)sqrt(SquareMagnitude()); }
   Vector3D Normalized      () const { return (1.0f/Magnitude())*(*this); }
+  Vector3D Absolute        () const { return Vector3D(fabs(x),fabs(y),fabs(z)); }
   float    operator[] (int i) const { return ((float*)&x)[i]; }
   float&   operator[] (int i)       { return ((float*)&x)[i]; }
 };
+
+inline std::ostream& operator<< (std::ostream& os, const Vector3D& v)
+{
+  return os << v.x << ',' << v.y << ',' << v.z;
+}
 
 #define _11 sclr.s11
 #define _12 sclr.s12
@@ -230,14 +245,6 @@ inline Matrix3D operator*(const Matrix3D& m1, const Matrix3D& m2)
     m1._41*m2._14 + m1._42*m2._24 + m1._43*m2._34 + m1._44*m2._44);
 }
 
-inline void
-Matrix3D::rotate(const Vector3D& v)
-{
-   if (v.x!=0.0f) *this = PitchMatrix3D(v.x) * (*this);
-   if (v.y!=0.0f) *this = YawMatrix3D  (v.y) * (*this);
-   if (v.z!=0.0f) *this = RollMatrix3D (v.z) * (*this);
-}
-
 inline Matrix3D
 TranslateMatrix3D(const Vector3D& v)
 {
@@ -315,6 +322,15 @@ RollMatrix3D(const float theta)
    return RollMatrix3D((float) cos(theta), (float) sin(theta));
 }
 
+inline void
+Matrix3D::rotate(const Vector3D& v)
+{
+   if (v.x!=0.0f) *this = PitchMatrix3D(v.x) * (*this);
+   if (v.y!=0.0f) *this = YawMatrix3D  (v.y) * (*this);
+   if (v.z!=0.0f) *this = RollMatrix3D (v.z) * (*this);
+}
+
+
 
 template<class T>
 inline T Max(T a, T b)
@@ -345,4 +361,4 @@ inline T Min(T a, T b)
 #undef _43
 #undef _44
 
-#endif // H_MATH3D
+#endif // H_cdmath3d

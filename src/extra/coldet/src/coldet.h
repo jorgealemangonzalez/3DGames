@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000   Amir Geva
+ *   Copyright (C) 2000-2013   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,9 +17,9 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   photon@photoneffect.com
+ *   amirgeva@gmail.com
  *
- * Or visit the home page: http://photoneffect.com/coldet/
+ * Or visit the home page: http://sourceforge.net/projects/coldet/
  */
 /** \file coldet.h
     3D Collision Detection
@@ -57,14 +57,19 @@ public:
   virtual void addTriangle(float x1, float y1, float z1,
                            float x2, float y2, float z2,
                            float x3, float y3, float z3) = 0;
-  virtual void addTriangle(float v1[3], float v2[3], float v3[3]) = 0;
+  virtual void addTriangle(const float v1[3], const float v2[3], const float v3[3]) = 0;
 
   /** All triangles have been added, process model. */
   virtual void finalize() = 0;
 
+  /** Returns the bounding sphere radius
+      Note that this is not the optimal bounding sphere, but centered
+      in the origin of the coordinate system of the triangles */
+  virtual float getRadius() = 0;
+
   /** The the current affine matrix for the model.
       See transform.txt for format information */
-  virtual void setTransform(float m[16]) = 0;
+  virtual void setTransform(const float m[16]) = 0;
 
   /** Check for collision with another model.
       Do not mix model types here.
@@ -96,8 +101,8 @@ public:
       segmin and segmax you can define a line segment along the
       ray.
   */
-  virtual bool rayCollision(float origin[3],
-                            float direction[3],
+  virtual bool rayCollision(const float origin[3],
+                            const float direction[3],
                             bool closest=false,
                             float segmin=0.0f,
                             float segmax=3.4e+38F) = 0;
@@ -106,7 +111,7 @@ public:
       getCollidingTriangles() and getCollisionPoint() can be
       used to retrieve information about a collision.
   */
-  virtual bool sphereCollision(float origin[3],
+  virtual bool sphereCollision(const float origin[3],
                                float radius) = 0;
 
   /** Retrieve the pair of triangles that collided.
@@ -167,9 +172,9 @@ EXPORT CollisionModel3D* newCollisionModel3D(bool Static=false);
     origin, direction define the ray
     point will contain point of intersection, if one is found.
 */
-EXPORT bool SphereRayCollision(float center[3], float radius,
-                        float origin[3], float direction[3],
-                        float point[3]);
+EXPORT bool SphereRayCollision(const float* center, float radius,
+                               const float* origin, const float* direction,
+                               float* point);
 
 /** Checks for intersection between 2 spheres. */
 EXPORT bool SphereSphereCollision(float c1[3], float r1,

@@ -39,20 +39,24 @@ set(SOURCE_FILES
         src/texture.h
         src/utils.cpp
         src/utils.h src/entity.cpp src/entity.h src/game_entities.h src/game_entities.cpp src/level.cpp src/level.h src/controller.h src/controller.cpp
-        #src/extra/coldet/src/box.cpp
-        #src/extra/coldet/src/box.h
-        #src/extra/coldet/src/box_bld.cpp
-        #src/extra/coldet/src/coldet.cpp
-        #src/extra/coldet/src/coldet.h
-        #src/extra/coldet/src/coldet_bld.cpp
-        #src/extra/coldet/src/coldetimpl.h
-        #src/extra/coldet/src/math3d.cpp
-        #src/extra/coldet/src/math3d.h
-        #src/extra/coldet/src/mytritri.cpp
-        #src/extra/coldet/src/mytritri.h
-        #src/extra/coldet/src/sysdep.h
-        #src/extra/coldet/src/sysdep.cpp
-        #src/extra/coldet/src/tritri.c
+        src/extra/coldet/src/box.cpp
+        src/extra/coldet/src/box.h
+        src/extra/coldet/src/box_bld.cpp
+        src/extra/coldet/src/cdmath3d.cpp
+        src/extra/coldet/src/cdmath3d.h
+        src/extra/coldet/src/coldet.cpp
+        src/extra/coldet/src/coldet.h
+        src/extra/coldet/src/coldet_bld.cpp
+        src/extra/coldet/src/coldetimpl.h
+        src/extra/coldet/src/multi_impl.h
+        src/extra/coldet/src/multiobject.cpp
+        src/extra/coldet/src/multiobject.h
+        src/extra/coldet/src/mytritri.cpp
+        src/extra/coldet/src/mytritri.h
+        src/extra/coldet/src/sweep_prune.h
+        src/extra/coldet/src/sysdep.h
+        src/extra/coldet/src/sysdep.cpp
+        src/extra/coldet/src/tritri.c
         )
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
@@ -65,7 +69,3 @@ include_directories(${SDL2_INCLUDE_DIRS})
 set(SDL2_LIBRARIES "-L${SDL2_LIBDIR} -lSDL2")
 target_link_libraries(TJE_framework_2017 ${SDL2_LIBRARIES})
 target_link_libraries(TJE_framework_2017 ${OPENGL_LIBRARIES})
-
-set(COLDET_REL_PATH "src/extra/coldet/src/")
-get_filename_component(COLDET_ABS_PATH ${COLDET_REL_PATH} ABSOLUTE)
-link_directories(TJE_framework_2017 ${COLDET_ABS_PATH})

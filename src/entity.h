@@ -8,7 +8,7 @@
 #include "shader.h"
 #include "framework.h"
 #include "camera.h"
-#include "extra/claudette/src/collision_model_3d.h"
+#include "extra/coldet/src/coldet.h"
 
 class Entity{
 public:
@@ -60,7 +60,7 @@ public:
 
 class EntityCollider : public EntityMesh{
 protected:
-    Claudette::CollisionModel3D* collision_model;
+    CollisionModel3D* collision_model;
 
 public:
     EntityCollider();

@@ -21,21 +21,20 @@
  *
  * Or visit the home page: http://sourceforge.net/projects/coldet/
  */
-#include "sysdep.h"
+#include <memory>
+#include "multi_impl.h"
 
-#ifdef GCC
 
-#include <sys/time.h>
+__CD__BEGIN
 
-// Returns a time index in milliseconds
-unsigned get_tick_count()
+MultiObjectSystem* newSpheresSystem()
 {
-  static struct timezone tz={0,0};
-  static const double t1=1000.0;
-  static const double t2=0.001;
-  timeval t;
-  gettimeofday(&t,&tz);
-  return long((t.tv_sec&0x000FFFFF)*t1 + t.tv_usec*t2);
+  return new SphereSystem();
 }
 
-#endif
+MultiObjectSystem* newSweepPruneSystem(int max_objects)
+{
+  return new SweepPruneSystem(max_objects);
+}
+
+__CD__END

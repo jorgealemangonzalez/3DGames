@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000   Amir Geva
+ *   Copyright (C) 2000-2013   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,9 +17,9 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   photon@photoneffect.com
+ *   amirgeva@gmail.com
  *
- * Or visit the home page: http://photoneffect.com/coldet/
+ * Or visit the home page: http://sourceforge.net/projects/coldet/
  */
 #include "sysdep.h"
 #include "box.h"
@@ -131,7 +131,7 @@ int BoxTreeInnerNode::divide(int p_depth)
 #ifdef _DEBUG
   int fnum=0;
 #endif
-  for(unsigned i=0;i<bnum;i++)
+  for(int i=0;i<bnum;i++)
   {
     BoxedTriangle* bt=m_Boxes[i];
     if (bt->center[longest]<center[longest])
