@@ -10,11 +10,11 @@ CameraController::CameraController() {
 CameraController::~CameraController() {}
 
 void CameraController::setEntity(Entity* e) {
-    this->entity = e;
+    entity = e;
 }
 
 void CameraController::setMode(int m) {
-    this->mode = m;
+    mode = m;
 }
 
 void CameraController::update(double seconds_elapsed) {
@@ -32,7 +32,7 @@ void CameraController::update(double seconds_elapsed) {
         case 1:
         default:
         {
-            float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
+            double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
             //mouse input to rotate the cam
             if ((Game::instance->mouse_state & SDL_BUTTON_LEFT) || Game::instance->mouse_locked) //is left button pressed?
@@ -43,10 +43,10 @@ void CameraController::update(double seconds_elapsed) {
 
             //async input to move the camera around
             if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-            if (Game::instance->keystate[SDL_SCANCODE_W] || Game::instance->keystate[SDL_SCANCODE_UP]) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_S] || Game::instance->keystate[SDL_SCANCODE_DOWN]) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_A] || Game::instance->keystate[SDL_SCANCODE_LEFT]) Game::instance->camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_D] || Game::instance->keystate[SDL_SCANCODE_RIGHT]) Game::instance->camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
+            if (Game::instance->keystate[SDL_SCANCODE_UP]) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+            if (Game::instance->keystate[SDL_SCANCODE_DOWN]) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
+            if (Game::instance->keystate[SDL_SCANCODE_LEFT]) Game::instance->camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+            if (Game::instance->keystate[SDL_SCANCODE_RIGHT]) Game::instance->camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
 
             //to navigate with the mouse fixed in the middle
             if (Game::instance->mouse_locked) {
@@ -65,4 +65,32 @@ void CameraController::update(double seconds_elapsed) {
             break;
         }
     }
+}
+
+EntityController::EntityController() {
+
+}
+
+EntityController::~EntityController() {
+
+}
+
+void EntityController::setEntity(Entity *e) {
+    this->entity = e;
+}
+
+void EntityController::update(double seconds_elapsed) {
+    if(entity == NULL){
+        std::cout << "EntityController sin entidad asignada!\n";
+        return;
+    }
+
+    double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
+    Vector3 dPos(0,0,0);
+    if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
+    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
+    entity->model.traslate(dPos.x, dPos.y, dPos.z);
 }

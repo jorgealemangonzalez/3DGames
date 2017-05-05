@@ -56,20 +56,26 @@ bool Level::load(const char* filename, Entity* root){
         EntityMesh* e;
 
         if(entityClass == "collider"){
-            e = new EntityCollider();
+            EntityCollider* ec = new EntityCollider();
             std::string colliderType = t.getword();
             if(colliderType == "static"){
-                static_colliders.push_back((EntityCollider*)e);
+
+                static_colliders.push_back(ec);
                 printf("\n\nStatic\n\n");
             }else if(colliderType == "dynamic"){
-                dynamic_colliders.push_back((EntityCollider*)e);
+                dynamic_colliders.push_back(ec);
             }else{
                 std::cout<<"Error reading collider type in "<<name<<std::endl;
                 exit(0);
             }
+            e = ec;
         }else{
             std::cout<<"Error reading entity class type for "<<name<<std::endl;
             exit(0);
+        }
+        //hack cutre no te enfades:
+        if(name == "plane"){
+            player->setMyEntity(e);
         }
 
         t.seek("*mesh");

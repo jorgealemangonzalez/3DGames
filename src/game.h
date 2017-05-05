@@ -16,8 +16,6 @@ class Game
 public:
 	static Game* instance;
 
-	CameraController* controller;
-
 	Level* level;
 	Player* player;
 

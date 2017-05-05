@@ -20,5 +20,16 @@ public:
     void update( double seconds_elapsed );
 };
 
+class EntityController{
+public:
+    Entity* entity;
+
+    EntityController();
+    ~EntityController();
+
+    void setEntity(Entity* e);
+    virtual void update( double seconds_elapsed );
+};
+
 #endif //TJE_FRAMEWORK_2017_CONTROLLER_H
 

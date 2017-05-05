@@ -1,6 +1,3 @@
-//
-// Created by jorgealemangonzalez on 5/05/17.
-//
 
 #ifndef TJE_FRAMEWORK_2017_PLAYER_H
 #define TJE_FRAMEWORK_2017_PLAYER_H
@@ -13,6 +10,7 @@ public:
     Player();
     ~Player();
 
+    EntityController* entityController;
     CameraController* cameraController;
 
     void setMyEntity(Entity* entity);

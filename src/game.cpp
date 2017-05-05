@@ -104,10 +104,10 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             exit(0); //ESC key, kill the app
 
         case SDLK_1:
-            controller->setMode(1);
+            player->cameraController->setMode(1);
             break;
         case SDLK_2:
-            controller->setMode(2);
+            player->cameraController->setMode(2);
             break;
     }
 }
