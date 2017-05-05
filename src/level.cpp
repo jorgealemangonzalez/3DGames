@@ -10,7 +10,7 @@ Level::Level(){
 }
 
 void Level::createLevel1(Entity* root, Camera* camera){
-    EntityMesh *plane = new EntityMesh();
+    EntityCollider *plane = new EntityCollider();
     plane->mesh = "spitfire/spitfire.ASE";
     plane->texture = "spitfire/spitfire_color_spec.tga";
     plane->model.setTranslation(0.0, 500.0, 0.0);
@@ -18,7 +18,7 @@ void Level::createLevel1(Entity* root, Camera* camera){
 
     //Extra planes
     for (int i = 0; i < 100; i++) {
-        EntityMesh *p = new EntityMesh();
+        EntityCollider *p = new EntityCollider();
         p->mesh = "spitfire/spitfire.ASE";
         p->texture = "spitfire/spitfire_color_spec.tga";
         p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 10.0);
@@ -28,8 +28,9 @@ void Level::createLevel1(Entity* root, Camera* camera){
     //Camera beside plane
     plane->followWithCamera(camera);
     //hide the cursor
+    //TODO entitycollider call to methods
 
-    EntityMesh *island = new EntityMesh();
+    EntityCollider *island = new EntityCollider();
     island->mesh = "island/island.ASE";
     island->texture = "island/island_color_luz.tga";
     root->addChild(island);

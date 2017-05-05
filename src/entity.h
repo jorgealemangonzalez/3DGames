@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "framework.h"
 #include "camera.h"
+#include "extra/claudette/src/collision_model_3d.h"
 
 class Entity{
 public:
@@ -55,4 +56,19 @@ public:
 
     void followWithCamera(Camera* camera);
 };
+
+
+class EntityCollider : public EntityMesh{
+protected:
+    Claudette::CollisionModel3D* collision_model;
+
+public:
+    EntityCollider();
+    ~EntityCollider();
+
+    bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
+    void generateModel();
+    void setTransform();
+};
+
 #endif //TJE_FRAMEWORK_2017_ENTITY_H

@@ -57,6 +57,9 @@ EntityMesh::EntityMesh(){
     shaderDesc.vs = "texture.vs";
     shaderDesc.fs = "texture.fs";
 }
+EntityMesh::~EntityMesh(){
+
+}
 
 void EntityMesh::render(Camera* camera){
     Matrix44 globalModel = getGlobalModel();
@@ -86,3 +89,36 @@ void EntityMesh::followWithCamera(Camera* camera){
     Vector3 pos = getPosition();
     camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
 }
+
+EntityCollider::EntityCollider(){
+    collision_model = new Claudette::CollisionModel3D();
+    //collision_model = NULL;
+}
+
+EntityCollider::~EntityCollider(){
+
+}
+
+void EntityCollider::generateModel(){
+    std::vector<Vector3>& vertices = Mesh::Load(mesh)->vertices;
+    //collision_model->setTriangleNumber(vertices.size());
+    for(int i = 0 ; i < vertices.size()-2; ++i){
+        collision_model->addTriangle(vertices[i].x, vertices[i].y , vertices[i].z,
+                                     vertices[i+1].x, vertices[i+1].y , vertices[i+1].z,
+                                     vertices[i+2].x, vertices[i+2].y , vertices[i+2].z);
+    }
+    collision_model->finalize();
+}
+
+bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){
+    /*if(collision_model->rayCollision(origin.v,dir.v,true)== false){ //
+        return false;
+    }*/
+    //collision_model->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    return true;
+}
+
+void EntityCollider::setTransform(){
+    collision_model->setTransform(model.m); //Costoso !
+}
+
