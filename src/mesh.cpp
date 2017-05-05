@@ -13,6 +13,8 @@ Mesh::Mesh()
 	normals_vbo_id = 0;
 	uvs_vbo_id = 0;
 	colors_vbo_id = 0;
+
+    collision_model = NULL;
 }
 
 Mesh::Mesh( const Mesh& m )
@@ -510,4 +512,18 @@ void Mesh::debugNormalsAsColor() {
 	for(int i=0; i<normals.size(); i++){
 		colors[i] = Vector4(normals[i], 0.0);
 	}
+}
+
+CollisionModel3D* Mesh::getCollisionModel(){
+    if(collision_model)
+        return collision_model;
+    collision_model = newCollisionModel3D();
+    collision_model->setTriangleNumber(vertices.size());
+    for(int i = 0 ; i < vertices.size()-2; ++i){
+        collision_model->addTriangle(vertices[i].x, vertices[i].y , vertices[i].z,
+                                     vertices[i+1].x, vertices[i+1].y , vertices[i+1].z,
+                                     vertices[i+2].x, vertices[i+2].y , vertices[i+2].z);
+    }
+    collision_model->finalize();
+    return collision_model;
 }

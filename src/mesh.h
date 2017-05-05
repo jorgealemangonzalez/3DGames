@@ -8,11 +8,16 @@
 #include <vector>
 #include "framework.h"
 #include <map>
+#include "extra/coldet/src/coldet.h"
 
 class Shader;
 
 class Mesh
 {
+protected:
+
+	CollisionModel3D* collision_model;
+
 public:
 	typedef struct{
 		Vector3 min;		//Bounding Box info
@@ -56,6 +61,8 @@ public:
 
 	void debugVerticesAsColor();
 	void debugNormalsAsColor();
+
+	CollisionModel3D* getCollisionModel();
 
 };
 

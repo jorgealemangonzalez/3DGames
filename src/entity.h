@@ -59,15 +59,12 @@ public:
 
 
 class EntityCollider : public EntityMesh{
-protected:
-    CollisionModel3D* collision_model;
 
 public:
     EntityCollider();
     ~EntityCollider();
 
     bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
-    void generateModel();
     void setTransform();
 };
 

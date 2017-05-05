@@ -48,10 +48,10 @@ bool Level::load(const char* filename, Entity* root){
 
     for(int i = 0 ; i < num_entities ; i++){
         std::string name = t.getword();
-        EntityMesh* e = new EntityMesh();
+        EntityCollider* e = new EntityCollider();
         e->mesh = t.getword();
         e->texture = t.getword();
-
+        e->setTransform();
         s_templates[name] = e;
     }
 
@@ -74,5 +74,4 @@ bool Level::load(const char* filename, Entity* root){
         root->addChild(clone);
         
     }
-
 }
