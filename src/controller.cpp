@@ -25,7 +25,13 @@ void CameraController::update(double seconds_elapsed) {
                 Vector3 pos = entity->getPosition();
                 Vector3 dir = entity->getRotation();
 
-                Game::instance->camera->lookAt(pos - dir, pos, Vector3(0.f, 1.f, 0.f));
+
+
+                Game::instance->camera->lookAt(
+                        pos + Vector3(0.f, 10.f, 20.f),
+                        pos,
+                        Vector3(0.f, 1.f, 0.f)
+                );
             }
         }
             break;
@@ -88,10 +94,53 @@ void EntityController::update(double seconds_elapsed) {
     double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
     Vector3 dPos(0,0,0);
     if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_E]) dPos = dPos + (Vector3(0.0f, 1.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_Q]) dPos = dPos + (Vector3(0.0f, -1.0f, 0.0f) * speed);
     entity->model.traslate(dPos.x, dPos.y, dPos.z);
-    std::cout<<"Translation: "<<entity->model.getTranslationOnly().toString()<<"\n";
+    std::cout << entity->getPosition().toString() << "\n";
+}
+
+FighterController::FighterController() {
+    acc = 0;
+    vel = 0;
+    angX = 0;
+    angY = 0;
+}
+
+FighterController::~FighterController() {
+
+}
+
+void FighterController::update(double seconds_elapsed) {
+    if(entity == NULL){
+        std::cout << "EntityController sin entidad asignada!\n";
+        return;
+    }
+
+    float dTime = seconds_elapsed; //the dTime is defined by the seconds_elapsed so it goes constant
+
+    if (Game::instance->keystate[SDL_SCANCODE_W]) acc = acc + -1.0f;
+    if (Game::instance->keystate[SDL_SCANCODE_S]) acc = acc + +1.0f;
+    if (vel > 0.1) acc += -0.05f;
+    else if (vel < -0.1) acc += +0.05f;
+
+    acc *= 0.5;
+    vel = vel + acc * dTime * 20;
+    std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
+    entity->model.traslateLocal(0, 0, vel * dTime);
+
+    if (Game::instance->keystate[SDL_SCANCODE_A]) angX += -1.0f;
+    if (Game::instance->keystate[SDL_SCANCODE_D]) angX += +1.0f;
+    if (Game::instance->keystate[SDL_SCANCODE_E]) angY += -1.0f;
+    if (Game::instance->keystate[SDL_SCANCODE_Q]) angY += +1.0f;
+
+    angX = angX * dTime * 0.5;
+    angY = angY * dTime * 0.5;
+    std::cout << "angX: " << angX << "\tangY: " << angY << "\n\n";
+    entity->model.rotateLocal(angX, Vector3(0,1,0));
+    entity->model.rotateLocal(angY, Vector3(1,0,0));
 }

@@ -51,6 +51,7 @@ Matrix44 Entity::getGlobalModel() {
 }
 
 Vector3 Entity::getPosition() {
+    Matrix44 m = getGlobalModel();
     return getGlobalModel() * Vector3();
 }
 

@@ -62,7 +62,7 @@ public:
     void setMesh(std::string mesh);
 
     void render(Camera* camera);
-    void update(float elapsed_time);
+    virtual void update(float elapsed_time);
 
     void followWithCamera(Camera* camera);
 };

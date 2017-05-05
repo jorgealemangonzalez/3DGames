@@ -2,7 +2,7 @@
 #include "player.h"
 Player::Player() {
     cameraController = new CameraController();
-    entityController = new EntityController();
+    entityController = new FighterController();
 }
 
 Player::~Player() {
