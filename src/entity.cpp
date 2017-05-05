@@ -2,8 +2,20 @@
 #include "mesh.h"
 #include <algorithm>    // std::find
 
+unsigned int Entity::s_created = 0;
+std::map<unsigned int,Entity*> Entity::s_entities;
+
+Entity* Entity::getEntity(unsigned int uid) {
+    auto it = Entity::s_entities.find(uid);
+    if(it == Entity::s_entities.end())
+        return NULL;
+    return it->second;
+}
+
 Entity::Entity() {
     parent = NULL;
+    uid = Entity::s_created++;
+    Entity::s_entities[uid] = this;
 }
 
 Entity::~Entity() {
@@ -110,11 +122,6 @@ EntityCollider::EntityCollider(){
 
 EntityCollider::~EntityCollider(){
 
-}
-
-void EntityCollider::setMesh(std::string mesh) {
-    EntityMesh::setMesh(mesh);
-    setTransform();
 }
 
 bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){    //With ray

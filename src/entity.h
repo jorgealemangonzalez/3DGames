@@ -12,7 +12,12 @@
 
 class Entity{
 public:
-    unsigned short uid; //Up to 65k entities
+    static unsigned int s_created; //Up to 4M entities
+    static std::map<unsigned int,Entity*> s_entities;
+
+    static Entity* getEntity(unsigned int uid);
+
+    unsigned int uid;
 
     Entity();
     ~Entity();
@@ -68,8 +73,6 @@ class EntityCollider : public EntityMesh{
 public:
     EntityCollider();
     ~EntityCollider();
-
-    void setMesh(std::string mesh);
 
     bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
     bool testCollision(Vector3& origin, float radius, Vector3& collision_point);

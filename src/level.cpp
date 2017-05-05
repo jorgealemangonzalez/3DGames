@@ -127,6 +127,7 @@ void Level::update(float elapsed_time) {
     }
 
     for(int i = 0 ; i < dynamic_colliders.size(); ++i){
+        dynamic_colliders[i]->setTransform();
         Vector3 dinamic_pos = dynamic_colliders[i]->getGlobalModel().getTranslationOnly();
         for(int st = 0 ; st < static_colliders.size(); ++st){
             if(static_colliders[st]->testCollision(dinamic_pos,20.0f, collision)) {
