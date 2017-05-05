@@ -15,13 +15,12 @@ Entity *root = NULL;
 RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
-Level* level1;
 
 Game::Game(SDL_Window *window) {
     this->window = window;
     instance = this;
 
-    controller = new Controller();
+    controller = new CameraController();
 
     // initialize attributes
     // Warning: DO NOT CREATE STUFF HERE, USE THE INIT
@@ -94,7 +93,6 @@ void Game::render(void) {
 
 void Game::update(double seconds_elapsed) {
     controller->update(seconds_elapsed);
-    Vector3 looking = camera->center - camera->eye;
     level->update(seconds_elapsed);
 
 }

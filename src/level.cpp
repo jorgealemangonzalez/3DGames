@@ -88,7 +88,7 @@ void Level::update(float elapsed_time) {
 
     Vector3 collision;
     island->setTransform();
-    if(island->testCollision(pos, dir, 1000000, collision)){
+    if(island->testCollision(pos, dir, 1000000, collision) && false){
         EntityMesh* em = new EntityMesh();
         em->mesh = "sphere.ASE";
         em->model.setTranslation(collision.x, collision.y, collision.z);

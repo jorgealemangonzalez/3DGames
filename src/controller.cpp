@@ -2,27 +2,30 @@
 #include "controller.h"
 #include "game.h"
 
-Controller::Controller() {
+CameraController::CameraController() {
     mode = 1;
     entity = NULL;
 }
 
-Controller::~Controller() {}
+CameraController::~CameraController() {}
 
-void Controller::setEntity(Entity* e) {
+void CameraController::setEntity(Entity* e) {
     this->entity = e;
 }
 
-void Controller::setMode(int m) {
+void CameraController::setMode(int m) {
     this->mode = m;
 }
 
-void Controller::update(double seconds_elapsed) {
+void CameraController::update(double seconds_elapsed) {
     switch(mode){
         case 2:
         {
             if(entity != NULL){
-                //do stuff
+                Vector3 pos = entity->getPosition();
+                Vector3 dir = entity->getRotation();
+
+                Game::instance->camera->lookAt(pos - dir, pos, Vector3(0.f, 1.f, 0.f));
             }
         }
             break;

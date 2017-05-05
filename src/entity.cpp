@@ -42,6 +42,10 @@ Vector3 Entity::getPosition() {
     return getGlobalModel() * Vector3();
 }
 
+Vector3 Entity::getRotation() {
+    return getGlobalModel().getRotationOnly() * Vector3();
+}
+
 void Entity::render(Camera* camera){
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);

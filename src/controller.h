@@ -5,14 +5,14 @@
 #include "includes.h"
 #include "entity.h"
 
-class Controller{
+class CameraController{
 public:
     int mode;
     Entity* entity;
 
     //Methods
-    Controller();
-    ~Controller();
+    CameraController();
+    ~CameraController();
 
     void setEntity(Entity* e);
     void setMode(int m);
@@ -21,3 +21,4 @@ public:
 };
 
 #endif //TJE_FRAMEWORK_2017_CONTROLLER_H
+
