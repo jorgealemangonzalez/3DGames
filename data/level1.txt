@@ -1,7 +1,20 @@
-*entities 1
-    island island/island.ASE island/island_color_luz.tga
+*entities 2
+    island
+        *entity collider static
+        *mesh island/island.ASE
+        *texture island/island_color_luz.tga
+    plane
+        *entity collider dynamic
+        *mesh spitfire/spitfire.ASE
+        *texture spitfire/spitfire_color_spec.tga
 
-*scene level1 3
-    *entity island 0 0 0
-    *entity island 14000 0 14000
-    *entity island 0 0 14000
+*scene level1 4
+    *entity island
+        *position 0 0 0
+    *entity island
+        *position 14000 0 14000
+    *entity island
+        *position 0 0 14000
+    *entity plane
+        *position 0 900 28
+

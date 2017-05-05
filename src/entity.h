@@ -41,17 +41,20 @@ public:
 };
 
 class EntityMesh : public Entity{
+protected:
+    std::string mesh;
 public:
     EntityMesh();
     ~EntityMesh();
-
-    std::string mesh;
     std::string texture;
     struct{
         std::string vs;
         std::string fs;
     } shaderDesc;
     Vector3 color;
+
+    std::string getMesh();
+    void setMesh(std::string mesh);
 
     void render(Camera* camera);
     void update(float elapsed_time);
@@ -66,8 +69,12 @@ public:
     EntityCollider();
     ~EntityCollider();
 
+    void setMesh(std::string mesh);
+
     bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
+    bool testCollision(Vector3& origin, float radius, Vector3& collision_point);
     void setTransform();
+    void onCollision(EntityCollider* withEntity);
 };
 
 #endif //TJE_FRAMEWORK_2017_ENTITY_H

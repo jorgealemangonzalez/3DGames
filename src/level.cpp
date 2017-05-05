@@ -13,7 +13,7 @@ Level::Level(){
 
 void Level::createLevel1(Entity* root, Camera* camera){
     EntityCollider *plane = new EntityCollider();
-    plane->mesh = "spitfire/spitfire.ASE";
+    plane->setMesh("spitfire/spitfire.ASE");
     plane->texture = "spitfire/spitfire_color_spec.tga";
     plane->model.setTranslation(0.0, 500.0, 0.0);
     root->addChild(plane);
@@ -21,7 +21,7 @@ void Level::createLevel1(Entity* root, Camera* camera){
     //Extra planes
     for (int i = 0; i < 100; i++) {
         EntityCollider *p = new EntityCollider();
-        p->mesh = "spitfire/spitfire.ASE";
+        p->setMesh("spitfire/spitfire.ASE");
         p->texture = "spitfire/spitfire_color_spec.tga";
         p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 10.0);
         root->addChild(p);
@@ -33,7 +33,7 @@ void Level::createLevel1(Entity* root, Camera* camera){
     //TODO entitycollider call to methods
 
     EntityCollider *island = new EntityCollider();
-    island->mesh = "island/island.ASE";
+    island->setMesh("island/island.ASE");
     island->texture = "island/island_color_luz.tga";
     root->addChild(island);
 }
@@ -51,10 +51,33 @@ bool Level::load(const char* filename, Entity* root){
 
     for(int i = 0 ; i < num_entities ; i++){
         std::string name = t.getword();
-        EntityCollider* e = new EntityCollider();
-        e->mesh = t.getword();
-        e->texture = t.getword();
-        e->setTransform();
+        t.seek("*entity");
+        std::string entityClass = t.getword();
+        EntityMesh* e;
+
+        if(entityClass == "collider"){
+            e = new EntityCollider();
+            std::string colliderType = t.getword();
+            if(colliderType == "static"){
+                static_colliders.push_back((EntityCollider*)e);
+                printf("\n\nStatic\n\n");
+            }else if(colliderType == "dynamic"){
+                dynamic_colliders.push_back((EntityCollider*)e);
+            }else{
+                std::cout<<"Error reading collider type in "<<name<<std::endl;
+                exit(0);
+            }
+        }else{
+            std::cout<<"Error reading entity class type for "<<name<<std::endl;
+            exit(0);
+        }
+
+        t.seek("*mesh");
+        e->setMesh(t.getword());
+        t.seek("*texture");
+        char* texture = t.getword();
+        if(strcmp(texture,"no") != 0)   //Si tiene textura
+            e->texture = texture;
         s_templates[name] = e;
     }
 
@@ -73,9 +96,10 @@ bool Level::load(const char* filename, Entity* root){
 
         EntityMesh* clone = new EntityMesh();
         *clone = *e;//Copiar todas las variables ( Si hay punteros la has cagado porque se copiara la referencia
+        t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         root->addChild(clone);
-        
+        printf("Entity loaded: %s",&entity_name);
     }
 }
 
@@ -87,13 +111,25 @@ void Level::update(float elapsed_time) {
     EntityCollider* island = (EntityCollider*)s_templates["island"];
 
     Vector3 collision;
-    island->setTransform();
     if(island->testCollision(pos, dir, 1000000, collision) && false){
         EntityMesh* em = new EntityMesh();
-        em->mesh = "sphere.ASE";
+        em->setMesh("sphere.ASE");
         em->model.setTranslation(collision.x, collision.y, collision.z);
         em->shaderDesc.fs = "color.fs";
         em->shaderDesc.vs = "color.vs";
         root->addChild(em);
+    }
+
+    for(int i = 0 ; i < dynamic_colliders.size(); ++i){
+        Vector3 dinamic_pos = dynamic_colliders[i]->getGlobalModel().getTranslationOnly();
+        for(int st = 0 ; st < static_colliders.size(); ++st){
+            if(static_colliders[st]->testCollision(dinamic_pos,20.0f, collision)) {
+                dynamic_colliders[i]->onCollision(static_colliders[st]);
+            }
+        }
+        for(int j = i+1 ; j < dynamic_colliders.size(); ++j){
+            if(dynamic_colliders[j]->testCollision(dinamic_pos,20.0f, collision))
+                dynamic_colliders[i]->onCollision(dynamic_colliders[j]);
+        }
     }
 }

@@ -11,12 +11,13 @@
 
 class Level {
 public:
+    Level();
+
     Entity* root;
     Player* player;
-
     std::string name;
-
-    Level();
+    std::vector<EntityCollider*> static_colliders;   // NO se mueven, así que no hay colisiones entre ellas
+    std::vector<EntityCollider*> dynamic_colliders;  // Pueden colisionar entre ellas y con static_colliders
     std::map<std::string,EntityMesh*> s_templates;
 
     void createLevel1(Entity* root, Camera* camera);

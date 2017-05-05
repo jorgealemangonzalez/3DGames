@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cmath> //for sqrt (square root) function
 #include <math.h> //atan2
+#include <sstream>
 
 #ifndef M_PI_2
     #define M_PI_2 1.57079632679489661923
@@ -88,6 +89,12 @@ void Vector3::random(Vector3 range)
 	x = (rand() / (float)RAND_MAX) * 2.0f * range.x - range.x; //value between -range and range
 	y = (rand() / (float)RAND_MAX) * 2.0f * range.y - range.y; //value between -range and range
 	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
+}
+
+std::string Vector3::toString() {
+	std::stringstream ss;
+	ss <<"x: "<< x <<" y: "<< y << " z: "<<z;
+	return ss.str();
 }
 //*********************************
 Matrix44::Matrix44()

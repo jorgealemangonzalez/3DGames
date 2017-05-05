@@ -48,7 +48,7 @@ void Game::init(void) {
 
     //create our camera
     camera = new Camera();
-    camera->lookAt(Vector3(0.f, 25.f, 25.f), Vector3(0.f, 0.f, 0.f),
+    camera->lookAt(Vector3(0.f, 900.f, 25.f), Vector3(250.f, 900.f, 0.f),
                    Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
                            100000000.f); //set the projection, we want to be perspectives
@@ -64,6 +64,7 @@ void Game::init(void) {
 
 //what to do when the image has to be draw
 void Game::render(void) {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //set the clear color (the background color)
@@ -77,6 +78,7 @@ void Game::render(void) {
     //Draw out world
     drawGrid(500); //background grid
 
+    drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
     root->render(camera);
 
     glDisable(GL_BLEND);

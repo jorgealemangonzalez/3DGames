@@ -55,7 +55,7 @@ void Entity::render(Camera* camera){
 void Entity::update(float elapsed_time){
 }
 
-EntityMesh::EntityMesh(){
+EntityMesh::EntityMesh():Entity(){
     mesh = "";
     texture = "";
     shaderDesc.vs = "texture.vs";
@@ -63,6 +63,14 @@ EntityMesh::EntityMesh(){
 }
 EntityMesh::~EntityMesh(){
 
+}
+
+std::string EntityMesh::getMesh() {
+    return mesh;
+}
+
+void EntityMesh::setMesh(std::string mesh) {
+    this->mesh = mesh;
 }
 
 void EntityMesh::render(Camera* camera){
@@ -80,6 +88,7 @@ void EntityMesh::render(Camera* camera){
         shader->disable();
     }
 
+    // Entity::render(camera); //Se podra hacer asi?
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
@@ -103,7 +112,12 @@ EntityCollider::~EntityCollider(){
 
 }
 
-bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){
+void EntityCollider::setMesh(std::string mesh) {
+    EntityMesh::setMesh(mesh);
+    setTransform();
+}
+
+bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){    //With ray
     Mesh* m = Mesh::Load(mesh);
     if(m->getCollisionModel()->rayCollision(origin.v,dir.v,true)== false){ //
         return false;
@@ -112,7 +126,21 @@ bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist
     return true;
 }
 
+bool EntityCollider::testCollision(Vector3& origin, float radius, Vector3& collision_point){    //With Sphere
+    Mesh* m = Mesh::Load(mesh);
+    if(m->getCollisionModel()->sphereCollision(origin.v,radius) == false){ //
+        return false;
+    }
+    m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    return true;
+}
+
+
 void EntityCollider::setTransform(){
     Mesh::Load(mesh)->getCollisionModel()->setTransform(model.m); //Costoso !
+}
+
+void EntityCollider::onCollision(EntityCollider *withEntity) {
+    std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
 }
 
