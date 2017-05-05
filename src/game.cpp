@@ -57,15 +57,11 @@ void Game::init(void) {
                            100000000.f); //set the projection, we want to be perspectives
 
     root = new Entity();
-    ///*
+
     std::cout<<"Load level1"<<std::endl;
-    level1 = new Level();
-    level1->load("../data/level1.txt",root);
+    level = new Level();
+    level->load("../data/level1.txt",root);
     std::cout<<"Init finish";
-    //*/
-    //level1 = new Level();
-    //level1->createLevel1(root,camera);
-    SDL_ShowCursor(!mouse_locked); //hide or show the mouse
 }
 
 //what to do when the image has to be draw
@@ -99,6 +95,7 @@ void Game::render(void) {
 void Game::update(double seconds_elapsed) {
     controller->update(seconds_elapsed);
     Vector3 looking = camera->center - camera->eye;
+    level->update(seconds_elapsed);
 
 }
 

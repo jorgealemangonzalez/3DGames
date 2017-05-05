@@ -16,6 +16,7 @@ long getTime();
 //generic purposes fuctions
 void drawGrid(float dist);
 bool drawText(float x, float y, std::string text, Vector3 c, float scale = 1);
+void drawSphere(Vector3 pos, float r);
 
 //check opengl errors
 bool checkGLErrors();

@@ -10,6 +10,8 @@
 
 class Level {
 public:
+    Entity* root;
+
     std::string name;
 
     Level();
@@ -18,6 +20,9 @@ public:
     void createLevel1(Entity* root, Camera* camera);
 
     bool load(const char* filename, Entity* root);
+
+    void render();
+    void update(float elapsed_time);
 };
 
 

@@ -70,7 +70,8 @@ void EntityMesh::render(Camera* camera){
         shader->enable();
         shader->setMatrix44("u_model", model);
         shader->setMatrix44("u_mvp", mvp);
-        shader->setTexture("u_texture", Texture::Load(texture));
+        if(texture != "")
+            shader->setTexture("u_texture", Texture::Load(texture));
         m->render(GL_TRIANGLES, shader);
         shader->disable();
     }

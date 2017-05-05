@@ -8,6 +8,7 @@
 #include "includes.h"
 #include "camera.h"
 #include "controller.h"
+#include "level.h"
 
 class Game
 {
@@ -15,6 +16,8 @@ public:
 	static Game* instance;
 
 	Controller* controller;
+
+	Level* level;
 
 	//window
 	SDL_Window* window;

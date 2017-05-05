@@ -4,6 +4,8 @@
 
 #include "level.h"
 #include "extra/textparser.h"
+#include "game.h"
+#include "entity.h"
 
 Level::Level(){
 
@@ -37,6 +39,7 @@ void Level::createLevel1(Entity* root, Camera* camera){
 }
 
 bool Level::load(const char* filename, Entity* root){
+    this->root = root;
     TextParser t;
     if(!t.create(filename)){
         std::cout<<"File not found"<<std::endl;
@@ -73,5 +76,24 @@ bool Level::load(const char* filename, Entity* root){
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         root->addChild(clone);
         
+    }
+}
+
+void Level::update(float elapsed_time) {
+    Camera* camera = Game::instance->camera;
+    Vector3 dir = camera->center - camera->eye;
+    Vector3 pos = camera->eye;
+
+    EntityCollider* island = (EntityCollider*)s_templates["island"];
+
+    Vector3 collision;
+    island->setTransform();
+    if(island->testCollision(pos, dir, 1000000, collision)){
+        EntityMesh* em = new EntityMesh();
+        em->mesh = "sphere.ASE";
+        em->model.setTranslation(collision.x, collision.y, collision.z);
+        em->shaderDesc.fs = "color.fs";
+        em->shaderDesc.vs = "color.vs";
+        root->addChild(em);
     }
 }
