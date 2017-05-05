@@ -68,7 +68,7 @@ void CameraController::update(double seconds_elapsed) {
 }
 
 EntityController::EntityController() {
-
+    entity = NULL;
 }
 
 EntityController::~EntityController() {
@@ -88,9 +88,10 @@ void EntityController::update(double seconds_elapsed) {
     double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
     Vector3 dPos(0,0,0);
     if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
+    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
     entity->model.traslate(dPos.x, dPos.y, dPos.z);
+    std::cout<<"Translation: "<<entity->model.getTranslationOnly().toString()<<"\n";
 }

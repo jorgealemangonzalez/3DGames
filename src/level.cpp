@@ -73,10 +73,6 @@ bool Level::load(const char* filename, Entity* root){
             std::cout<<"Error reading entity class type for "<<name<<std::endl;
             exit(0);
         }
-        //hack cutre no te enfades:
-        if(name == "plane"){
-            player->setMyEntity(e);
-        }
 
         t.seek("*mesh");
         e->setMesh(t.getword());
@@ -105,6 +101,11 @@ bool Level::load(const char* filename, Entity* root){
         t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         root->addChild(clone);
+        //hack cutre no te enfades:
+        if(entity_name == "plane"){
+            player->setMyEntity(clone);
+        }
+        //fin hack
         printf("Entity loaded: %s",&entity_name);
     }
 }

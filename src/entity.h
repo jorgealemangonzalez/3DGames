@@ -45,7 +45,7 @@ public:
     virtual void update(float elapsed_time);
 };
 
-class EntityMesh : public Entity{
+class EntityMesh : public Entity{   //ATENCION NO PONER PUNTEROS EN ESTA CLASE
 protected:
     std::string mesh;
 public:
@@ -68,7 +68,7 @@ public:
 };
 
 
-class EntityCollider : public EntityMesh{
+class EntityCollider : public EntityMesh{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE
 
 public:
     EntityCollider();
