@@ -7,10 +7,12 @@
 
 #include <map>
 #include "entity.h"
+#include "player.h"
 
 class Level {
 public:
     Entity* root;
+    Player* player;
 
     std::string name;
 

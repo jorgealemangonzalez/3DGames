@@ -20,8 +20,6 @@ Game::Game(SDL_Window *window) {
     this->window = window;
     instance = this;
 
-    controller = new CameraController();
-
     // initialize attributes
     // Warning: DO NOT CREATE STUFF HERE, USE THE INIT
     // things create here cannot access opengl
@@ -56,9 +54,10 @@ void Game::init(void) {
                            100000000.f); //set the projection, we want to be perspectives
 
     root = new Entity();
-
+    player = new Player();
     std::cout<<"Load level1"<<std::endl;
     level = new Level();
+    level->player = player;
     level->load("../data/level1.txt",root);
     std::cout<<"Init finish";
 }
@@ -92,9 +91,8 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
-    controller->update(seconds_elapsed);
+    player->update(seconds_elapsed);
     level->update(seconds_elapsed);
-
 }
 
 //Keyboard event handler (sync input)

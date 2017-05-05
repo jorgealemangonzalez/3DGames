@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "controller.h"
 #include "level.h"
+#include "player.h"
 
 class Game
 {
@@ -18,6 +19,7 @@ public:
 	CameraController* controller;
 
 	Level* level;
+	Player* player;
 
 	//window
 	SDL_Window* window;

@@ -57,7 +57,7 @@ set(SOURCE_FILES
         src/extra/coldet/src/sysdep.h
         src/extra/coldet/src/sysdep.cpp
         src/extra/coldet/src/tritri.c
-        )
+        src/player.cpp src/player.h)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
 find_package(OpenGL REQUIRED)

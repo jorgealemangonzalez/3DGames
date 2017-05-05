@@ -12,6 +12,8 @@
 
 class Entity{
 public:
+    unsigned short uid; //Up to 65k entities
+
     Entity();
     ~Entity();
 
