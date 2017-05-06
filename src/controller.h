@@ -5,21 +5,6 @@
 #include "includes.h"
 #include "entity.h"
 
-class CameraController{
-public:
-    int mode;
-    Entity* entity;
-
-    //Methods
-    CameraController();
-    ~CameraController();
-
-    void setEntity(Entity* e);
-    void setMode(int m);
-
-    void update( double seconds_elapsed );
-};
-
 class EntityController{
 public:
     Entity* entity;
@@ -29,6 +14,19 @@ public:
 
     void setEntity(Entity* e);
     virtual void update( double seconds_elapsed );
+};
+
+class CameraController: public EntityController{
+public:
+    int mode;
+
+    //Methods
+    CameraController();
+    ~CameraController();
+
+    void setMode(int m);
+
+    void update( double seconds_elapsed );
 };
 
 class FighterController: public EntityController{

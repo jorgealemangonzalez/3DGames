@@ -9,10 +9,6 @@ CameraController::CameraController() {
 
 CameraController::~CameraController() {}
 
-void CameraController::setEntity(Entity* e) {
-    entity = e;
-}
-
 void CameraController::setMode(int m) {
     mode = m;
 }
@@ -127,6 +123,7 @@ void FighterController::update(double seconds_elapsed) {
     if (Game::instance->keystate[SDL_SCANCODE_S]) acc = acc + +1.0f;
     if (vel > 0.1) acc += -0.05f;
     else if (vel < -0.1) acc += +0.05f;
+    else vel = 0.0f;
 
     acc *= 0.5;
     vel = vel + acc * dTime * 20;
