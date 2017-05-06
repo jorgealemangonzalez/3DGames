@@ -12,19 +12,21 @@ public:
     EntityController();
     ~EntityController();
 
-    void setEntity(Entity* e);
+    virtual void setEntity(Entity* e);
     virtual void update( double seconds_elapsed );
 };
 
 class CameraController: public EntityController{
 public:
     int mode;
-
+    Vector3 entityPreviusPos;
     //Methods
     CameraController();
     ~CameraController();
 
+
     void setMode(int m);
+    void setEntity(Entity* e);
 
     void update( double seconds_elapsed );
 };

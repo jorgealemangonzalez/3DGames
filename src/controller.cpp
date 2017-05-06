@@ -13,25 +13,29 @@ void CameraController::setMode(int m) {
     mode = m;
 }
 
+void CameraController::setEntity(Entity *e) {
+    EntityController::setEntity(e);
+    entityPreviusPos = e->getGlobalModel().getTranslationOnly();
+}
+
 void CameraController::update(double seconds_elapsed) {
     switch(mode){
         case 2:
         {
             if(entity != NULL){
                 Vector3 pos = entity->getPosition();
-                Vector3 dir = entity->getRotation();
-
+                Vector3 dir = (pos - entityPreviusPos).normalize();
 
 
                 Game::instance->camera->lookAt(
-                        pos + Vector3(0.f, 10.f, 20.f),
+                        pos + Vector3(20*(-dir.x), 20*(-dir.y)+10, 20*(-dir.z)),
                         pos,
                         Vector3(0.f, 1.f, 0.f)
                 );
+                entityPreviusPos = pos; //TODO hacer interpolación para que poco a poco se vaya poniendo detras
             }
-        }
             break;
-        case 1:
+        }
         default:
         {
             double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
