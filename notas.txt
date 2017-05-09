@@ -39,3 +39,8 @@ render: render de varias de golpe (no una a una)
 
 Idea camara: no sería descabellado que la posición y enfoque de la camara dependiese de una model que se multiplicase
 por la de la entidad. Así se obtendría la misma posición relativa respecto la entidad todo el tiempo.
+
+
+---------------
+Entrega:
+grafo de escena y player controller

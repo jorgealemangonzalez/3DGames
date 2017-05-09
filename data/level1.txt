@@ -8,7 +8,7 @@
         *mesh spitfire/spitfire.ASE
         *texture spitfire/spitfire_color_spec.tga
 
-*scene level1 4
+*scene level1 7
     *entity island
         *position 0 0 0
     *entity island
@@ -17,4 +17,10 @@
         *position 0 0 14000
     *entity plane
         *position 0 900 28
+    *entity plane
+        *position 0 900 38
+    *entity plane
+        *position 0 900 48
+    *entity plane
+        *position 0 910 28
 

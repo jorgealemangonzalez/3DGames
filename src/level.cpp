@@ -6,17 +6,18 @@
 #include "extra/textparser.h"
 #include "game.h"
 #include "entity.h"
+#include "scene.h"
 
 Level::Level(){
 
 }
 
-void Level::createLevel1(Entity* root, Camera* camera){
+void Level::createLevel1(Camera* camera){
     EntityCollider *plane = new EntityCollider();
     plane->setMesh("spitfire/spitfire.ASE");
     plane->texture = "spitfire/spitfire_color_spec.tga";
     plane->model.setTranslation(0.0, 500.0, 0.0);
-    root->addChild(plane);
+    Scene::addToRoot(plane);
 
     //Extra planes
     for (int i = 0; i < 100; i++) {
@@ -24,7 +25,7 @@ void Level::createLevel1(Entity* root, Camera* camera){
         p->setMesh("spitfire/spitfire.ASE");
         p->texture = "spitfire/spitfire_color_spec.tga";
         p->model.setTranslation(10.0 * (i%10), 500.0 + (i / 10) * 10.0, 10.0);
-        root->addChild(p);
+        Scene::addToRoot(p);
     }
 
     //Camera beside plane
@@ -35,11 +36,10 @@ void Level::createLevel1(Entity* root, Camera* camera){
     EntityCollider *island = new EntityCollider();
     island->setMesh("island/island.ASE");
     island->texture = "island/island_color_luz.tga";
-    root->addChild(island);
+    Scene::addToRoot(island);
 }
 
-bool Level::load(const char* filename, Entity* root){
-    this->root = root;
+bool Level::load(const char* filename){
     TextParser t;
     if(!t.create(filename)){
         std::cout<<"File not found"<<std::endl;
@@ -100,7 +100,7 @@ bool Level::load(const char* filename, Entity* root){
         *clone = *e;//Copiar todas las variables ( Si hay punteros la has cagado porque se copiara la referencia
         t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
-        root->addChild(clone);
+        Scene::addToRoot(clone);
         //hack cutre no te enfades:
         if(entity_name == "plane"){
             player->setMyEntity(clone);

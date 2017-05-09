@@ -20,9 +20,9 @@ public:
     std::vector<EntityCollider*> dynamic_colliders;  // Pueden colisionar entre ellas y con static_colliders
     std::map<std::string,EntityMesh*> s_templates;
 
-    void createLevel1(Entity* root, Camera* camera);
+    void createLevel1(Camera* camera);
 
-    bool load(const char* filename, Entity* root);
+    bool load(const char* filename);
 
     void render();
     void update(float elapsed_time);

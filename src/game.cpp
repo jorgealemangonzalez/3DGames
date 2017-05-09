@@ -8,9 +8,9 @@
 #include "level.h"
 
 #include <cmath>
+#include "scene.h"
 
 //some globals
-Entity *root = NULL;
 
 RenderToTexture *rt = NULL;
 
@@ -53,12 +53,11 @@ void Game::init(void) {
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
                            100000000.f); //set the projection, we want to be perspectives
 
-    root = new Entity();
     player = new Player();
     std::cout<<"Load level1"<<std::endl;
     level = new Level();
     level->player = player;
-    level->load("../data/level1.txt",root);
+    level->load("../data/level1.txt");
     std::cout<<"Init finish";
 }
 
@@ -67,6 +66,7 @@ void Game::render(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    //set the clear color (the background color)
     //set the clear color (the background color)
     glClearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -79,7 +79,7 @@ void Game::render(void) {
     drawGrid(500); //background grid
 
     drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
-    root->render(camera);
+    Scene::getScene()->render(camera);
 
     glDisable(GL_BLEND);
 

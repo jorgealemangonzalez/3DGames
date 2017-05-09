@@ -32,7 +32,7 @@ void CameraController::update(double seconds_elapsed) {
                         pos,
                         Vector3(0.f, 1.f, 0.f)
                 );
-                entityPreviusPos = pos; //TODO hacer interpolación para que poco a poco se vaya poniendo detras
+                entityPreviusPos = pos*0.05f + entityPreviusPos*0.95f; //TODO hacer interpolación para que poco a poco se vaya poniendo detras
             }
             break;
         }
