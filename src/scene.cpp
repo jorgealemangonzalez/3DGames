@@ -1,12 +1,11 @@
 #include "scene.h"
-#include "game.h"
 
 Scene* Scene::scene = NULL;
 Scene::Scene(){
     root = new Entity();
 }
 Scene::~Scene(){
-    //TODO ¿Liberar todos los punteros de entity
+
 }
 
 Scene* Scene::getScene() {

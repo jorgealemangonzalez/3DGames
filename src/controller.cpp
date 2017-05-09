@@ -120,7 +120,11 @@ void FighterController::update(double seconds_elapsed) {
         std::cout << "EntityController sin entidad asignada!\n";
         return;
     }
-
+    //Controller mas realista
+    //    entity->model.traslate(velocity.x*seconds_elapsed,velocity.y*seconds_elapsed,velocity.z*seconds_elapsed);
+    //    velocity = velocity + entity->model.rotateVector(Vector3(0.0,0.0,speed*seconds_elapsed));
+    //    velocity = velocity * 0.99; //Friccion
+    //
     float dTime = seconds_elapsed; //the dTime is defined by the seconds_elapsed so it goes constant
 
     if (Game::instance->keystate[SDL_SCANCODE_W]) acc = acc + -1.0f;

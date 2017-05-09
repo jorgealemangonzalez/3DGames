@@ -1,13 +1,6 @@
 #include "game.h"
 #include "utils.h"
-#include "mesh.h"
-#include "texture.h"
 #include "rendertotexture.h"
-#include "shader.h"
-#include "entity.h"
-#include "level.h"
-
-#include <cmath>
 #include "scene.h"
 
 //some globals
