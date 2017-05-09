@@ -1,3 +1,7 @@
+*background
+    *mesh cubemaps/cubemap/cubemap.ASE
+    *texture cubemaps/cubemap/cielo.tga
+
 *entities 2
     island
         *entity collider static

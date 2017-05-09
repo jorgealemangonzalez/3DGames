@@ -3,6 +3,7 @@
 Scene* Scene::scene = NULL;
 Scene::Scene(){
     root = new Entity();
+    background = NULL;
 }
 Scene::~Scene(){
 
@@ -19,8 +20,19 @@ void Scene::addToRoot(Entity *e) {
     Scene::getScene()->root->addChild(e);
 }
 
+void Scene::addBackground(Entity *e) {
+    Scene::getScene()->background = e;
+}
+
 void Scene::render(Camera* camera) {
-    Scene::getScene()->root->render(camera);
+    if(background != NULL){
+        glDisable(GL_DEPTH_TEST);
+        Vector3 cubemapcenter = camera->eye;
+        background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
+        background->render(camera);
+        glEnable(GL_DEPTH_TEST);
+    }
+    root->render(camera);
 }
 
 void Scene::update(float elapsed_time) {

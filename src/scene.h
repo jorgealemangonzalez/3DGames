@@ -9,10 +9,12 @@ class Scene {
     ~Scene();
 public:
     Entity* root;
+    Entity* background;
     static Scene* getScene();
-    static void addToRoot(Entity* e);
-    static void render(Camera* camera);
-    static void update(float elapsed_time);
+    void addToRoot(Entity* e);
+    void addBackground(Entity* e);
+    void render(Camera* camera);
+    void update(float elapsed_time);
 };
 
 

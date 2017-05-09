@@ -13,7 +13,6 @@ class Level {
 public:
     Level();
 
-    Entity* root;
     Player* player;
     std::string name;
     std::vector<EntityCollider*> static_colliders;   // NO se mueven, así que no hay colisiones entre ellas
@@ -24,7 +23,7 @@ public:
 
     bool load(const char* filename);
 
-    void render();
+    //void render();    <- Render in scene
     void update(float elapsed_time);
 };
 

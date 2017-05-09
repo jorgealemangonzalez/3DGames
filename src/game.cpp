@@ -71,8 +71,8 @@ void Game::render(void) {
     //Draw out world
     drawGrid(500); //background grid
 
-    drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
     Scene::getScene()->render(camera);
+    drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
 
     glDisable(GL_BLEND);
 
