@@ -2,29 +2,48 @@
     *mesh cubemaps/cubemap/cubemap.ASE
     *texture cubemaps/cubemap/cielo.tga
 
-*entities 2
+*entities 6
     island
         *entity collider static
         *mesh island/island.ASE
         *texture island/island_color_luz.tga
-    plane
-        *entity collider dynamic
-        *mesh spitfire/spitfire.ASE
-        *texture spitfire/spitfire_color_spec.tga
+    fighter
+            *entity collider dynamic
+            *mesh fighter/x3_fighter.ASE
+            *texture fighter/x3_fighter.tga
+    hunter
+            *entity collider dynamic
+            *mesh hunter/hunter.ASE
+            *texture hunter/hunter.tga
+    interceptor
+            *entity collider dynamic
+            *mesh interceptor/x3_interceptor.ASE
+            *texture interceptor/x3_interceptor.tga
+    runner
+            *entity collider dynamic
+            *mesh runner/x3_runner.ASE
+            *texture runner/x3_runner.tga
+    space_train
+            *entity collider dynamic
+            *mesh space_train/space_train.ASE
+            *texture space_train/space_train.tga
 
-*scene level1 7
+
+*scene level1 8
     *entity island
         *position 0 0 0
     *entity island
         *position 14000 0 14000
     *entity island
         *position 0 0 14000
-    *entity plane
+    *entity fighter
         *position 0 900 28
-    *entity plane
-        *position 0 900 38
-    *entity plane
-        *position 0 900 48
-    *entity plane
-        *position 0 910 28
+    *entity hunter
+        *position 0 900 538
+    *entity interceptor
+        *position 0 900 448
+    *entity runner
+        *position 0 910 328
+    *entity space_train
+            *position 0 910 128
 
