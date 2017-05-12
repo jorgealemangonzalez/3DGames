@@ -212,3 +212,6 @@ void EntityCollider::onCollision(EntityCollider *withEntity) {
     std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
 }
 
+void EntityCollider::onCollision(Bullet *withBullet) {
+    std::cout<<this->mesh<<" collides with BULLET"<<std::endl;
+}

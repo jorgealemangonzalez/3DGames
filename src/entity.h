@@ -10,6 +10,7 @@
 #include "framework.h"
 #include "camera.h"
 #include "extra/coldet/src/coldet.h"
+#include "BulletManager.h"
 
 class Entity{
 public:
@@ -100,6 +101,7 @@ public:
     bool testCollision(Vector3& origin, float radius, Vector3& collision_point);
     void setTransform();
     void onCollision(EntityCollider* withEntity);
+    void onCollision(Bullet *withBullet)
 };
 
 #endif //TJE_FRAMEWORK_2017_ENTITY_H
