@@ -7,27 +7,37 @@
         *entity collider static
         *mesh island/island.ASE
         *texture island/island_color_luz.tga
+        *munition no
     fighter
-            *entity collider dynamic
-            *mesh fighter/x3_fighter.ASE
-            *texture fighter/x3_fighter.tga
+        *entity collider dynamic
+        *mesh fighter/x3_fighter.ASE
+        *texture fighter/x3_fighter.tga
+        *munition ray
+            *generate 0 -3 0
+            *color  255 255 255
     hunter
-            *entity collider dynamic
-            *mesh hunter/hunter.ASE
-            *texture hunter/hunter.tga
+        *entity collider dynamic
+        *mesh hunter/hunter.ASE
+        *texture hunter/hunter.tga
+        *munition mesh
+            *generate 3 0 0
+            *mesh misil/misil.ASE
+            *texture misil/misil.tga
     interceptor
-            *entity collider dynamic
-            *mesh interceptor/x3_interceptor.ASE
-            *texture interceptor/x3_interceptor.tga
+        *entity collider dynamic
+        *mesh interceptor/x3_interceptor.ASE
+        *texture interceptor/x3_interceptor.tga
+        *munition no
     runner
-            *entity collider dynamic
-            *mesh runner/x3_runner.ASE
-            *texture runner/x3_runner.tga
+        *entity collider dynamic
+        *mesh runner/x3_runner.ASE
+        *texture runner/x3_runner.tga
+        *munition no
     space_train
-            *entity collider dynamic
-            *mesh space_train/space_train.ASE
-            *texture space_train/space_train.tga
-
+        *entity collider dynamic
+        *mesh bomber/bomber.ASE
+        *texture bomber/bomber.tga
+        *munition no
 
 *scene level1 8
     *entity island

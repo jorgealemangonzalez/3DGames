@@ -53,8 +53,8 @@ void Scene::loadScene(const char* filename) {
         t.seek("*mesh");
         background->setMesh(t.getword());
         t.seek("*texture");
-        char* texture = t.getword();
-        if(strcmp(texture,"no") != 0)   //Si tiene textura
+        std::string texture = t.getword();
+        if(texture != "no")   //Si tiene textura
             background->texture = texture;
         this->addBackground(background);
     }
@@ -91,9 +91,39 @@ void Scene::loadScene(const char* filename) {
         t.seek("*mesh");
         e->setMesh(t.getword());
         t.seek("*texture");
-        char* texture = t.getword();
-        if(strcmp(texture,"no") != 0)   //Si tiene textura
+        std::string texture = t.getword();
+        if(texture != "no")   //Si tiene textura
             e->texture = texture;
+        t.seek("*munition");
+        std::string munition = t.getword();
+        if(munition != "no") {
+            //It has munition
+            t.seek("*generate");
+            float x = t.getint();
+            float y = t.getint();
+            float z = t.getint();
+            Vector3 generatePos = Vector3(x,y,z);
+            std::cout<<"Generate Pos: "+generatePos.toString()+"\n";
+            if (munition == "ray") {
+                //Ray munition
+                std::cout<<"RAY: ";
+                t.seek("*color");
+                Vector3 color = Vector3(t.getint(),t.getint(),t.getint());
+                std::cout<<"color "+color.toString()+"\n";
+            } else if (munition == "mesh") {
+                //Mesh munition
+                std::cout<<"MESH_MUNITION: ";
+                t.seek("*mesh");
+
+                std::string munition_mesh = t.getword();
+                t.seek("*texture");
+                std::string munition_tga = t.getword();
+
+                std::cout<<" mesh "<<munition_mesh<<" tga "<<munition_tga<<"\n";
+
+            }
+        }
+
         templates[name] = e;
     }
 
@@ -116,12 +146,13 @@ void Scene::loadScene(const char* filename) {
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         this->addToRoot(clone);
 
-        //hack temporal para controlar el avión:
-        if(entity_name == "plane"){
+        //HACK
+        //TODO remove this
+        if(entity_name == "fighter"){
             player->setMyEntity(clone);
         }
-        //fin hack
-        printf("Entity loaded: %s",&entity_name);
+        //FIN_HACK
+        std::cout<<"Entity loaded: "<<entity_name<<"\n";
     }
 }
 
