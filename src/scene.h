@@ -2,7 +2,7 @@
 #define TJE_FRAMEWORK_2017_SCENE_H
 
 #include "entity.h"
-
+#include "player.h"
 class Scene {
     static Scene* scene;
     Scene();
@@ -10,10 +10,17 @@ class Scene {
 public:
     Entity* root;
     Entity* background;
+    Player* player;
+
+    std::string name;
+    std::vector<EntityCollider*> static_colliders;   // NO se mueven, así que no hay colisiones entre ellas
+    std::vector<EntityCollider*> dynamic_colliders;  // Pueden colisionar entre ellas y con static_colliders
+
     static Scene* getScene();
     void addToRoot(Entity* e);
     void addBackground(Entity* e);
     void render(Camera* camera);
+    void loadScene(const char* filename);
     void update(float elapsed_time);
 };
 

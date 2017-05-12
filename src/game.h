@@ -8,7 +8,6 @@
 #include "includes.h"
 #include "camera.h"
 #include "controller.h"
-#include "level.h"
 #include "player.h"
 
 class Game
@@ -16,7 +15,6 @@ class Game
 public:
 	static Game* instance;
 
-	Level* level;
 	Player* player;
 
 	//window

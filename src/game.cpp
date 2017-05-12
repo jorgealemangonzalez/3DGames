@@ -48,9 +48,9 @@ void Game::init(void) {
 
     player = new Player();
     std::cout<<"Load level1"<<std::endl;
-    level = new Level();
-    level->player = player;
-    level->load("../data/level1.txt");
+    Scene* scene = Scene::getScene();
+    scene->player = player;
+    scene->loadScene("../data/level1.txt");
     std::cout<<"Init finish";
 }
 
@@ -87,7 +87,7 @@ void Game::render(void) {
 
 void Game::update(double seconds_elapsed) {
     player->update(seconds_elapsed);
-    level->update(seconds_elapsed);
+    Scene::getScene()->update(seconds_elapsed);
 }
 
 //Keyboard event handler (sync input)
