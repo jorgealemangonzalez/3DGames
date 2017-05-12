@@ -2,25 +2,35 @@
 #include "mesh.h"
 #include <algorithm>    // std::find
 
-unsigned int Entity::s_created = 0;
-std::map<unsigned int,Entity*> Entity::s_entities;
+UID Entity::s_created = 1;
+std::map<UID,Entity*> Entity::s_entities;
+std::vector<UID> Entity::to_destroy;
+std::vector<UID> EntityCollider::static_colliders;
+std::vector<UID> EntityCollider::dynamic_colliders;
 
-Entity* Entity::getEntity(unsigned int uid) {
-    auto it = Entity::s_entities.find(uid);
-    if(it == Entity::s_entities.end())
-        return NULL;
-    return it->second;
-}
-
-Entity::Entity() {
-    parent = NULL;
-    uid = Entity::s_created++;
+Entity::Entity() : uid(Entity::s_created++), parent(NULL){
     Entity::s_entities[uid] = this;
 }
 
 Entity::~Entity() {
 
 }
+
+//Static methods
+
+Entity* Entity::getEntity(UID uid) {
+    auto it = Entity::s_entities.find(uid);
+    if(it == Entity::s_entities.end())
+        return NULL;
+    return it->second;
+}
+
+void Entity::destroy_entities_to_destroy() {
+
+}
+
+
+//Entity methods
 
 void Entity::addChild(Entity* ent){
     if(ent->parent){
@@ -41,7 +51,8 @@ void Entity::removeChild(Entity* entity){
 }
 
 void Entity::destroy() {
-    //to_destroy.push_back(this);
+    Entity* e = this;
+    to_destroy.push_back(e->uid);
 }
 
 Matrix44 Entity::getGlobalModel() {
@@ -59,6 +70,13 @@ Vector3 Entity::getRotation() {
     return getGlobalModel().getRotationOnly() * Vector3();
 }
 
+void Entity::followWithCamera(Camera* camera){
+    Vector3 pos = getPosition();
+    camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
+}
+
+//methods overwriten by derived classes
+
 void Entity::render(Camera* camera){
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
@@ -68,25 +86,35 @@ void Entity::render(Camera* camera){
 void Entity::update(float elapsed_time){
 }
 
-EntityMesh::EntityMesh():Entity(){
+//================================================
+
+EntityMesh::EntityMesh() : Entity(){
     mesh = "";
     texture = "";
     shaderDesc.vs = "texture.vs";
     shaderDesc.fs = "texture.fs";
 }
-EntityMesh::~EntityMesh(){
 
-}
+EntityMesh::~EntityMesh(){}
 
-std::string EntityMesh::getMesh() {
-    return mesh;
-}
+//Static methods
+//Entity methods
 
-void EntityMesh::setMesh(std::string mesh) {
-    this->mesh = mesh;
-}
+std::string EntityMesh::getMesh() { return mesh; }
+std::string EntityMesh::getTexture(){ return texture; }
+std::string EntityMesh::getVertexShader(){ return shaderDesc.vs; }
+std::string EntityMesh::getPixelShader() {return shaderDesc.fs; }
+Vector3 EntityMesh::getColor() { return color; }
+
+void EntityMesh::setMesh(std::string mesh) { this->mesh = mesh; }
+void EntityMesh::setTexture(std::string texture){ this->texture = texture; }
+void EntityMesh::setVertexShader(std::string vs){ this->shaderDesc.vs = vs; }
+void EntityMesh::setPixelShader(std::string fs){ this->shaderDesc.fs = fs; }
+void EntityMesh::setColor(Vector3 color) {this->color = color; }
 
 void EntityMesh::render(Camera* camera){
+    std::cout << mesh << "\n";
+
     Matrix44 globalModel = getGlobalModel();
     Matrix44 mvp = globalModel * camera->viewprojection_matrix;
     Mesh* m = Mesh::Load(mesh);
@@ -112,22 +140,54 @@ void EntityMesh::update(float elapsed_time){
 
 }
 
-void EntityMesh::followWithCamera(Camera* camera){
-    Vector3 pos = getPosition();
-    camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
+//================================================
+
+EntityCollider::EntityCollider() : EntityMesh(), dynamic(false) {}
+EntityCollider::EntityCollider(bool dynamic) : EntityMesh(), dynamic(dynamic) {}
+EntityCollider::~EntityCollider(){}
+
+//Static methods
+void EntityCollider::registerCollider(EntityCollider* e) {
+    if(e->dynamic){
+        EntityCollider::dynamic_colliders.push_back(e->uid);
+    }else{
+        EntityCollider::static_colliders.push_back(e->uid);
+    }
 }
 
-EntityCollider::EntityCollider(){
+void EntityCollider::checkCollisions() {
+    //Test every possible collision
+    Vector3 collision;
+    EntityCollider *e_1, *e_2;
+    for(int i = 0 ; i < dynamic_colliders.size(); ++i){
+        e_1 = (EntityCollider*)Entity::getEntity(dynamic_colliders[i]);
+        if(e_1 == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + i); --i; continue;}
+        e_1->setTransform();
+        Vector3 dinamic_pos = e_1->getGlobalModel().getTranslationOnly();
 
-}
+        for(int st = 0 ; st < static_colliders.size(); ++st){
+            e_2 = (EntityCollider*)Entity::getEntity(static_colliders[st]);
+            if(e_2 == NULL) {static_colliders.erase(static_colliders.begin() + i); --st; continue;}
+            if(e_2->testCollision(dinamic_pos,20.0f, collision)) {
+                e_1->onCollision(e_2);
+                e_2->onCollision(e_1);
+            }
+        }
 
-EntityCollider::~EntityCollider(){
-
+        for(int j = i+1 ; j < dynamic_colliders.size(); ++j){
+            e_2 = (EntityCollider*)Entity::getEntity(dynamic_colliders[j]);
+            if(e_2 == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + j); --j; continue;}
+            if(e_2->testCollision(dinamic_pos,20.0f, collision)){
+                e_1->onCollision(e_2);
+                e_2->onCollision(e_1);
+            }
+        }
+    }
 }
 
 bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){    //With ray
     Mesh* m = Mesh::Load(mesh);
-    if(m->getCollisionModel()->rayCollision(origin.v,dir.v,true)== false){ //
+    if(!m->getCollisionModel()->rayCollision(origin.v,dir.v,true)){ //
         return false;
     }
     m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
@@ -136,7 +196,7 @@ bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist
 
 bool EntityCollider::testCollision(Vector3& origin, float radius, Vector3& collision_point){    //With Sphere
     Mesh* m = Mesh::Load(mesh);
-    if(m->getCollisionModel()->sphereCollision(origin.v,radius) == false){ //
+    if(!m->getCollisionModel()->sphereCollision(origin.v,radius)){ //
         return false;
     }
     m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?

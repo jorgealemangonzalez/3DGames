@@ -2,18 +2,19 @@
 #ifndef TJE_FRAMEWORK_2017_CONTROLLER_H
 #define TJE_FRAMEWORK_2017_CONTROLLER_H
 
+#include "constants.h"
 #include "includes.h"
 #include "entity.h"
 
 class EntityController{
 public:
-    Entity* entity;
+    UID entity_uid;
 
     EntityController();
     ~EntityController();
 
-    virtual void setEntity(Entity* e);
-    virtual void update( double seconds_elapsed );
+    virtual void setEntity(UID e);
+    virtual void update( double seconds_elapsed ) = 0;
 };
 
 class CameraController: public EntityController{
@@ -26,7 +27,7 @@ public:
 
 
     void setMode(int m);
-    void setEntity(Entity* e);
+    void setEntity(UID e);
 
     void update( double seconds_elapsed );
 };

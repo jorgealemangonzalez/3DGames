@@ -2,9 +2,13 @@
 #include "controller.h"
 #include "game.h"
 
+void EntityController::setEntity(UID e) {
+    entity_uid = e;
+}
+
 CameraController::CameraController() {
     mode = 1;
-    entity = NULL;
+    entity_uid = 0;
 }
 
 CameraController::~CameraController() {}
@@ -13,12 +17,15 @@ void CameraController::setMode(int m) {
     mode = m;
 }
 
-void CameraController::setEntity(Entity *e) {
-    EntityController::setEntity(e);
-    entityPreviusPos = e->getGlobalModel().getTranslationOnly();
+void CameraController::setEntity(UID e_uid) {
+    EntityController::setEntity(e_uid);
+    Entity* e = Entity::getEntity(e_uid);
+    if(e != NULL)
+        entityPreviusPos = e->getGlobalModel().getTranslationOnly();
 }
 
 void CameraController::update(double seconds_elapsed) {
+    Entity* entity = Entity::getEntity(entity_uid);
     switch(mode){
         case 2:
         {
@@ -74,18 +81,16 @@ void CameraController::update(double seconds_elapsed) {
 }
 
 EntityController::EntityController() {
-    entity = NULL;
+    entity_uid = 0;
 }
 
 EntityController::~EntityController() {
 
 }
 
-void EntityController::setEntity(Entity *e) {
-    this->entity = e;
-}
-
 void EntityController::update(double seconds_elapsed) {
+    Entity* entity = Entity::getEntity(entity_uid);
+
     if(entity == NULL){
         std::cout << "EntityController sin entidad asignada!\n";
         return;
@@ -116,6 +121,7 @@ FighterController::~FighterController() {
 }
 
 void FighterController::update(double seconds_elapsed) {
+    Entity* entity = Entity::getEntity(entity_uid);
     if(entity == NULL){
         std::cout << "EntityController sin entidad asignada!\n";
         return;

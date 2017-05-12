@@ -13,7 +13,7 @@ public:
     EntityController* entityController;
     CameraController* cameraController;
 
-    void setMyEntity(Entity* entity);
+    void setMyEntity(unsigned int e_uid);
     void update(double seconds_elapsed);
 };
 

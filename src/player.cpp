@@ -14,7 +14,7 @@ void Player::update(double seconds_elapsed) {
     cameraController->update(seconds_elapsed);
 }
 
-void Player::setMyEntity(Entity *entity) {
-    entityController->setEntity(entity);
-    cameraController->setEntity(entity);
+void Player::setMyEntity(unsigned int e_uid) {
+    entityController->setEntity(e_uid);
+    cameraController->setEntity(e_uid);
 }

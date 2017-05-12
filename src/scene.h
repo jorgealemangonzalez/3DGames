@@ -13,8 +13,6 @@ public:
     Player* player;
 
     std::string name;
-    std::vector<EntityCollider*> static_colliders;   // NO se mueven, así que no hay colisiones entre ellas
-    std::vector<EntityCollider*> dynamic_colliders;  // Pueden colisionar entre ellas y con static_colliders
 
     static Scene* getScene();
     void addToRoot(Entity* e);

@@ -55,7 +55,7 @@ void Scene::loadScene(const char* filename) {
         t.seek("*texture");
         std::string texture = t.getword();
         if(texture != "no")   //Si tiene textura
-            background->texture = texture;
+            background->setTexture(texture);
         this->addBackground(background);
     }
 
@@ -70,14 +70,12 @@ void Scene::loadScene(const char* filename) {
         std::cout << entityClass << "\n";
 
         if (entityClass == "collider") {
-            EntityCollider *ec = new EntityCollider();
+            EntityCollider *ec;
             std::string colliderType = t.getword();
             if (colliderType == "static") {
-
-                static_colliders.push_back(ec);
-                printf("\n\nStatic\n\n");
+                ec = new EntityCollider(false);
             } else if (colliderType == "dynamic") {
-                dynamic_colliders.push_back(ec);
+                ec = new EntityCollider(true);
             } else {
                 std::cout << "Error reading collider type in " << name << std::endl;
                 exit(0);
@@ -93,7 +91,7 @@ void Scene::loadScene(const char* filename) {
         t.seek("*texture");
         std::string texture = t.getword();
         if(texture != "no")   //Si tiene textura
-            e->texture = texture;
+            e->setTexture(texture);
         t.seek("*munition");
         std::string munition = t.getword();
         if(munition != "no") {
@@ -123,7 +121,6 @@ void Scene::loadScene(const char* filename) {
 
             }
         }
-
         templates[name] = e;
     }
 
@@ -144,12 +141,18 @@ void Scene::loadScene(const char* filename) {
         *clone = *e;//Copiar todas las variables ( Si hay punteros la has cagado porque se copiara la referencia
         t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
+
         this->addToRoot(clone);
+
+        try {
+            EntityCollider* ec = (EntityCollider*) clone;
+            EntityCollider::registerCollider(ec);
+        } catch(...) {}
 
         //HACK
         //TODO remove this
         if(entity_name == "fighter"){
-            player->setMyEntity(clone);
+            player->setMyEntity(clone->uid);
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";
@@ -161,7 +164,8 @@ void Scene::update(float elapsed_time) {
     this->root->update(elapsed_time);
 
     Camera* camera = Game::instance->camera;
-    Vector3 collision;
+
+    EntityCollider::checkCollisions();
 
     //Test collisions with island: needs low res sphere
     /*
@@ -177,19 +181,4 @@ void Scene::update(float elapsed_time) {
         em->shaderDesc.vs = "color.vs";
         this->addToRoot(em);
     }*/
-
-    //Test every possible collision
-    for(int i = 0 ; i < dynamic_colliders.size(); ++i){
-        dynamic_colliders[i]->setTransform();
-        Vector3 dinamic_pos = dynamic_colliders[i]->getGlobalModel().getTranslationOnly();
-        for(int st = 0 ; st < static_colliders.size(); ++st){
-            if(static_colliders[st]->testCollision(dinamic_pos,20.0f, collision)) {
-                dynamic_colliders[i]->onCollision(static_colliders[st]);
-            }
-        }
-        for(int j = i+1 ; j < dynamic_colliders.size(); ++j){
-            if(dynamic_colliders[j]->testCollision(dinamic_pos,20.0f, collision))
-                dynamic_colliders[i]->onCollision(dynamic_colliders[j]);
-        }
-    }
 }
