@@ -27,7 +27,7 @@ public:
     virtual void update( double seconds_elapsed, UID e_uid);
 };
 
-class FighterController: public EntityController{
+class FighterController : public EntityController{
 public:
     float acc; //Linear acceleration
     float vel; //Linear velocity
@@ -37,6 +37,14 @@ public:
 
     FighterController();
     ~FighterController();
+
+    void update( double seconds_elapsed, UID e_uid);
+};
+
+class ClickController : public EntityController{
+public:
+    ClickController();
+    ~ClickController();
 
     void update( double seconds_elapsed, UID e_uid);
 };

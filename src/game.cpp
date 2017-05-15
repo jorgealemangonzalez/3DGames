@@ -102,6 +102,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         case SDLK_2:
             player->cameraController->setMode(2);
             break;
+        case SDLK_TAB:
+            player->rotateControlling();
+            break;
     }
 }
 

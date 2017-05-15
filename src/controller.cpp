@@ -144,3 +144,9 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     entity->model.rotateLocal(angX, Vector3(0,1,0));
     entity->model.rotateLocal(angY, Vector3(1,0,0));
 }
+
+//================================================
+
+ClickController::ClickController() {}
+ClickController::~ClickController() {}
+void ClickController::update(double seconds_elapsed, UID e_uid) {}
