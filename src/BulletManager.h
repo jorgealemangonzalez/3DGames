@@ -19,8 +19,12 @@ public:
     UID author;             // quien ha disparado la bala
     std::string type;       // por si hay diferentes tipos de bala
 
+    Bullet();
+    ~Bullet();
     Bullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
            UID author, const std::string &type);
+    void set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
+             UID author, const std::string &type);
 
 
 };

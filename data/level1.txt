@@ -55,5 +55,5 @@
     *entity runner
         *position 0 910 328
     *entity space_train
-            *position 0 910 128
+        *position 0 910 128
 

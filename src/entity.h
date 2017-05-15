@@ -34,6 +34,7 @@ public:
     static void destroy_entities_to_destroy();
 
     //Entity methods
+    void save();
     void addChild(Entity* ent);
     void removeChild(Entity* ent);
     void destroy();
@@ -45,6 +46,7 @@ public:
     void followWithCamera(Camera* camera);
 
     //methods overwriten by derived classes
+    virtual Entity* clone();
     virtual void render(Camera* camera);
     virtual void update(float elapsed_time);
 };
@@ -77,7 +79,9 @@ public:
     void setPixelShader(std::string fs);
     void setColor(Vector3 color);
 
-    void render(Camera* camera);
+    //methods overwriten by derived classes
+    virtual EntityMesh* clone();
+    virtual void render(Camera* camera);
     virtual void update(float elapsed_time);
 };
 
@@ -101,7 +105,11 @@ public:
     bool testCollision(Vector3& origin, float radius, Vector3& collision_point);
     void setTransform();
     void onCollision(EntityCollider* withEntity);
-    void onCollision(Bullet *withBullet)
+    void onCollision(Bullet *withBullet);
+
+    //methods overwriten by derived classes
+    virtual EntityCollider* clone();
+    virtual void update(float elapsed_time);
 };
 
 #endif //TJE_FRAMEWORK_2017_ENTITY_H

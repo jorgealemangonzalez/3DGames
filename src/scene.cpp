@@ -131,17 +131,15 @@ void Scene::loadScene(const char* filename) {
     for(int i = 0 ; i < num_entities ; i++){
         t.seek("*entity");
         std::string entity_name = t.getword();
-        EntityMesh* e = templates[entity_name];
+        auto *e = templates[entity_name];
         if(!e){
             std::cout<<"Entity in file not found: "<<entity_name<<std::endl;
             continue;
         }
 
-        EntityMesh* clone = new EntityMesh();
-        *clone = *e;//Copiar todas las variables ( Si hay punteros la has cagado porque se copiara la referencia
+        auto* clone = e->clone();
         t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
-
         this->addToRoot(clone);
 
         try {
@@ -156,6 +154,9 @@ void Scene::loadScene(const char* filename) {
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";
+        std::cout<<"\t"<<clone->uid<<": "<<clone->getPosition().x<<" "<<clone->getPosition().y<<" "<<clone->getPosition().z<<"\n";
+        Entity* eee = Entity::getEntity(clone->uid);
+        std::cout<<"\t"<<eee->uid<<": "<<eee->getPosition().x<<" "<<eee->getPosition().y<<" "<<eee->getPosition().z<<"\n";
     }
 }
 

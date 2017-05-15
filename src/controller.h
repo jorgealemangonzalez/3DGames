@@ -6,18 +6,7 @@
 #include "includes.h"
 #include "entity.h"
 
-class EntityController{
-public:
-    UID entity_uid;
-
-    EntityController();
-    ~EntityController();
-
-    virtual void setEntity(UID e);
-    virtual void update( double seconds_elapsed ) = 0;
-};
-
-class CameraController: public EntityController{
+class CameraController{
 public:
     int mode;
     Vector3 entityPreviusPos;
@@ -25,11 +14,17 @@ public:
     CameraController();
     ~CameraController();
 
-
     void setMode(int m);
-    void setEntity(UID e);
+    void notifyEntity(UID e_uid);
+    void update( double seconds_elapsed, UID e_uid);
+};
 
-    void update( double seconds_elapsed );
+class EntityController{
+public:
+    EntityController();
+    ~EntityController();
+
+    virtual void update( double seconds_elapsed, UID e_uid);
 };
 
 class FighterController: public EntityController{
@@ -43,7 +38,7 @@ public:
     FighterController();
     ~FighterController();
 
-    void update( double seconds_elapsed );
+    void update( double seconds_elapsed, UID e_uid);
 };
 
 #endif //TJE_FRAMEWORK_2017_CONTROLLER_H

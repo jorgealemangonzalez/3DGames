@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "mesh.h"
 #include <algorithm>    // std::find
+#include <sstream>
 
 UID Entity::s_created = 1;
 std::map<UID,Entity*> Entity::s_entities;
@@ -8,13 +9,8 @@ std::vector<UID> Entity::to_destroy;
 std::vector<UID> EntityCollider::static_colliders;
 std::vector<UID> EntityCollider::dynamic_colliders;
 
-Entity::Entity() : uid(Entity::s_created++), parent(NULL){
-    Entity::s_entities[uid] = this;
-}
-
-Entity::~Entity() {
-
-}
+Entity::Entity() : uid(Entity::s_created++), parent(NULL){ save(); }
+Entity::~Entity() {}
 
 //Static methods
 
@@ -31,6 +27,10 @@ void Entity::destroy_entities_to_destroy() {
 
 
 //Entity methods
+
+void Entity::save() {
+    Entity::s_entities[uid] = this;
+}
 
 void Entity::addChild(Entity* ent){
     if(ent->parent){
@@ -76,6 +76,13 @@ void Entity::followWithCamera(Camera* camera){
 }
 
 //methods overwriten by derived classes
+Entity* Entity::clone() {
+    Entity* clon = new Entity();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
 
 void Entity::render(Camera* camera){
     for(int i=0; i<children.size(); i++){
@@ -84,11 +91,14 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::update(float elapsed_time){
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
+    }
 }
 
 //================================================
 
-EntityMesh::EntityMesh() : Entity(){
+EntityMesh::EntityMesh() : Entity() {
     mesh = "";
     texture = "";
     shaderDesc.vs = "texture.vs";
@@ -112,8 +122,17 @@ void EntityMesh::setVertexShader(std::string vs){ this->shaderDesc.vs = vs; }
 void EntityMesh::setPixelShader(std::string fs){ this->shaderDesc.fs = fs; }
 void EntityMesh::setColor(Vector3 color) {this->color = color; }
 
+//methods overwriten by derived classes
+EntityMesh* EntityMesh::clone() {
+    EntityMesh* clon = new EntityMesh();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
+
 void EntityMesh::render(Camera* camera){
-    std::cout << mesh << "\n";
+    //std::cout << mesh << "\n";
 
     Matrix44 globalModel = getGlobalModel();
     Matrix44 mvp = globalModel * camera->viewprojection_matrix;
@@ -137,7 +156,9 @@ void EntityMesh::render(Camera* camera){
 }
 
 void EntityMesh::update(float elapsed_time){
-
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
+    }
 }
 
 //================================================
@@ -159,6 +180,7 @@ void EntityCollider::checkCollisions() {
     //Test every possible collision
     Vector3 collision;
     EntityCollider *e_1, *e_2;
+    std::stringstream ss;
     for(int i = 0 ; i < dynamic_colliders.size(); ++i){
         e_1 = (EntityCollider*)Entity::getEntity(dynamic_colliders[i]);
         if(e_1 == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + i); --i; continue;}
@@ -171,6 +193,7 @@ void EntityCollider::checkCollisions() {
             if(e_2->testCollision(dinamic_pos,20.0f, collision)) {
                 e_1->onCollision(e_2);
                 e_2->onCollision(e_1);
+                ss << e_1->name << " (" << e_1->uid << ") <-> " << e_2->name << " (" << e_2->uid << ")\n";
             }
         }
 
@@ -180,6 +203,7 @@ void EntityCollider::checkCollisions() {
             if(e_2->testCollision(dinamic_pos,20.0f, collision)){
                 e_1->onCollision(e_2);
                 e_2->onCollision(e_1);
+                ss << e_1->name << " (" << e_1->uid << ") <-> " << e_2->name << " (" << e_2->uid << ")\n";
             }
         }
     }
@@ -209,9 +233,24 @@ void EntityCollider::setTransform(){
 }
 
 void EntityCollider::onCollision(EntityCollider *withEntity) {
-    std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
+    //std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
 }
 
 void EntityCollider::onCollision(Bullet *withBullet) {
     std::cout<<this->mesh<<" collides with BULLET"<<std::endl;
+}
+
+//methods overwriten by derived classes
+EntityCollider* EntityCollider::clone() {
+    EntityCollider* clon = new EntityCollider();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
+
+void EntityCollider::update(float elapsed_time) {
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
+    }
 }

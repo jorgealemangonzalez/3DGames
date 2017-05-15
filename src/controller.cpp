@@ -2,30 +2,20 @@
 #include "controller.h"
 #include "game.h"
 
-void EntityController::setEntity(UID e) {
-    entity_uid = e;
-}
-
-CameraController::CameraController() {
-    mode = 1;
-    entity_uid = 0;
-}
-
+CameraController::CameraController() : mode(1) {}
 CameraController::~CameraController() {}
 
-void CameraController::setMode(int m) {
-    mode = m;
-}
+void CameraController::setMode(int m) { mode = m; }
 
-void CameraController::setEntity(UID e_uid) {
-    EntityController::setEntity(e_uid);
+void CameraController::notifyEntity(UID e_uid) {
     Entity* e = Entity::getEntity(e_uid);
     if(e != NULL)
         entityPreviusPos = e->getGlobalModel().getTranslationOnly();
 }
 
-void CameraController::update(double seconds_elapsed) {
-    Entity* entity = Entity::getEntity(entity_uid);
+void CameraController::update(double seconds_elapsed, UID e_uid) {
+    Entity* entity = Entity::getEntity(e_uid);
+
     switch(mode){
         case 2:
         {
@@ -80,16 +70,13 @@ void CameraController::update(double seconds_elapsed) {
     }
 }
 
-EntityController::EntityController() {
-    entity_uid = 0;
-}
+//================================================
 
-EntityController::~EntityController() {
+EntityController::EntityController() {}
+EntityController::~EntityController() {}
 
-}
-
-void EntityController::update(double seconds_elapsed) {
-    Entity* entity = Entity::getEntity(entity_uid);
+void EntityController::update(double seconds_elapsed, UID e_uid) {
+    Entity* entity = Entity::getEntity(e_uid);
 
     if(entity == NULL){
         std::cout << "EntityController sin entidad asignada!\n";
@@ -109,6 +96,8 @@ void EntityController::update(double seconds_elapsed) {
     std::cout << entity->getPosition().toString() << "\n";
 }
 
+//================================================
+
 FighterController::FighterController() {
     acc = 0;
     vel = 0;
@@ -120,8 +109,8 @@ FighterController::~FighterController() {
 
 }
 
-void FighterController::update(double seconds_elapsed) {
-    Entity* entity = Entity::getEntity(entity_uid);
+void FighterController::update(double seconds_elapsed, UID e_uid) {
+    Entity* entity = Entity::getEntity(e_uid);
     if(entity == NULL){
         std::cout << "EntityController sin entidad asignada!\n";
         return;
