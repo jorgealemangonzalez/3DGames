@@ -7,12 +7,7 @@
 
 Bullet::Bullet() {}
 Bullet::~Bullet() {}
-Bullet::Bullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
-               UID author, const std::string &type) : position(position), last_position(last_position),
-                                                      velocity(velocity), ttl(ttl), power(power), author(author),
-                                                      type(type) {
-    //Constructor
-}
+
 void Bullet::set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
                  UID author, const std::string &type) {}
 
@@ -82,5 +77,5 @@ void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_po
         removePosFromPool(mini);
     }
 
-    bullets_pool[last_pos_pool++] = Bullet(position,last_position,velocity,ttl,power,author,type);
+    bullets_pool[last_pos_pool++].set(position,last_position,velocity,ttl,power,author,type);
 }
