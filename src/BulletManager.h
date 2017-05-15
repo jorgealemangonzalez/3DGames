@@ -21,8 +21,6 @@ public:
 
     Bullet();
     ~Bullet();
-    Bullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
-           UID author, const std::string &type);
     void set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
              UID author, const std::string &type);
 
@@ -31,7 +29,8 @@ public:
 
 class BulletManager {
 public:
-    Bullet bullets_pool[MAX_BULLETS];
+    Bullet bullets_pool[MAX_BULLETS];   // La pool se inicializa entera de colpe.
+                                        // Luego no se crean ni destruyen bullets, para ello set.
     unsigned int last_pos_pool;
 
     BulletManager();
