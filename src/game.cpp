@@ -46,10 +46,11 @@ void Game::init(void) {
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
                            100000000.f); //set the projection, we want to be perspectives
 
-    player = new Player();
+    human = new Human();
+    enemy = new Enemy();
+
     std::cout<<"Load level1"<<std::endl;
     Scene* scene = Scene::getScene();
-    scene->player = player;
     scene->loadScene("../data/level1.txt");
     std::cout<<"Init finish";
 }
@@ -86,7 +87,8 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
-    player->update(seconds_elapsed);
+    human->update(seconds_elapsed);
+    enemy->update(seconds_elapsed);
     Scene::getScene()->update(seconds_elapsed);
 }
 
@@ -97,13 +99,13 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             exit(0); //ESC key, kill the app
 
         case SDLK_1:
-            player->cameraController->setMode(1);
+            human->cameraController->setMode(1);
             break;
         case SDLK_2:
-            player->cameraController->setMode(2);
+            human->cameraController->setMode(2);
             break;
         case SDLK_TAB:
-            player->rotateControlling();
+            human->rotateControlling();
             break;
     }
 }

@@ -15,7 +15,8 @@ class Game
 public:
 	static Game* instance;
 
-	Player* player;
+	Human* human;
+	Enemy* enemy;
 
 	//window
 	SDL_Window* window;

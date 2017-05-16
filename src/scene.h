@@ -10,7 +10,6 @@ class Scene {
 public:
     Entity* root;
     Entity* background;
-    Player* player;
 
     std::string name;
 

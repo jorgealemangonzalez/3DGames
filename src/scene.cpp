@@ -150,8 +150,12 @@ void Scene::loadScene(const char* filename) {
 
         //HACK
         //TODO remove this
-        if(entity_name == "fighter" || entity_name == "hunter"){
-            player->addControllableEntity(clone->uid);
+        if(entity_name == "fighter"){
+            Game::instance->human->addControllableEntity(clone->uid);
+            Game::instance->human->controlling_entity = clone->uid;
+        }
+        if(entity_name == "hunter"){
+            Game::instance->enemy->addControllableEntity(clone->uid);
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";

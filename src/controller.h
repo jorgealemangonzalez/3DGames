@@ -41,6 +41,16 @@ public:
     void update( double seconds_elapsed, UID e_uid);
 };
 
+class AIController : public EntityController{
+public:
+    UID entity_follow;
+
+    AIController();
+    ~AIController();
+
+    void update( double seconds_elapsed, UID e_uid);
+};
+
 class ClickController : public EntityController{
 public:
     ClickController();
