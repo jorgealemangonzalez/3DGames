@@ -91,7 +91,7 @@ void Vector3::random(Vector3 range)
 	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
 }
 
-std::string Vector3::toString() {
+std::string Vector3::toString() const{
 	std::stringstream ss;
 	ss <<"x: "<< x <<" y: "<< y << " z: "<<z;
 	return ss.str();

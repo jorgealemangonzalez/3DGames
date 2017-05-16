@@ -64,8 +64,6 @@ public:
     EntityMesh();
     virtual ~EntityMesh();
 
-    //Static methods
-
     //Entity methods
     std::string getMesh();
     std::string getTexture();
@@ -103,6 +101,7 @@ public:
 
     bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
     bool testCollision(Vector3& origin, float radius, Vector3& collision_point);
+    bool testCollision(EntityMesh* testMesh);
     void setTransform();
     void onCollision(EntityCollider* withEntity);
     void onCollision(Bullet *withBullet);

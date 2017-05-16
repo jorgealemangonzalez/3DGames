@@ -215,6 +215,9 @@ bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist
         return false;
     }
     m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    if(origin.distance(collision_point) >= max_dist)
+        return false;
+
     return true;
 }
 
@@ -227,6 +230,14 @@ bool EntityCollider::testCollision(Vector3& origin, float radius, Vector3& colli
     return true;
 }
 
+bool EntityCollider::testCollision(EntityMesh *testMesh) {
+    Mesh* sourceMesh = Mesh::Load(mesh);
+    Mesh* destMesh = Mesh::Load(testMesh->mesh);
+
+    bool collide = sourceMesh->getCollisionModel()->collision(
+            destMesh->getCollisionModel(), -1 , 0, testMesh->getGlobalModel().m);
+    return collide;
+}
 
 void EntityCollider::setTransform(){
     Mesh::Load(mesh)->getCollisionModel()->setTransform(model.m); //Costoso !

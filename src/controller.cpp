@@ -77,7 +77,7 @@ EntityController::~EntityController() {}
 
 void EntityController::update(double seconds_elapsed, UID e_uid) {
     Entity* entity = Entity::getEntity(e_uid);
-
+    Game* game = Game::instance;
     if(entity == NULL){
         std::cout << "EntityController sin entidad asignada!\n";
         return;
@@ -85,15 +85,24 @@ void EntityController::update(double seconds_elapsed, UID e_uid) {
 
     double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
     Vector3 dPos(0,0,0);
-    if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-    if (Game::instance->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_E]) dPos = dPos + (Vector3(0.0f, 1.0f, 0.0f) * speed);
-    if (Game::instance->keystate[SDL_SCANCODE_Q]) dPos = dPos + (Vector3(0.0f, -1.0f, 0.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
+    if (game->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_E]) dPos = dPos + (Vector3(0.0f, 1.0f, 0.0f) * speed);
+    if (game->keystate[SDL_SCANCODE_Q]) dPos = dPos + (Vector3(0.0f, -1.0f, 0.0f) * speed);
+
+    Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
     entity->model.traslate(dPos.x, dPos.y, dPos.z);
+    if (game->keystate[SDL_SCANCODE_SPACE]){
+        Vector3 actual_pos = entity->getPosition();
+        Vector3 dir =  actual_pos - prev_pos;
+        BulletManager::getManager()->createBullet(actual_pos,prev_pos,dir.normalize()*100,100.0f,10.0f,entity->uid,"No type yet");
+    }
+
     std::cout << entity->getPosition().toString() << "\n";
+
 }
 
 //================================================
@@ -111,8 +120,9 @@ FighterController::~FighterController() {
 
 void FighterController::update(double seconds_elapsed, UID e_uid) {
     Entity* entity = Entity::getEntity(e_uid);
+    Game* game = Game::instance;
     if(entity == NULL){
-        std::cout << "EntityController sin entidad asignada!\n";
+        std::cout << "FighterController sin entidad asignada!\n";
         return;
     }
     //Controller mas realista
@@ -122,8 +132,8 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     //
     float dTime = seconds_elapsed; //the dTime is defined by the seconds_elapsed so it goes constant
 
-    if (Game::instance->keystate[SDL_SCANCODE_W]) acc = acc + -1.0f;
-    if (Game::instance->keystate[SDL_SCANCODE_S]) acc = acc + +1.0f;
+    if (game->keystate[SDL_SCANCODE_W]) acc = acc + -1.0f;
+    if (game->keystate[SDL_SCANCODE_S]) acc = acc + +1.0f;
     if (vel > 0.1) acc += -0.05f;
     else if (vel < -0.1) acc += +0.05f;
     else vel = 0.0f;
@@ -131,12 +141,23 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     acc *= 0.5;
     vel = vel + acc * dTime * 20;
     std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
-    entity->model.traslateLocal(0, 0, vel * dTime);
 
-    if (Game::instance->keystate[SDL_SCANCODE_A]) angX += -1.0f;
-    if (Game::instance->keystate[SDL_SCANCODE_D]) angX += +1.0f;
-    if (Game::instance->keystate[SDL_SCANCODE_E]) angY += -1.0f;
-    if (Game::instance->keystate[SDL_SCANCODE_Q]) angY += +1.0f;
+    //Bullets:::
+    Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
+    entity->model.traslateLocal(0, 0, vel * dTime);     //TODO change this translate to some velocity vector
+    if (game->keystate[SDL_SCANCODE_SPACE]){
+        Vector3 actual_pos = entity->getPosition();
+        Vector3 dir =  (actual_pos - prev_pos).normalize();
+        BulletManager::getManager()->createBullet(actual_pos + dir*10,prev_pos + dir*10,dir*300,100.0f,10.0f,entity->uid,"No type yet");
+    }
+    //End bullets
+
+    if (game->keystate[SDL_SCANCODE_A]) angX += -1.0f;
+    if (game->keystate[SDL_SCANCODE_D]) angX += +1.0f;
+    if (game->keystate[SDL_SCANCODE_E]) angY += -1.0f;
+    if (game->keystate[SDL_SCANCODE_Q]) angY += +1.0f;
+
+
 
     angX = angX * dTime * 0.5;
     angY = angY * dTime * 0.5;

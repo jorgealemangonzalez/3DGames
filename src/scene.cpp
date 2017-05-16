@@ -35,6 +35,7 @@ void Scene::render(Camera* camera) {
         glEnable(GL_DEPTH_TEST);
     }
     root->render(camera);
+    BulletManager::getManager()->render();
 }
 
 void Scene::loadScene(const char* filename) {
@@ -166,6 +167,7 @@ void Scene::update(float elapsed_time) {
 
     Camera* camera = Game::instance->camera;
 
+    BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions();
 
     //Test collisions with island: needs low res sphere

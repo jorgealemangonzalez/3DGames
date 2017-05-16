@@ -5,11 +5,21 @@
 #include "BulletManager.h"
 #include "entity.h"
 
+BulletManager* BulletManager::manager;
+
 Bullet::Bullet() {}
 Bullet::~Bullet() {}
 
 void Bullet::set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
-                 UID author, const std::string &type) {}
+                 UID author, const std::string &type) {
+    this->position = position;
+    this->last_position = last_position;
+    this->velocity = velocity;
+    this->ttl = ttl;
+    this->power = power;
+    this->author = author;
+    this->type = type;
+}
 
 
 BulletManager::BulletManager(){
@@ -31,6 +41,7 @@ void BulletManager::removePosFromPool(unsigned int pos){
 }
 
 void BulletManager::update(float elapsed_time) {
+    long before = SDL_GetTicks();
     for(unsigned int i = 0 ; i < last_pos_pool; ++i){
         Bullet &b = bullets_pool[i];
         b.ttl -=elapsed_time;
@@ -38,33 +49,67 @@ void BulletManager::update(float elapsed_time) {
             removePosFromPool(i);
             return;
         }
+        b.last_position = b.position;
         b.position = b.position + b.velocity*elapsed_time;
         //Test collisions
+        //TODO test with mesh or with sphere ??
+        bool hit = false;
         for(unsigned int i = 0 ; i < EntityCollider::dynamic_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
             Vector3 collision_point;
-            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),1.0f,collision_point)){
+            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),7.0f,collision_point)){
+
                 e->onCollision(&b);
+                hit = true;
+                break;
             }
+        }
+        if(hit){
+            removePosFromPool(i);
+            i--;
+            continue;
         }
 
         for(unsigned int i = 0 ; i < EntityCollider::static_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::static_colliders[i]);
             Vector3 collision_point;
-            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),1.0f,collision_point)){
+            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),7.0f,collision_point)){
                 e->onCollision(&b);
+                hit = true;
+                break;
             }
         }
+
+        if(hit){
+            removePosFromPool(i);
+            i--;
+            continue;
+        }
     }
+    long after = SDL_GetTicks();
+    std::cout<<"Update time bullets: "<<after-before<<"\n";
 }
 
 void BulletManager::render() {
     //TODO CREATE MESH WITH PREVIUS_POS AND POS OF ALL BULLETS
     //TODO RENDER THIS MESH WITH LINES 2 BY 2
+    long before = SDL_GetTicks();
+    if(last_pos_pool) {
+        Mesh m;
+        for (unsigned int i = 0; i < last_pos_pool; ++i) {
+            m.vertices.push_back(bullets_pool[i].last_position);
+            m.vertices.push_back(bullets_pool[i].position);
+        }
+        m.render(GL_LINES);
+    }
+    long after = SDL_GetTicks();
+    std::cout<<"Render time bullets: "<<after-before<<"\n";
 }
 
 void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity,
                                  float ttl, float power, UID author, const std::string &type) {
+
+    std::cout<<"Create bullet on position: "<<position.toString()<<"\n";
 
     if(last_pos_pool >= MAX_BULLETS){
         unsigned int mini = -1;
@@ -78,4 +123,11 @@ void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_po
     }
 
     bullets_pool[last_pos_pool++].set(position,last_position,velocity,ttl,power,author,type);
+}
+
+BulletManager* BulletManager::getManager() {
+    if(!manager){
+        manager = new BulletManager();
+    }
+    return manager;
 }
