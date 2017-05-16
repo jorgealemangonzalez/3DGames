@@ -44,3 +44,31 @@ por la de la entidad. Así se obtendría la misma posición relativa respecto la
 ---------------
 Entrega:
 grafo de escena y player controller
+
+-----
+NOTA: para sacar el vector frontal de un avion
+---------------
+
+---AI---
+AI controller:
+    target: a quien persigue
+    patruya: array de waypoints y cada vez va a uno (Patruya entre unas posiciones y otras)(Mas facil que perseguir por los lios de vectores de abajo)
+
+    Debería valer tanto para los aliados como para los enemigos.
+
+    Aviones de buscar y atacar , Aviones de ir a un punto y hacer algo y ya , escoltas (area de acción alrededor de una entidad)
+
+Grafo de comportamiento (Behaviour tree):
+De izquierda a derecha mas importante a menos, se va probando a ver si se pueden hacer las acciones de la izquierda.
+Sino se prueban las de la derecha , si si se puede se baja un nivel del tree y sigues probando hasta que encuentras la accion.
+Implementación sin arbol , solo con if else que definen la prioridad de comportamientos.
+
+
+Calculos:
+    Mirar si enemigo delante: Mirar angulo con el [dot product = V1 * V2 * cos(alpha)] del vector frontal y el de direccion al otro.
+    Rotar para mirar al enemigo: El angulo lo sacas con el dot product y cos-1 de este , el eje : [cross product = ] Obtiene el vector perpendicular a dos (eje)
+        NOTA: Siempre usar rotateLocal(rota con respecto a ) nunca rotate . Usar la Model-1 para pasar de coordenadas globales a locales
+        model.rotateLocal(__coordenadas locales[Globales*Model-1]__)
+
+Coordinacion de varias entidades para cumplir un objetivo:
+    Algoritmo blackboard: Lanzar mensajes entre entidades ( necesito ayuda... , enemigo cerca.... atc)

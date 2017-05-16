@@ -147,7 +147,8 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     entity->model.traslateLocal(0, 0, vel * dTime);     //TODO change this translate to some velocity vector
     if (game->keystate[SDL_SCANCODE_SPACE]){
         Vector3 actual_pos = entity->getPosition();
-        Vector3 dir =  (actual_pos - prev_pos).normalize();
+        Vector3 dir= entity->getDirection();
+        dir.normalize();
         BulletManager::getManager()->createBullet(actual_pos + dir*10,prev_pos + dir*10,dir*300,100.0f,10.0f,entity->uid,"No type yet");
     }
     //End bullets

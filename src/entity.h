@@ -42,6 +42,7 @@ public:
     Matrix44 getGlobalModel();
     Vector3 getPosition();
     Vector3 getRotation();
+    Vector3 getDirection();
 
     void followWithCamera(Camera* camera);
 

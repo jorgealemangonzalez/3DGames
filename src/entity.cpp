@@ -70,6 +70,10 @@ Vector3 Entity::getRotation() {
     return getGlobalModel().getRotationOnly() * Vector3();
 }
 
+Vector3 Entity::getDirection() {    //TODO use this everywhere
+    return getGlobalModel().rotateVector(Vector3(0,0,-1));
+}
+
 void Entity::followWithCamera(Camera* camera){
     Vector3 pos = getPosition();
     camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
@@ -148,7 +152,7 @@ void EntityMesh::render(Camera* camera){
         shader->disable();
     }
 
-    // Entity::render(camera); //Se podra hacer asi?
+    //TODO Entity::render(camera); //Se podra hacer asi?
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
@@ -211,13 +215,10 @@ void EntityCollider::checkCollisions() {
 
 bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){    //With ray
     Mesh* m = Mesh::Load(mesh);
-    if(!m->getCollisionModel()->rayCollision(origin.v,dir.v,true)){ //
+    if(!m->getCollisionModel()->rayCollision(origin.v,dir.v,true,0,max_dist)){ //
         return false;
     }
     m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
-    if(origin.distance(collision_point) >= max_dist)
-        return false;
-
     return true;
 }
 
