@@ -170,7 +170,6 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
 //================================================
 
 AIController::AIController() {
-    entity_follow = 12;//TODO quit this
     min_dist = 100;
 }
 
@@ -194,8 +193,7 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     float angle = acosf(looking.dot(to_target.normalize()));
 
     Vector3 perpendicular = to_target.cross(looking);
-    Matrix44 inv = driving->getGlobalModel();
-    inv.inverse();  //TODO do it when changing e_uid (¿Costoso?)
+    Matrix44 inv = this->inverseModel;
     perpendicular = inv.rotateVector(perpendicular);
 
     driving->model.rotateLocal(angle,perpendicular);
@@ -204,6 +202,11 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
 }
 
+void AIController::setEntityFollow(UID entity_follow) {
+    this->entity_follow = entity_follow;
+    this->inverseModel = Entity::getEntity(entity_follow)->getGlobalModel();
+    this->inverseModel.inverse();
+}
 //================================================
 
 ClickController::ClickController() {}

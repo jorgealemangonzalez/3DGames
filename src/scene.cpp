@@ -156,6 +156,7 @@ void Scene::loadScene(const char* filename) {
         }
         if(entity_name == "hunter"){
             Game::instance->enemy->addControllableEntity(clone->uid);
+            Game::instance->enemy->aiController->setEntityFollow(12);
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";

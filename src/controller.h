@@ -42,14 +42,17 @@ public:
 };
 
 class AIController : public EntityController{
-public:
     UID entity_follow;
+public:
+
     double min_dist; //Minimum distance to entity follow
+    Matrix44 inverseModel;
 
     AIController();
     ~AIController();
 
     void update( double seconds_elapsed, UID e_uid);
+    void setEntityFollow(UID entity_follow);
 };
 
 class ClickController : public EntityController{
