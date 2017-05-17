@@ -2,6 +2,7 @@
 #include "mesh.h"
 #include <algorithm>    // std::find
 #include <sstream>
+#include "utils.h"
 
 UID Entity::s_created = 1;
 std::map<UID,Entity*> Entity::s_entities;
@@ -182,70 +183,75 @@ void EntityCollider::registerCollider(EntityCollider* e) {
 
 void EntityCollider::checkCollisions() {
     //Test every possible collision
+    auto now = getTime();
+
     Vector3 collision;
-    EntityCollider *e_1, *e_2;
+    EntityCollider *entitySource, *entityDest;
     std::stringstream ss;
     for(int i = 0 ; i < dynamic_colliders.size(); ++i){
-        e_1 = (EntityCollider*)Entity::getEntity(dynamic_colliders[i]);
-        if(e_1 == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + i); --i; continue;}
-        e_1->setTransform();
-        Vector3 dinamic_pos = e_1->getGlobalModel().getTranslationOnly();
+        entitySource = (EntityCollider*)Entity::getEntity(dynamic_colliders[i]);
+        if(entitySource == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + i); --i; continue;}
+        //entitySource->setTransform(); //Ahora mismo solo se
+        Vector3 dinamic_pos_source = entitySource->getGlobalModel().getTranslationOnly();
+        double source_radius = Mesh::Load(entitySource->mesh)->info.radius;
 
         for(int st = 0 ; st < static_colliders.size(); ++st){
-            e_2 = (EntityCollider*)Entity::getEntity(static_colliders[st]);
-            if(e_2 == NULL) {static_colliders.erase(static_colliders.begin() + i); --st; continue;}
-            if(e_2->testCollision(dinamic_pos,20.0f, collision)) {
-                e_1->onCollision(e_2);
-                e_2->onCollision(e_1);
-                ss << e_1->name << " (" << e_1->uid << ") <-> " << e_2->name << " (" << e_2->uid << ")\n";
+            entityDest = (EntityCollider*)Entity::getEntity(static_colliders[st]);
+            if(entityDest == NULL) {static_colliders.erase(static_colliders.begin() + i); --st; continue;}
+            if(entityDest->testSphereCollision(dinamic_pos_source, source_radius, collision)) {
+                entitySource->onCollision(entityDest);
+                entityDest->onCollision(entitySource);
+                ss << entitySource->name << " (" << entitySource->uid << ") <-> " << entityDest->name << " (" << entityDest->uid << ")\n";
             }
         }
 
         for(int j = i+1 ; j < dynamic_colliders.size(); ++j){
-            e_2 = (EntityCollider*)Entity::getEntity(dynamic_colliders[j]);
-            if(e_2 == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + j); --j; continue;}
-            if(e_2->testCollision(dinamic_pos,20.0f, collision)){
-                e_1->onCollision(e_2);
-                e_2->onCollision(e_1);
-                ss << e_1->name << " (" << e_1->uid << ") <-> " << e_2->name << " (" << e_2->uid << ")\n";
+            entityDest = (EntityCollider*)Entity::getEntity(dynamic_colliders[j]);
+            if(entityDest == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + j); --j; continue;}
+            if(entityDest->testSphereCollision(dinamic_pos_source, source_radius, collision)){
+                entitySource->onCollision(entityDest);
+                entityDest->onCollision(entitySource);
+                ss << entitySource->name << " (" << entitySource->uid << ") <-> " << entityDest->name << " (" << entityDest->uid << ")\n";
             }
         }
     }
+    std::cout<<"Time checkcollisions: "<<getTime()-now<<"\n";
 }
 
-bool EntityCollider::testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point){    //With ray
-    Mesh* m = Mesh::Load(mesh);
-    if(!m->getCollisionModel()->rayCollision(origin.v,dir.v,true,0,max_dist)){ //
+bool EntityCollider::testRayCollision(Vector3 &origin, Vector3 &dir, float max_dist, Vector3 &collision_point){    //With ray
+    CollisionModel3D* cm = Mesh::Load(mesh)->getCollisionModel();
+    cm->setTransform(this->getGlobalModel().m);
+    if(!cm->rayCollision(origin.v,dir.v,true,0,max_dist)){ //
         return false;
     }
-    m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    cm->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
     return true;
 }
 
-bool EntityCollider::testCollision(Vector3& origin, float radius, Vector3& collision_point){    //With Sphere
-    Mesh* m = Mesh::Load(mesh);
-    if(!m->getCollisionModel()->sphereCollision(origin.v,radius)){ //
+bool EntityCollider::testSphereCollision(Vector3 &origin, float radius, Vector3 &collision_point){    //With Sphere
+    CollisionModel3D* cm = Mesh::Load(mesh)->getCollisionModel();
+    cm->setTransform(this->getGlobalModel().m);
+    if(!cm->sphereCollision(origin.v,radius)){ //
         return false;
     }
-    m->getCollisionModel()->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    cm->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
     return true;
 }
 
-bool EntityCollider::testCollision(EntityMesh *testMesh) {
-    Mesh* sourceMesh = Mesh::Load(mesh);
-    Mesh* destMesh = Mesh::Load(testMesh->mesh);
+bool EntityCollider::testMeshCollision(EntityMesh *testMesh) {
+    CollisionModel3D* sourceCM = Mesh::Load(mesh)->getCollisionModel();
+    CollisionModel3D* destCM = Mesh::Load(testMesh->mesh)->getCollisionModel();
+    sourceCM->setTransform(this->getGlobalModel().m);
+    destCM->setTransform(testMesh->getGlobalModel().m);
 
-    bool collide = sourceMesh->getCollisionModel()->collision(
-            destMesh->getCollisionModel(), -1 , 0, testMesh->getGlobalModel().m);
+    bool collide = sourceCM->collision(
+            destCM, -1 , 0, testMesh->getGlobalModel().m);
     return collide;
 }
 
-void EntityCollider::setTransform(){
-    Mesh::Load(mesh)->getCollisionModel()->setTransform(model.m); //Costoso !
-}
-
 void EntityCollider::onCollision(EntityCollider *withEntity) {
-    //std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
+
+    std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
 }
 
 void EntityCollider::onCollision(Bullet *withBullet) {

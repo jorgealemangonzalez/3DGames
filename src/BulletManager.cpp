@@ -57,7 +57,7 @@ void BulletManager::update(float elapsed_time) {
         for(unsigned int i = 0 ; i < EntityCollider::dynamic_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
             Vector3 collision_point;
-            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),7.0f,collision_point)){
+            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
 
                 e->onCollision(&b);
                 hit = true;
@@ -73,7 +73,7 @@ void BulletManager::update(float elapsed_time) {
         for(unsigned int i = 0 ; i < EntityCollider::static_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::static_colliders[i]);
             Vector3 collision_point;
-            if(e->testCollision(b.position,(b.last_position - b.position).normalize(),7.0f,collision_point)){
+            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
                 e->onCollision(&b);
                 hit = true;
                 break;

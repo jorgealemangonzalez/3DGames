@@ -181,7 +181,7 @@ void Scene::update(float elapsed_time) {
     Vector3 pos = camera->eye;
     EntityCollider* island = (EntityCollider*)s_templates["island"];
 
-    if(island->testCollision(pos, dir, 1000000, collision)){
+    if(island->testRayCollision(pos, dir, 1000000, collision)){
         EntityMesh* em = new EntityMesh();
         em->setMesh("sphere.ASE");
         em->model.setTranslation(collision.x, collision.y, collision.z);

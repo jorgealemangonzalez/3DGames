@@ -196,7 +196,7 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     Matrix44 inv = this->inverseModel;
     perpendicular = inv.rotateVector(perpendicular);
 
-    driving->model.rotateLocal(angle,perpendicular);
+    driving->model.rotateLocal(angle * seconds_elapsed,perpendicular);
 
 
     driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector

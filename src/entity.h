@@ -100,10 +100,9 @@ public:
     static void registerCollider(EntityCollider* e);
     static void checkCollisions();
 
-    bool testCollision(Vector3& origin, Vector3& dir, float max_dist, Vector3& collision_point);
-    bool testCollision(Vector3& origin, float radius, Vector3& collision_point);
-    bool testCollision(EntityMesh* testMesh);
-    void setTransform();
+    bool testRayCollision(Vector3 &origin, Vector3 &dir, float max_dist, Vector3 &collision_point);
+    bool testSphereCollision(Vector3 &origin, float radius, Vector3 &collision_point);
+    bool testMeshCollision(EntityMesh *testMesh);
     void onCollision(EntityCollider* withEntity);
     void onCollision(Bullet *withBullet);
 
