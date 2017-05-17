@@ -171,7 +171,7 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
 
 AIController::AIController() {
     entity_follow = 12;//TODO quit this
-
+    min_dist = 100;
 }
 
 AIController::~AIController() {
@@ -180,11 +180,16 @@ AIController::~AIController() {
 
 void AIController::update(double seconds_elapsed, UID e_uid) {
     Entity* follow = Entity::getEntity(entity_follow);
-    if(follow == NULL)
+    if(follow == NULL){
+        std::cout<<"Entity that AI follow is NULL\n";
         return;
+    }
+
     Entity* driving = Entity::getEntity(e_uid);
 
     Vector3 to_target = follow->getPosition() - driving->getPosition();
+    if(to_target.length() < min_dist)
+        return;
     Vector3 looking = driving->getDirection().normalize();
     float angle = acosf(looking.dot(to_target.normalize()));
 
@@ -196,7 +201,7 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     driving->model.rotateLocal(angle,perpendicular);
 
 
-    driving->model.traslateLocal(0, 0, -400 * seconds_elapsed);     //TODO change this translate to some velocity vector
+    driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
 }
 
 //================================================

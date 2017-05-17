@@ -44,6 +44,7 @@ public:
 class AIController : public EntityController{
 public:
     UID entity_follow;
+    double min_dist; //Minimum distance to entity follow
 
     AIController();
     ~AIController();
