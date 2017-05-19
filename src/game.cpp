@@ -43,6 +43,7 @@ void Game::init(void) {
     camera = new Camera();
     camera->lookAt(Vector3(0.f, 900.f, 25.f), Vector3(250.f, 900.f, 0.f),
                    Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
+    camera->eye = Vector3(-550.f,3136.f,-2239);
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
                            100000000.f); //set the projection, we want to be perspectives
 
@@ -70,9 +71,9 @@ void Game::render(void) {
     //Put the camera matrices on the stack of OpenGL (only for fixed rendering)
     camera->set();
     //Draw out world
-    drawGrid(500); //background grid
 
     Scene::getScene()->render(camera);
+    //drawGrid(500); //background grid
     drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
 
     glDisable(GL_BLEND);

@@ -2,6 +2,8 @@
 #include "controller.h"
 #include "game.h"
 
+#define MIN_DIST_AI 100
+
 CameraController::CameraController() : mode(1) {}
 CameraController::~CameraController() {}
 
@@ -170,7 +172,7 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
 //================================================
 
 AIController::AIController() {
-    min_dist = 100;
+    min_dist = MIN_DIST_AI;
 }
 
 AIController::~AIController() {

@@ -2,6 +2,8 @@
 #include "extra/textparser.h"
 #include "game.h"
 
+#define MIPMAP_DISABLE false
+
 Scene* Scene::scene = NULL;
 Scene::Scene(){
     root = new Entity();
@@ -29,9 +31,11 @@ void Scene::addBackground(Entity *e) {
 void Scene::render(Camera* camera) {
     if(background != NULL){
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         Vector3 cubemapcenter = camera->eye;
         background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
         background->render(camera);
+        glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
     root->render(camera);
@@ -55,8 +59,11 @@ void Scene::loadScene(const char* filename) {
         background->setMesh(t.getword());
         t.seek("*texture");
         std::string texture = t.getword();
-        if(texture != "no")   //Si tiene textura
+        if(texture != "no") {   //Si tiene textura
             background->setTexture(texture);
+        }
+        //background->setPixelShader("polar_background.fs");
+        Texture::Load(texture,MIPMAP_DISABLE);  //Load here to disable mipmaps ( cube lines )
         this->addBackground(background);
     }
 
@@ -153,10 +160,11 @@ void Scene::loadScene(const char* filename) {
         if(entity_name == "fighter"){
             Game::instance->human->addControllableEntity(clone->uid);
             Game::instance->human->controlling_entity = clone->uid;
+            Game::instance->enemy->aiController->setEntityFollow(clone->uid);
+
         }
         if(entity_name == "hunter"){
             Game::instance->enemy->addControllableEntity(clone->uid);
-            Game::instance->enemy->aiController->setEntityFollow(12);
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";

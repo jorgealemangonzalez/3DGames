@@ -1,13 +1,16 @@
 *background
-    *mesh cubemaps/cubemap/cubemap.ASE
-    *texture cubemaps/cubemap/cielo.tga
+    *mesh cubemaps/cubemap_stars/box.ASE
+    *texture cubemaps/cubemap_stars/stars.tga
 
-*entities 6
-    island
-        *entity collider static
-        *mesh island/island.ASE
-        *texture island/island_color_luz.tga
-        *munition no
+*background
+    *mesh cubemaps/cubemap_space/space_cubemap.ASE
+    *texture cubemaps/cubemap_space/hell_cubemap.tga
+
+*background
+    *mesh cubemaps/polar_map/sphere.ASE
+    *texture cubemaps/polar_map/homewrld_background.tga
+
+*entities 9
     fighter
         *entity collider dynamic
         *mesh fighter/x3_fighter.ASE
@@ -33,27 +36,46 @@
         *mesh runner/x3_runner.ASE
         *texture runner/x3_runner.tga
         *munition no
+
     space_train
         *entity collider dynamic
         *mesh bomber/bomber.ASE
         *texture bomber/bomber.tga
         *munition no
 
-*scene level1 8
-    *entity island
-        *position 0 0 0
-    *entity island
-        *position 14000 0 14000
-    *entity island
-        *position 0 0 14000
+    asteroide_gran
+        *entity collider static
+        *mesh asteroides/asteroide1.ASE
+        *texture asteroides/asteroide.tga
+        *munition no
+
+    asteroide_med
+        *entity collider static
+        *mesh asteroides/asteroide2.ASE
+        *texture asteroides/asteroide.tga
+        *munition no
+
+    asteroide_peq
+        *entity collider static
+        *mesh asteroides/asteroide3.ASE
+        *texture asteroides/asteroide.tga
+        *munition no
+
+    asteroides
+        *entity collider static
+        *mesh asteroides/asteroides.ASE
+        *texture asteroides/asteroide.tga
+        *munition no
+
+*scene level1 5
     *entity fighter
         *position 0 900 28
+    *entity asteroide_gran
+        *position 0 1900 448
+    *entity asteroide_peq
+        *position 0 910 328
+    *entity asteroide_med
+        *position 0 2910 128
     *entity hunter
         *position 0 900 538
-    *entity interceptor
-        *position 0 900 448
-    *entity runner
-        *position 0 910 328
-    *entity space_train
-        *position 0 910 128
 

@@ -7,6 +7,12 @@
 #include "entity.h"
 
 class CameraController{
+    /*TODO Meter todos los comportamientos de la camara aqui:
+        - Que tenga un punto al que siempre ve a una distancia en concreto,
+            ir cambiando la posición de este punto conforme lo que seleccionamos con el raton
+            Hay que guardar dos vectores para reconstruir la camara con la misma inclinación
+            http://tamats.com/games/ld27/
+    */
 public:
     int mode;
     Vector3 entityPreviusPos;

@@ -73,5 +73,5 @@ Calculos:
 Coordinacion de varias entidades para cumplir un objetivo:
     Algoritmo blackboard: Lanzar mensajes entre entidades ( necesito ayuda... , enemigo cerca.... atc)
 
-PREGUNTAS:
-    acosf y dot product van en radianes ?
+Juegos:
+homeworld
