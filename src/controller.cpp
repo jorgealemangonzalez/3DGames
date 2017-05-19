@@ -1,6 +1,7 @@
 
 #include "controller.h"
 #include "game.h"
+#include "mesh.h"
 
 #define MIN_DIST_AI 100
 
@@ -23,7 +24,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
         {
             if(entity != NULL){
                 Vector3 pos = entity->getPosition();
-                Vector3 dir = (pos - entityPreviusPos).normalize();
+                Vector3 dir = (pos - entityPreviusPos).normalize()*0.5 + entity->getDirection()*0.5;    //TODO Controll velocity
 
 
                 Game::instance->camera->lookAt(
@@ -35,8 +36,34 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             }
             break;
         }
+        case 3:
+        {
+            try {
+                //Should only  look relative to entityMesh
+                EntityMesh* entityMesh = (EntityMesh*)entity;
+                Mesh* mesh = Mesh::Load(entityMesh->mesh);
+
+                Vector3 entityPos = entityMesh->getPosition();
+
+                float entity_radius = mesh->info.radius;
+
+                Vector3 eye = entityPos + Vector3(0,1,0)*entity_radius*10,  //TODO See if x10 distance is ok or should be relative to other thing
+                        center = entityPos,
+                        up(1,1,0);  //TODO ¿ perpendicular to center - eye ?
+
+                //Vector3 front = center - eye;
+                //up = Vector3(0,1, -front.y/front.z).normalize();
+                //-(x*v.x + y*v.y)/z = v.z
+
+                Game::instance->camera->lookAt(eye,center,up);
+
+            }catch(...) {
+                std::cout<<"Error updating camera relative to pos";
+            }
+        }
         default:
         {
+            //FREE CAMERA
             double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
             //mouse input to rotate the cam

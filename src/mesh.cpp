@@ -310,7 +310,7 @@ Mesh* Mesh::Load(const std::string& filename){
 	return msh;
 }
 
-bool Mesh::loadASE( const std::string& filename){
+bool Mesh::loadASE( const std::string& filename){//CUALQUIER CAMBIO EN ESTA FUNCION HAY QUE BORRAR LOS *.ASE.bin "find . -type f -iname \*.ASE.bin -delete"s
     long time1 = getTime();
 
 	//check if binary exists:
@@ -320,7 +320,7 @@ bool Mesh::loadASE( const std::string& filename){
 	if(stat (binfilename.c_str(), &buffer) == 0){
 		loadBIN(binfilename.c_str());
 	}else{
-		Vector3 max_v(100000.f, 100000.f, 100000.f);
+		Vector3 max_v(0.f, 0.f, 0.f);
 		Vector3 min_v(100000.f, 100000.f, 100000.f);
 
         std::vector<Vector3> all_vertex;
@@ -344,20 +344,15 @@ bool Mesh::loadASE( const std::string& filename){
             Vector3 v( x, z, y );
             all_vertex[i] = v;
 
-			if(v.x < min_v.x)
-				min_v.x = v.x;
-			if (v.x > max_v.x)
-				max_v.x = v.x;
+            min_v.x = std::min(v.x,min_v.x);
+            max_v.x = std::max(v.x,max_v.x);
 
-			if(v.y < min_v.y)
-				min_v.y = v.y;
-			if (v.y > max_v.y)
-				max_v.y = v.y;
+            min_v.y = std::min(v.y,min_v.y);
+            max_v.y = std::max(v.y,max_v.y);
 
-			if(v.z < min_v.z)
-				min_v.z = v.z;
-			if (v.z > max_v.z)
-				max_v.z = v.z;
+
+            min_v.z = std::min(v.z,min_v.z);
+            max_v.z = std::max(v.z,max_v.z);
         }
 
         vertices.resize(num_faces*3);
