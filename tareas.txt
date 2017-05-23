@@ -9,7 +9,7 @@ Controles usuario interfaz:
 
 ---------TAREAS---------
 
-(TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
+(DONE) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
 
 (TODO) Selector unidades , cuadrado alrededor y vida
 
@@ -17,7 +17,7 @@ Controles usuario interfaz:
 
 (TODO) Scroll acercar y alejar
 
-(TODO) EntitySpawner
+(DONE) EntitySpawner
 
 (TODO) AIcontroller , si esta cerca que se oriente hacia el objetivo pero que no se mueva
 
@@ -33,4 +33,7 @@ Controles usuario interfaz:
 
 (TODO) Ver como se comportan en combate entity v.s entity  // entity v.s nave
 
+(TODO) Si tienes seleccionada una entidad que cuando gires la camara te gire con este siguiendo en el centro
+
+(TODO) Que las tropas no se choquen contra los asteroides ( AI ) Fuerza gravitacional de los que estan cerca
 

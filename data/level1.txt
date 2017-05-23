@@ -10,7 +10,7 @@
     *mesh cubemaps/polar_map/sphere.ASE
     *texture cubemaps/polar_map/homewrld_background.tga
 
-*entities 9
+*entities 10
     fighter
         *entity collider dynamic
         *mesh fighter/x3_fighter.ASE
@@ -67,7 +67,12 @@
         *texture asteroides/asteroide.tga
         *munition no
 
-*scene level1 5
+    hunterSpawner
+        *entity spawner
+        *spawns hunter
+        *spawntime 5.1
+
+*scene level1 6
     *entity fighter
         *position 0 900 28
     *entity asteroide_gran
@@ -78,4 +83,7 @@
         *position 0 2910 128
     *entity hunter
         *position 0 900 538
+    *entity hunterSpawner
+        *position 0 900 538
+
 

@@ -3,6 +3,8 @@
 #include <algorithm>    // std::find
 #include <sstream>
 #include "utils.h"
+#include "controller.h"
+#include "game.h"
 
 UID Entity::s_created = 1;
 std::map<UID,Entity*> Entity::s_entities;
@@ -98,6 +100,44 @@ void Entity::render(Camera* camera){
 void Entity::update(float elapsed_time){
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);
+    }
+}
+//================================================
+
+EntitySpawner::EntitySpawner(): Entity() {
+
+}
+
+EntitySpawner::~EntitySpawner() {
+
+}
+
+void EntitySpawner::spawnEntity() {
+    EntityCollider* newCollider = (EntityCollider*)Entity::getEntity(entitySpawned)->clone();
+    Vector3 spawnPos = getGlobalModel().getTranslationOnly();
+    newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);
+    this->parent->addChild(newCollider);
+    EntityCollider::registerCollider(newCollider);
+    Game::instance->enemy->addControllableEntity(newCollider->uid); //TODO quit this hack
+}
+
+Entity* EntitySpawner::clone() {
+    EntitySpawner* clon = new EntitySpawner();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
+
+void EntitySpawner::render(Camera *camera) {
+
+}
+
+void EntitySpawner::update(float elapsed_time) {
+    lastSpawn += elapsed_time;
+    if(spawnTime < lastSpawn){
+        lastSpawn = 0.0;
+        spawnEntity();
     }
 }
 

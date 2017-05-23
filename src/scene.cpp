@@ -50,7 +50,7 @@ void Scene::loadScene(const char* filename) {
     }
     t.reset();
 
-    std::map<std::string,EntityMesh*> templates;  //Mesh info for position
+    std::map<std::string,Entity*> templates;  //Mesh info for position
 
     {   //Background
         EntityMesh* background = new EntityMesh();
@@ -74,7 +74,7 @@ void Scene::loadScene(const char* filename) {
         std::string name = t.getword();
         t.seek("*entity");
         std::string entityClass = t.getword();
-        EntityMesh *e;
+        Entity *e;
         std::cout << entityClass << "\n";
 
         if (entityClass == "collider") {
@@ -88,47 +88,58 @@ void Scene::loadScene(const char* filename) {
                 std::cout << "Error reading collider type in " << name << std::endl;
                 exit(0);
             }
+            t.seek("*mesh");
+            ec->setMesh(t.getword());
+            t.seek("*texture");
+            std::string texture = t.getword();
+            if(texture != "no")   //Si tiene textura
+                ec->setTexture(texture);
+            t.seek("*munition");
+            std::string munition = t.getword();
+            if(munition != "no") {
+                //It has munition
+                t.seek("*generate");
+                float x = t.getint();
+                float y = t.getint();
+                float z = t.getint();
+                Vector3 generatePos = Vector3(x,y,z);
+                std::cout<<"Generate Pos: "+generatePos.toString()+"\n";
+                if (munition == "ray") {
+                    //Ray munition
+                    std::cout<<"RAY: ";
+                    t.seek("*color");
+                    Vector3 color = Vector3(t.getint(),t.getint(),t.getint());
+                    std::cout<<"color "+color.toString()+"\n";
+                } else if (munition == "mesh") {
+                    //Mesh munition
+                    std::cout<<"MESH_MUNITION: ";
+                    t.seek("*mesh");
+
+                    std::string munition_mesh = t.getword();
+                    t.seek("*texture");
+                    std::string munition_tga = t.getword();
+
+                    std::cout<<" mesh "<<munition_mesh<<" tga "<<munition_tga<<"\n";
+
+                }
+            }
             e = ec;
-        }else{
+        }else if(entityClass == "spawner"){
+            EntitySpawner* es = new EntitySpawner();
+            t.seek("*spawns");
+            std::string spawnName = t.getword();
+            EntityCollider* spawnEntity = (EntityCollider*)templates[spawnName];
+            es->entitySpawned = spawnEntity->uid;
+            t.seek("*spawntime");
+            es->spawnTime = t.getfloat();
+            e = es;
+        }
+        else{
             std::cout<<"Error reading entity class type for "<<name<<std::endl;
             exit(0);
         }
 
-        t.seek("*mesh");
-        e->setMesh(t.getword());
-        t.seek("*texture");
-        std::string texture = t.getword();
-        if(texture != "no")   //Si tiene textura
-            e->setTexture(texture);
-        t.seek("*munition");
-        std::string munition = t.getword();
-        if(munition != "no") {
-            //It has munition
-            t.seek("*generate");
-            float x = t.getint();
-            float y = t.getint();
-            float z = t.getint();
-            Vector3 generatePos = Vector3(x,y,z);
-            std::cout<<"Generate Pos: "+generatePos.toString()+"\n";
-            if (munition == "ray") {
-                //Ray munition
-                std::cout<<"RAY: ";
-                t.seek("*color");
-                Vector3 color = Vector3(t.getint(),t.getint(),t.getint());
-                std::cout<<"color "+color.toString()+"\n";
-            } else if (munition == "mesh") {
-                //Mesh munition
-                std::cout<<"MESH_MUNITION: ";
-                t.seek("*mesh");
 
-                std::string munition_mesh = t.getword();
-                t.seek("*texture");
-                std::string munition_tga = t.getword();
-
-                std::cout<<" mesh "<<munition_mesh<<" tga "<<munition_tga<<"\n";
-
-            }
-        }
         templates[name] = e;
     }
 
@@ -150,10 +161,9 @@ void Scene::loadScene(const char* filename) {
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
         this->addToRoot(clone);
 
-        try {
-            EntityCollider* ec = (EntityCollider*) clone;
+        if(EntityCollider* ec = dynamic_cast<EntityCollider*>(clone)){
             EntityCollider::registerCollider(ec);
-        } catch(...) {}
+        }
 
         //HACK
         //TODO remove this
@@ -169,8 +179,6 @@ void Scene::loadScene(const char* filename) {
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";
         std::cout<<"\t"<<clone->uid<<": "<<clone->getPosition().x<<" "<<clone->getPosition().y<<" "<<clone->getPosition().z<<"\n";
-        Entity* eee = Entity::getEntity(clone->uid);
-        std::cout<<"\t"<<eee->uid<<": "<<eee->getPosition().x<<" "<<eee->getPosition().y<<" "<<eee->getPosition().z<<"\n";
     }
 }
 

@@ -111,4 +111,21 @@ public:
     virtual void update(float elapsed_time);
 };
 
+class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE
+public:
+    UID entitySpawned;
+    float spawnTime;
+    float lastSpawn;
+
+    EntitySpawner();
+    ~EntitySpawner();
+
+    void spawnEntity();
+    //Inherit from entity
+    Entity* clone();
+    void render(Camera* camera);
+    void update(float elapsed_time);
+
+};
+
 #endif //TJE_FRAMEWORK_2017_ENTITY_H
