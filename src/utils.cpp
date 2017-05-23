@@ -7,10 +7,7 @@
 #endif
 
 #include "includes.h"
-
 #include "game.h"
-#include "camera.h"
-
 #include "extra/stb_easy_font.h"
 
 long getTime()

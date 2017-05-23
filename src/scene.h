@@ -10,12 +10,14 @@ class Scene {
 public:
     Entity* root;
     Entity* background;
+    Entity* grid;
 
     std::string name;
 
     static Scene* getScene();
     void addToRoot(Entity* e);
     void addBackground(Entity* e);
+    void addGrid(Entity* e);
     void render(Camera* camera);
     void loadScene(const char* filename);
     void update(float elapsed_time);

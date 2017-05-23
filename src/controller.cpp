@@ -148,7 +148,7 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     Entity* entity = Entity::getEntity(e_uid);
     Game* game = Game::instance;
     if(entity == NULL){
-        std::cout << "FighterController sin entidad asignada!\n";
+        //std::cout << "FighterController sin entidad asignada!\n";
         return;
     }
     //Controller mas realista
@@ -166,7 +166,7 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
 
     acc *= 0.5;
     vel = vel + acc * dTime * 20;
-    std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
+    //std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
 
     //Bullets:::
     Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
@@ -188,7 +188,7 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
 
     angX = angX * dTime * 0.5;
     angY = angY * dTime * 0.5;
-    std::cout << "angX: " << angX << "\tangY: " << angY << "\n\n";
+    //std::cout << "angX: " << angX << "\tangY: " << angY << "\n\n";
     entity->model.rotateLocal(angX, Vector3(0,1,0));
     entity->model.rotateLocal(angY, Vector3(1,0,0));
 }
@@ -206,7 +206,7 @@ AIController::~AIController() {
 void AIController::update(double seconds_elapsed, UID e_uid) {
     Entity* follow = Entity::getEntity(entity_follow);
     if(follow == NULL){
-        std::cout<<"Entity that AI follow is NULL\n";
+        //std::cout<<"Entity that AI follow is NULL\n";
         return;
     }
 

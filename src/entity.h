@@ -32,8 +32,9 @@ public:
     //Static methods
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
+    static UID entityPointed(double x, double y, Camera* c);
 
-    //Entity methods
+        //Entity methods
     void save();
     void addChild(Entity* ent);
     void removeChild(Entity* ent);

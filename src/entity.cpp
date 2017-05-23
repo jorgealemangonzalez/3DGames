@@ -12,7 +12,7 @@ std::vector<UID> Entity::to_destroy;
 std::vector<UID> EntityCollider::static_colliders;
 std::vector<UID> EntityCollider::dynamic_colliders;
 
-Entity::Entity() : uid(Entity::s_created++), parent(NULL){ save(); }
+Entity::Entity() : uid(Entity::s_created++), parent(NULL) { save(); }
 Entity::~Entity() {}
 
 //Static methods
@@ -26,6 +26,56 @@ Entity* Entity::getEntity(UID uid) {
 
 void Entity::destroy_entities_to_destroy() {
 
+}
+
+UID Entity::entityPointed(double x, double y, Camera* camera){
+    //Make a ray from the position of the eye of the camera
+    //and get the uid of the entity that collides with it
+    Matrix44 viewprojection_inverse = camera->viewprojection_matrix;
+    viewprojection_inverse.inverse();
+
+    Vector3 mouseNormalized(x, y, 0);
+    Vector3 mouseWorld = viewprojection_inverse * mouseNormalized;
+
+    Vector3 direction = mouseWorld - camera->eye;
+    direction.normalize();
+
+    
+    std::cout << "\n";
+    std::cout << "Mouse camera pos: " << x << " " << y << "\n";
+    std::cout << "Mouse pos: " << mouseWorld.toString() << "\n";
+    std::cout << "Eye pos: " << camera->eye.toString() << "\n";
+    std::cout << "Mouse RAY: dir " << direction.toString() << "\n";
+
+    BulletManager::getManager()->createBullet(camera->eye+((camera->center-camera->eye).normalize()), camera->eye+((camera->center-camera->eye).normalize()*10), direction, 1000.f, 10.f, 0, "No type yet");
+
+    UID closest_uid = 0;
+    Vector3 collision;
+    double minDistance = INFINITY;
+
+    for(UID &entity_uid : EntityCollider::dynamic_colliders){
+        EntityCollider* const entity = (EntityCollider*)Entity::getEntity(entity_uid);
+        if(entity->testRayCollision(camera->eye, direction, INFINITY, collision)){
+            double distance = camera->eye.distance(collision);
+            if(distance < minDistance){
+                minDistance = distance;
+                closest_uid = entity_uid;
+            }
+        }
+    }
+
+    for(UID &entity_uid : EntityCollider::static_colliders){
+        EntityCollider* const entity = (EntityCollider*)Entity::getEntity(entity_uid);
+        if(entity->testRayCollision(camera->eye, direction, INFINITY, collision)){
+            double distance = camera->eye.distance(collision);
+            if(distance < minDistance){
+                minDistance = distance;
+                closest_uid = entity_uid;
+            }
+        }
+    }
+
+    return closest_uid;
 }
 
 
@@ -182,6 +232,7 @@ void EntityMesh::render(Camera* camera){
     Matrix44 globalModel = getGlobalModel();
     Matrix44 mvp = globalModel * camera->viewprojection_matrix;
     Mesh* m = Mesh::Load(mesh);
+
     if(camera->testSphereInFrustum(getPosition(), m->info.radius)){
         Shader* shader = Shader::Load(shaderDesc.vs,shaderDesc.fs);
         shader->enable();
@@ -254,7 +305,7 @@ void EntityCollider::checkCollisions() {
             }
         }
     }
-    std::cout<<"Time checkcollisions: "<<getTime()-now<<"\n";
+    //std::cout<<"Time checkcollisions: "<<getTime()-now<<"\n";
 }
 
 bool EntityCollider::testRayCollision(Vector3 &origin, Vector3 &dir, float max_dist, Vector3 &collision_point){    //With ray

@@ -9,7 +9,9 @@ Controles usuario interfaz:
 
 ---------TAREAS---------
 
-(DONE) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
+(TODO) Mensajes debug de consola printados en pantalla
+
+(TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
 
 (TODO) Selector unidades , cuadrado alrededor y vida
 
@@ -29,7 +31,7 @@ Controles usuario interfaz:
 
 (TODO) Añadir el camera que ha modificado javi al framework para poder hacer la GUI bien ( Puede que no haga falta )
 
-(TODO) Comprobar destrucción de entities
+(TODO) Comprobar destrucción de entities (empezado en entity: to_destroy, destroy, destroy_entities_to_destroy)
 
 (TODO) Ver como se comportan en combate entity v.s entity  // entity v.s nave
 

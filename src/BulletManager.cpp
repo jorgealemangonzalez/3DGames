@@ -87,7 +87,7 @@ void BulletManager::update(float elapsed_time) {
         }
     }
     long after = SDL_GetTicks();
-    std::cout<<"Update time bullets: "<<after-before<<"\n";
+    //std::cout<<"Update time bullets: "<<after-before<<"\n";
 }
 
 void BulletManager::render() {
@@ -103,7 +103,7 @@ void BulletManager::render() {
         m.render(GL_LINES);
     }
     long after = SDL_GetTicks();
-    std::cout<<"Render time bullets: "<<after-before<<"\n";
+    //std::cout<<"Render time bullets: "<<after-before<<"\n";
 }
 
 void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity,

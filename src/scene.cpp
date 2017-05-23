@@ -8,6 +8,7 @@ Scene* Scene::scene = NULL;
 Scene::Scene(){
     root = new Entity();
     background = NULL;
+    grid = NULL;
 }
 Scene::~Scene(){
 
@@ -28,13 +29,25 @@ void Scene::addBackground(Entity *e) {
     Scene::getScene()->background = e;
 }
 
+void Scene::addGrid(Entity * e) {
+    Scene::getScene()->grid = e;
+}
+
 void Scene::render(Camera* camera) {
-    if(background != NULL){
+    if(background != NULL || grid != NULL){
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        Vector3 cubemapcenter = camera->eye;
-        background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
-        background->render(camera);
+        if(background != NULL){
+            Vector3 cubemapcenter = camera->eye;
+            background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
+            background->render(camera);
+        }
+        if(grid != NULL){
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            grid->render(camera);
+            glDisable(GL_BLEND);
+        }
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
@@ -65,6 +78,27 @@ void Scene::loadScene(const char* filename) {
         //background->setPixelShader("polar_background.fs");
         Texture::Load(texture,MIPMAP_DISABLE);  //Load here to disable mipmaps ( cube lines )
         this->addBackground(background);
+    }
+
+    {   //Grid
+        Mesh *plane = new Mesh();
+        plane->createQuad(0,0,1000,1000);
+        plane->uvs[0] = Vector2(10,10);
+        plane->uvs[1] = Vector2(10,-10);
+        plane->uvs[2] = Vector2(-10,-10);
+        plane->uvs[3] = Vector2(-10,10);
+        plane->uvs[4] = Vector2(10,10);
+        plane->uvs[5] = Vector2(-10,-10);
+        Mesh::s_Meshes["_grid"] = plane;
+        EntityMesh* grid = new EntityMesh();
+        grid->setMesh("_grid");
+        t.seek("*grid");
+        t.seek("*texture");
+        std::string texture = t.getword();
+        if(texture != "no") {
+            grid->setTexture(texture);
+        }
+        this->addGrid(grid);
     }
 
     t.seek("*entities");
@@ -138,7 +172,6 @@ void Scene::loadScene(const char* filename) {
             std::cout<<"Error reading entity class type for "<<name<<std::endl;
             exit(0);
         }
-
 
         templates[name] = e;
     }
