@@ -1,0 +1,36 @@
+---------JUEGO FINAL---------
+Objetivo: destruir base enemiga.
+Escenario: 2 bases , naves , asteroides
+Controles usuario interfaz:
+    - raton : boton izquierdo seleccionar , derecho mover , ruleta ampliar / alejar
+    - teclas: atacar objetivo
+    - botones: tiempo x0.1 x0.5 x1 x5 x10
+    - general: vida de cada unidad , recuadro al seleccionar una , planos para el movimiento
+
+---------TAREAS---------
+
+(TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
+
+(TODO) Selector unidades , cuadrado alrededor y vida
+
+(TODO) Click posicion , print plano y que se mueva
+
+(TODO) Scroll acercar y alejar
+
+(TODO) EntitySpawner
+
+(TODO) AIcontroller , si esta cerca que se oriente hacia el objetivo pero que no se mueva
+
+(TODO) Guardar en cada entidad su velocidad y demás parámetros que estan en controller ( quitar aceleracion )
+
+(TODO) Explosion cuando choca una bala ( Textura animada , en una sola textura están todos los cambios de explosión , mover las coordenadas de textura según el tiempo que ha pasado )
+
+(TODO) Estelas de los aviones
+
+(TODO) Añadir el camera que ha modificado javi al framework para poder hacer la GUI bien ( Puede que no haga falta )
+
+(TODO) Comprobar destrucción de entities
+
+(TODO) Ver como se comportan en combate entity v.s entity  // entity v.s nave
+
+
