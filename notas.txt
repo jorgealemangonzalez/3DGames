@@ -75,3 +75,35 @@ Coordinacion de varias entidades para cumplir un objetivo:
 
 Juegos:
 homeworld
+
+
+----------------------------
+
+GUIs : Pintar en 2d. Primero toda las escena 3D y luego la GUI
+
+Pintar quads
+Scree space -1 -> 1
+Camera(nueva) set orthografic ( near y far de -1 a 1 [Los otros creo que tambien] )
+CULL_FACE = False , si no se ve el cuadrado.
+DEPHT_TEST = Desactivado.
+
+Si la GUI es de opciones ( crear tropas , desplegable tipos de tropas )
+Se puede reaprobechar el arbol de escena para crear el arbol de menus.
+Para enlazar lo de abrir los menus puedes usar los eventos que sube por el arbol de escena ( bubbliong)
+Ancho y alto del objeto con posicion para saber si ha clickado.
+
+Otra opcion:
+inmediate GUI--
+En el render GUI pintas los paneles / botones... No hace falta meshes y directamente puedes ir pintando cuadrados y
+
+Blending (Activar) : usar transparencias para la GUI.
+La vista de la escena desde otro punto de vista. Utilizar el glviewport y glsisors del render de otra camara.
+
+Pintar algo encima de un objeto 3D:::::
+Coordenada 2d de las coordenadas 3D = MVP * Posicion del avion -> Espacio 2D ( Coordenada normalizada usando el proyect vector ) -1 a 1
+El tamaño del cuadrado tiene que estar asociado a la distancia (Calcular la tangente del fov )  Otra opcion es utilizar la bounding box (radio).
+Picking coger un objeto de la pantalla.
+
+--------------
+STAGES: Loading -> menu -> play -> ending
+En game un puntero al current_stage y todas las llamadas pasan por este
