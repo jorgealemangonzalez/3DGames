@@ -25,7 +25,7 @@ Controles usuario interfaz:
 
 (TODO) Guardar en cada entidad su velocidad y demás parámetros que estan en controller ( quitar aceleracion )
 
-(TODO) Explosion cuando choca una bala ( Textura animada , en una sola textura están todos los cambios de explosión , mover las coordenadas de textura según el tiempo que ha pasado )
+(DONE) Explosion cuando choca una bala ( sprite exposion )
 
 (TODO) Estelas de los aviones
 
@@ -39,3 +39,10 @@ Controles usuario interfaz:
 
 (TODO) Que las tropas no se choquen contra los asteroides ( AI ) Fuerza gravitacional de los que estan cerca
 
+
+--------------------------
+
+-> CONTROL
+-> OBJETIVOS
+-> FEEDBACK ( De las cosas que hace un usuario . Ruidos, imagenes,...
+-> AYUDAS

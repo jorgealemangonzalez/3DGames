@@ -179,6 +179,7 @@ Vector3 operator + (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a, const Vector3& b);
 Vector3 operator * (const Vector3& a, float v);
 Vector3 operator * (const Vector3& a, const Vector3& b);
+Vector3 operator - (const Vector3& a);
 
 std::ostream& operator << (std::ostream &out, const Vector3& v);
 std::ostream& operator << (std::ostream &out, const Matrix44& m);

@@ -314,7 +314,7 @@ bool EntityCollider::testRayCollision(Vector3 &origin, Vector3 &dir, float max_d
     if(!cm->rayCollision(origin.v,dir.v,true,0,max_dist)){ //
         return false;
     }
-    cm->getCollisionPoint(collision_point.v, true);    //Coordenadas de objeto o de mundo ?
+    cm->getCollisionPoint(collision_point.v, false);    //Coordenadas de mundo
     return true;
 }
 

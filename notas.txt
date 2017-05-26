@@ -148,5 +148,5 @@ En game un puntero al current_stage y todas las llamadas pasan por este
 
 -------------
 
-
+Tener en cuenta para seleccionar unidades : 0,0 abajo izquierda lo que devuelve el proyect de camera. 0,0 arriba izquierda en el game mouse position.
 

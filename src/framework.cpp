@@ -379,6 +379,10 @@ Vector3 operator * (const Vector3& a, const Vector3& b){
 	return Vector3( a.x*b.x , a.y*b.y , a.z*b.z );
 };
 
+Vector3 operator - (const Vector3& a){
+	return Vector3(-a.x,-a.y,-a.z);
+};
+
 //Multiplies a vector by a matrix and returns the new vector
 Vector3 operator * (const Matrix44& matrix, const Vector3& v) 
 {   

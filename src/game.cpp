@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "rendertotexture.h"
 #include "scene.h"
+#include "explosion.h"
 
 //some globals
 
@@ -73,6 +74,7 @@ void Game::render(void) {
     //Draw out world
 
     Scene::getScene()->render(camera);
+    Explosion::renderAll(camera);
     //drawGrid(500); //background grid
     drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
 
@@ -88,9 +90,11 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
+    Explosion::updateAll(seconds_elapsed);
     human->update(seconds_elapsed);
     enemy->update(seconds_elapsed);
     Scene::getScene()->update(seconds_elapsed);
+
 }
 
 //Keyboard event handler (sync input)

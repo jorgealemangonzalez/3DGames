@@ -4,6 +4,7 @@
 
 #include "BulletManager.h"
 #include "entity.h"
+#include "explosion.h"
 
 BulletManager* BulletManager::manager;
 
@@ -40,6 +41,7 @@ void BulletManager::removePosFromPool(unsigned int pos){
     }
 }
 
+
 void BulletManager::update(float elapsed_time) {
     long before = SDL_GetTicks();
     for(unsigned int i = 0 ; i < last_pos_pool; ++i){
@@ -58,8 +60,8 @@ void BulletManager::update(float elapsed_time) {
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
             Vector3 collision_point;
             if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
-
                 e->onCollision(&b);
+                Explosion::generateExplosion(collision_point);
                 hit = true;
                 break;
             }
@@ -75,6 +77,7 @@ void BulletManager::update(float elapsed_time) {
             Vector3 collision_point;
             if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
                 e->onCollision(&b);
+                Explosion::generateExplosion(collision_point);
                 hit = true;
                 break;
             }
