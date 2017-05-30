@@ -31,7 +31,7 @@ public:
     UID selected_entity;                        // For selecting with mouse
     unsigned int controlling_entity;            // Index of controllable pool
     void rotateControlling();
-    void setSelectedEntity(UID e_uid);
+    void selectEntity(UID e_uid);
     void update(double seconds_elapsed);
 
 };

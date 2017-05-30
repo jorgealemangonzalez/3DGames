@@ -14,11 +14,6 @@ void Player::addControllableEntity(UID e_uid) {
 
 //========================================
 
-void Human::rotateControlling() {
-    controlling_entity = (controlling_entity+1)%controllable_entities.size();
-    cameraController->notifyEntity(controllable_entities[controlling_entity]);
-}
-
 Human::Human() {
     cameraController = new CameraController();
     entityController = new FighterController();
@@ -32,6 +27,15 @@ void Human::update(double seconds_elapsed) {
 
     entityController->update(seconds_elapsed, controllable_entities[controlling_entity]);
     cameraController->update(seconds_elapsed, controllable_entities[controlling_entity]);
+}
+
+void Human::rotateControlling() {
+    controlling_entity = (controlling_entity+1)%controllable_entities.size();
+    cameraController->notifyEntity(controllable_entities[controlling_entity]);
+}
+
+void Human::selectEntity(UID e_uid) {
+    controlling_entity = e_uid;
 }
 
 //========================================
