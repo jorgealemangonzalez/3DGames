@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cmath>
+#include <string>
 
 #define DEG2RAD 0.0174532925
 
