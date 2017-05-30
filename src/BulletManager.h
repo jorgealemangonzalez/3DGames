@@ -7,6 +7,9 @@
 
 #include "framework.h"
 #include "constants.h"
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #define MAX_BULLETS 10000
 class Bullet{

@@ -57,7 +57,15 @@ set(SOURCE_FILES
         src/extra/coldet/src/sysdep.h
         src/extra/coldet/src/sysdep.cpp
         src/extra/coldet/src/tritri.c
-        src/player.cpp src/player.h src/scene.cpp src/scene.h src/constants.h src/BulletManager.cpp src/BulletManager.h src/explosion.cpp src/explosion.h)
+        src/player.cpp
+        src/player.h
+        src/scene.cpp
+        src/scene.h
+        src/constants.h
+        src/BulletManager.cpp
+        src/BulletManager.h
+        src/explosion.cpp
+        src/explosion.h)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
 find_package(OpenGL REQUIRED)

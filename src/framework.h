@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <cmath>
-#include <ostream>
 
 #define DEG2RAD 0.0174532925
 
@@ -36,7 +35,8 @@ public:
 	float distance(const Vector2& v);
 	void random(float range);
 
-	void operator *= (float v) { x*=v; y*=v; }
+	void operator *= (float v) { x *= v; y *= v; }
+	void operator /= (float v) { x /= v; y /= v; }
 };
 
 Vector2 operator * (const Vector2& a, float v);
@@ -50,8 +50,8 @@ public:
 	union
 	{
 		struct { unsigned int x;
-				 unsigned int y;
-				 unsigned int z; };
+			unsigned int y;
+			unsigned int z; };
 		unsigned int v[3];
 	};
 	Vector3u() { x = y = z = 0; }
@@ -79,15 +79,17 @@ public:
 
 	Vector3& normalize();
 	void random(float range);
-	void random(Vector3 range);
+	Vector3& random(Vector3 range);
 
 	float distance(const Vector3& v) const;
 
 	Vector3 cross( const Vector3& v ) const;
 	float dot( const Vector3& v ) const;
-	std::string toString()const;
-};
 
+	void operator *= (float v) { x *= v; y *= v; z *= v; }
+	void operator /= (float v) { x /= v; y /= v; z /= v; }
+	std::string toString() const;
+};
 
 class Vector4
 {
@@ -97,94 +99,101 @@ public:
 		struct { float x,y,z,w; };
 		float v[4];
 	};
-    
+
 	Vector4() { x = y = z = w = 0.0f; }
+	Vector4(Vector3 v, float w) { this->x = v.x; this->y = v.y; this->z = v.z; this->w = w; }
 	Vector4(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
-	Vector4(Vector3 xyz, float w) { this->x = xyz.x; this->y = xyz.y; this->z = xyz.z; this->w = w; }
+	void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
 };
 
 //****************************
 //Matrix44 class
 class Matrix44
 {
-	public:
+public:
 
-		//This matrix works in 
-		union { //allows to access the same var using different ways
-			struct
-			{
-				float        _11, _12, _13, _14;
-				float        _21, _22, _23, _24;
-				float        _31, _32, _33, _34;
-				float        _41, _42, _43, _44;
-			};
-			float M[4][4]; //[row][column]
-			float m[16];
+	//This matrix works in
+	union { //allows to access the same var using different ways
+		struct
+		{
+			float        _11, _12, _13, _14;
+			float        _21, _22, _23, _24;
+			float        _31, _32, _33, _34;
+			float        _41, _42, _43, _44;
 		};
+		float M[4][4]; //[row][column]
+		float m[16];
+	};
 
-		Matrix44();
-		Matrix44(const float* v);
+	Matrix44();
+	Matrix44(const float* v);
 
-		void multGL(); //multiply with opengl matrix
-		void loadGL(); //load in opengl matrix
-		Matrix44& clear();
-		Matrix44& setIdentity();
-		Matrix44& transpose();
+	void multGL(); //multiply with opengl matrix
+	void loadGL(); //load in opengl matrix
+	Matrix44& clear();
+	Matrix44& setIdentity();
+	Matrix44& transpose();
 
-		//get base vectors
-		Vector3 rightVector() { return Vector3(m[0],m[1],m[2]); }
-		Vector3 topVector() { return Vector3(m[4],m[5],m[6]); }
-		Vector3 frontVector() { return Vector3(m[8],m[9],m[10]); }
+	//get base vectors
+	Vector3 rightVector() { return Vector3(m[0],m[1],m[2]); }
+	Vector3 topVector() { return Vector3(m[4],m[5],m[6]); }
+	Vector3 frontVector() { return Vector3(m[8],m[9],m[10]); }
 
-		bool inverse();
-		void setUpAndOrthonormalize(Vector3 up);
-		void setFrontAndOrthonormalize(Vector3 front);
+	bool inverse();
+	void setUpAndOrthonormalize(Vector3 up);
+	void setFrontAndOrthonormalize(Vector3 front);
 
-		Matrix44 getRotationOnly(); //used when having scale
-		Vector3 getTranslationOnly(); //Get the translation vector
+	Matrix44 getRotationOnly(); //used when having scale
+	Vector3 getTranslationOnly(); //Get the translation vector
 
-		//rotate only
-		Vector3 rotateVector( const Vector3& v);
+	//rotate only
+	Vector3 rotateVector( const Vector3& v);
 
-		//transform using world coordinates
-		void traslate(float x, float y, float z);
-        void scale(float x, float y, float z);
-		void rotate( float angle_in_rad, const Vector3& axis  );
+	//transform using world coordinates
+	void traslate(float x, float y, float z);
+	void scale(float x, float y, float z);
+	void rotate( float angle_in_rad, const Vector3& axis  );
 
-		//transform using local coordinates
-		void traslateLocal(float x, float y, float z);
-		void rotateLocal( float angle_in_rad, const Vector3& axis  );
+	//transform using local coordinates
+	void traslateLocal(float x, float y, float z);
+	void rotateLocal( float angle_in_rad, const Vector3& axis  );
 
-		//create a transformation matrix from scratch
-		void setTranslation(float x, float y, float z);
-		void setRotation( float angle_in_rad, const Vector3& axis );
-        void setScale(float x, float y, float z);
+	//create a transformation matrix from scratch
+	void setTranslation(float x, float y, float z);
+	void setRotation( float angle_in_rad, const Vector3& axis );
+	void setScale(float x, float y, float z);
 
-		bool getXYZ(float* euler) const;
+	bool getXYZ(float* euler) const;
 
-		//for cameras
-		void lookAt(Vector3& eye, Vector3& center, Vector3& up);
-		void perspective(float fov, float aspect, float near_plane, float far_plane);
-		void ortho(float left, float right, float bottom, float top, float near_plane, float far_plane);
+	//for cameras
+	void lookAt(Vector3& eye, Vector3& center, Vector3& up);
+	void perspective(float fov, float aspect, float near_plane, float far_plane);
+	void ortho(float left, float right, float bottom, float top, float near_plane, float far_plane);
 
-		Vector3 project(const Vector3& v);
+	Vector3 project(const Vector3& v);
 
-		Matrix44 operator * (const Matrix44& matrix) const;
+	Matrix44 operator * (const Matrix44& matrix) const;
+	std::string toString() const;
 };
 
 //Operators, they are our friends
 //Matrix44 operator * ( const Matrix44& a, const Matrix44& b );
 Vector3 operator * (const Matrix44& matrix, const Vector3& v);
+Vector4 operator * (const Matrix44& matrix, const Vector4& v);
 Vector3 operator + (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a, const Vector3& b);
-Vector3 operator * (const Vector3& a, float v);
 Vector3 operator * (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a);
+Vector3 operator * (const Vector3& a, float v);
+std::ostream& operator<<(std::ostream& out, const Vector3 &v);
+std::ostream& operator<<(std::ostream &out, const Matrix44& m);
 
-std::ostream& operator << (std::ostream &out, const Vector3& v);
-std::ostream& operator << (std::ostream &out, const Matrix44& m);
+Vector3 mix(const Vector3& a, const Vector3& b, float& f);
 
 float ComputeSignedAngle( Vector2 a, Vector2 b);
 Vector3 RayPlaneCollision( const Vector3& plane_pos, const Vector3& plane_normal, const Vector3& ray_origin, const Vector3& ray_dir );
+bool RaySphereCollision(const Vector3& center, float radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& result );
+
+//float random();
 
 #endif

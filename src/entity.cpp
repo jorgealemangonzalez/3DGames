@@ -34,7 +34,7 @@ UID Entity::entityPointed(double x, double y, Camera* camera){
     Matrix44 viewprojection_inverse = camera->viewprojection_matrix;
     viewprojection_inverse.inverse();
 
-    Vector3 mouseNormalized(x, y, 0);
+    Vector3 mouseNormalized(x, y, 1);
     Vector3 mouseWorld = viewprojection_inverse * mouseNormalized;
 
     Vector3 direction = mouseWorld - camera->eye;

@@ -39,8 +39,8 @@ void Explosion::renderAll(Camera *camera) {
         up.normalize();
         side.normalize();
         //float uv_fpos = 1.0f/4.0f;
-        Vector3 Hm = up*h*0.5,      //Midium height vector
-                Wm = side*w*0.5;    //Midium width vector
+        Vector3 Hm = up*h*0.5,      //Medium height vector
+                Wm = side*w*0.5;    //Medium width vector
         //---------CREATE QUAD---------
         m.vertices.push_back( ep+(Hm-Wm));      //Punto de colision + vector de traslación en el quad
         m.vertices.push_back( ep+(Hm + Wm));

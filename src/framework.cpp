@@ -7,8 +7,10 @@
 #include <sstream>
 
 #ifndef M_PI_2
-    #define M_PI_2 1.57079632679489661923
+#define M_PI_2 1.57079632679489661923
 #endif
+
+//float random() { return (rand() % 100000) / 100000.0f; }
 
 //**************************************
 float Vector2::distance(const Vector2& v)
@@ -41,7 +43,7 @@ Vector2 operator - (const Vector2& a, const Vector2& b) { return Vector2(a.x - b
 
 // **************************************
 
-double Vector3::length() 
+double Vector3::length()
 {
 	return sqrt(x*x + y*y + z*z);
 }
@@ -83,19 +85,28 @@ void Vector3::random(float range)
 	z = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
 }
 
-void Vector3::random(Vector3 range)
+Vector3& Vector3::random(Vector3 range)
 {
 	//rand returns a value between 0 and RAND_MAX
 	x = (rand() / (float)RAND_MAX) * 2.0f * range.x - range.x; //value between -range and range
 	y = (rand() / (float)RAND_MAX) * 2.0f * range.y - range.y; //value between -range and range
 	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
+	return *this;
 }
 
 std::string Vector3::toString() const{
 	std::stringstream ss;
-	ss <<"x: "<< x <<" y: "<< y << " z: "<<z;
+	ss << "x: " << x;
+	ss << "y: " << y;
+	ss << "z: " << z;
 	return ss.str();
 }
+
+std::ostream& operator<<(std::ostream &out, const Vector3 &v) {
+	out << v.toString() << "\n";
+	return out;
+}
+
 //*********************************
 Matrix44::Matrix44()
 {
@@ -117,7 +128,7 @@ void Matrix44::loadGL()
 Matrix44& Matrix44::clear()
 {
 	memset(m, 0, 16*sizeof(float));
-   return *this;
+	return *this;
 }
 
 Matrix44& Matrix44::setIdentity()
@@ -126,14 +137,14 @@ Matrix44& Matrix44::setIdentity()
 	m[1]=0; m[5]=1; m[9]=0; m[13]=0;
 	m[2]=0; m[6]=0; m[10]=1; m[14]=0;
 	m[3]=0; m[7]=0; m[11]=0; m[15]=1;
-   return *this;
+	return *this;
 }
 
 Matrix44& Matrix44::transpose()
 {
-   std::swap(m[1],m[4]); std::swap(m[2],m[8]); std::swap(m[3],m[12]);
-   std::swap(m[6],m[9]); std::swap(m[7],m[13]); std::swap(m[11],m[14]);
-   return *this;
+	std::swap(m[1],m[4]); std::swap(m[2],m[8]); std::swap(m[3],m[12]);
+	std::swap(m[6],m[9]); std::swap(m[7],m[13]); std::swap(m[11],m[14]);
+	return *this;
 }
 
 void Matrix44::traslate(float x, float y, float z)
@@ -277,7 +288,7 @@ void Matrix44::ortho(float left, float right, float bottom, float top, float nea
 	clear();
 	M[0][0] = 2.0f / (right - left);
 	M[3][0] = - (right + left) / (right - left);
-	M[1][1] = 2.0f / (top - bottom); 
+	M[1][1] = 2.0f / (top - bottom);
 	M[3][1] = -(top + bottom) / (top - bottom);
 	M[2][2] = -2.0f / (far_plane - near_plane);
 	M[3][2] = (far_plane + near_plane) / (far_plane - near_plane);
@@ -285,10 +296,10 @@ void Matrix44::ortho(float left, float right, float bottom, float top, float nea
 }
 
 //applies matrix projection to vector (returns in normalized coordinates)
-Vector3 Matrix44::project(const Vector3& v) 
-{   
-	float x = m[0] * v.x + m[4] * v.y + m[8] * v.z + m[12]; 
-	float y = m[1] * v.x + m[5] * v.y + m[9] * v.z + m[13]; 
+Vector3 Matrix44::project(const Vector3& v)
+{
+	float x = m[0] * v.x + m[4] * v.y + m[8] * v.z + m[12];
+	float y = m[1] * v.x + m[5] * v.y + m[9] * v.z + m[13];
 	float z = m[2] * v.x + m[6] * v.y + m[10] * v.z + m[14];
 	float w = m[3] * v.x + m[7] * v.y + m[11] * v.z + m[15];
 
@@ -298,44 +309,44 @@ Vector3 Matrix44::project(const Vector3& v)
 bool Matrix44::getXYZ(float* euler) const
 {
 // Code adapted from www.geometrictools.com
-//	Matrix3<Real>::EulerResult Matrix3<Real>::ToEulerAnglesXYZ 
-    // +-           -+   +-                                        -+
-    // | r00 r01 r02 |   |  cy*cz           -cy*sz            sy    |
-    // | r10 r11 r12 | = |  cz*sx*sy+cx*sz   cx*cz-sx*sy*sz  -cy*sx |
-    // | r20 r21 r22 |   | -cx*cz*sy+sx*sz   cz*sx+cx*sy*sz   cx*cy |
-    // +-           -+   +-                                        -+
-    if (_13 < 1.0f)
-    {
-        if (_13 > - 1.0f)
-        {
-            // y_angle = asin(r02)
-            // x_angle = atan2(-r12,r22)
-            // z_angle = atan2(-r01,r00)
-            euler[1] = asinf(_13);
-            euler[0] = atan2f(-_23,_33);
-            euler[2] = atan2f(-_12,_11);
-            return true;
-        }
-        else
-        {
-            // y_angle = -pi/2
-            // z_angle - x_angle = atan2(r10,r11)
-            // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-            euler[1] = (float)-M_PI_2;
-            euler[0] = -atan2f(_21,_22);
-            euler[2] = 0.0f;
-            return false;
-        }
-    }
-    else
-    {
-        // y_angle = +pi/2
-        // z_angle + x_angle = atan2(r10,r11)
-        // WARNING.  The solutions is not unique.  Choosing z_angle = 0.
-        euler[1] = (float)M_PI_2;
-        euler[0] = atan2f(_21,_22);
-        euler[2] = 0.0f;
-    }
+//	Matrix3<Real>::EulerResult Matrix3<Real>::ToEulerAnglesXYZ
+	// +-           -+   +-                                        -+
+	// | r00 r01 r02 |   |  cy*cz           -cy*sz            sy    |
+	// | r10 r11 r12 | = |  cz*sx*sy+cx*sz   cx*cz-sx*sy*sz  -cy*sx |
+	// | r20 r21 r22 |   | -cx*cz*sy+sx*sz   cz*sx+cx*sy*sz   cx*cy |
+	// +-           -+   +-                                        -+
+	if (_13 < 1.0f)
+	{
+		if (_13 > - 1.0f)
+		{
+			// y_angle = asin(r02)
+			// x_angle = atan2(-r12,r22)
+			// z_angle = atan2(-r01,r00)
+			euler[1] = asinf(_13);
+			euler[0] = atan2f(-_23,_33);
+			euler[2] = atan2f(-_12,_11);
+			return true;
+		}
+		else
+		{
+			// y_angle = -pi/2
+			// z_angle - x_angle = atan2(r10,r11)
+			// WARNING.  The solution is not unique.  Choosing z_angle = 0.
+			euler[1] = (float)-M_PI_2;
+			euler[0] = -atan2f(_21,_22);
+			euler[2] = 0.0f;
+			return false;
+		}
+	}
+	else
+	{
+		// y_angle = +pi/2
+		// z_angle + x_angle = atan2(r10,r11)
+		// WARNING.  The solutions is not unique.  Choosing z_angle = 0.
+		euler[1] = (float)M_PI_2;
+		euler[0] = atan2f(_21,_22);
+		euler[2] = 0.0f;
+	}
 	return false;
 }
 
@@ -345,12 +356,12 @@ Matrix44 Matrix44::operator*(const Matrix44& matrix) const
 	Matrix44 ret;
 
 	unsigned int i,j,k;
-	for (i=0;i<4;i++) 	
+	for (i=0;i<4;i++)
 	{
-		for (j=0;j<4;j++) 
+		for (j=0;j<4;j++)
 		{
 			ret.M[i][j]=0.0;
-			for (k=0;k<4;k++) 
+			for (k=0;k<4;k++)
 				ret.M[i][j] += M[i][k] * matrix.M[k][j];
 		}
 	}
@@ -359,37 +370,44 @@ Matrix44 Matrix44::operator*(const Matrix44& matrix) const
 }
 
 //it allows to add two vectors
-Vector3 operator + (const Vector3& a, const Vector3& b) 
+Vector3 operator + (const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z );
 }
 
 //it allows to add two vectors
-Vector3 operator - (const Vector3& a, const Vector3& b) 
+Vector3 operator - (const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z );
 }
 
-Vector3 operator * (const Vector3& a, float v) 
+Vector3 operator * (const Vector3& a, const Vector3& b)
+{
+	return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+}
+
+Vector3 operator * (const Vector3& a, float v)
 {
 	return Vector3(a.x * v, a.y * v, a.z * v);
 }
 
-Vector3 operator * (const Vector3& a, const Vector3& b){
-	return Vector3( a.x*b.x , a.y*b.y , a.z*b.z );
-};
-
-Vector3 operator - (const Vector3& a){
-	return Vector3(-a.x,-a.y,-a.z);
-};
+//Multiplies a vector by a matrix and returns the new vector
+Vector3 operator * (const Matrix44& matrix, const Vector3& v)
+{
+	float x = matrix.m[0] * v.x + matrix.m[4] * v.y + matrix.m[8] * v.z + matrix.m[12];
+	float y = matrix.m[1] * v.x + matrix.m[5] * v.y + matrix.m[9] * v.z + matrix.m[13];
+	float z = matrix.m[2] * v.x + matrix.m[6] * v.y + matrix.m[10] * v.z + matrix.m[14];
+	return Vector3(x,y,z);
+}
 
 //Multiplies a vector by a matrix and returns the new vector
-Vector3 operator * (const Matrix44& matrix, const Vector3& v) 
-{   
-   float x = matrix.m[0] * v.x + matrix.m[4] * v.y + matrix.m[8] * v.z + matrix.m[12]; 
-   float y = matrix.m[1] * v.x + matrix.m[5] * v.y + matrix.m[9] * v.z + matrix.m[13]; 
-   float z = matrix.m[2] * v.x + matrix.m[6] * v.y + matrix.m[10] * v.z + matrix.m[14];
-   return Vector3(x,y,z);
+Vector4 operator * (const Matrix44& matrix, const Vector4& v)
+{
+	float x = matrix.m[0] * v.x + matrix.m[4] * v.y + matrix.m[8] * v.z + v.w * matrix.m[12];
+	float y = matrix.m[1] * v.x + matrix.m[5] * v.y + matrix.m[9] * v.z + v.w * matrix.m[13];
+	float z = matrix.m[2] * v.x + matrix.m[6] * v.y + matrix.m[10] * v.z + v.w * matrix.m[14];
+	float w = matrix.m[3] * v.x + matrix.m[7] * v.y + matrix.m[11] * v.z + v.w * matrix.m[15];
+	return Vector4(x, y, z, w);
 }
 
 void Matrix44::setUpAndOrthonormalize(Vector3 up)
@@ -462,95 +480,96 @@ void Matrix44::setFrontAndOrthonormalize(Vector3 front)
 	m[0] = right.x;
 	m[1] = right.y;
 	m[2] = right.z;
-	
+
 }
 
 bool Matrix44::inverse()
 {
-   unsigned int i, j, k, swap;
-   float t;
-   Matrix44 temp, final;
-   final.setIdentity();
+	unsigned int i, j, k, swap;
+	float t;
+	Matrix44 temp, final;
+	final.setIdentity();
 
-   temp = (*this);
+	temp = (*this);
 
-   unsigned int m,n;
-   m = n = 4;
-	
-   for (i = 0; i < m; i++)
-   {
-      // Look for largest element in column
+	unsigned int m,n;
+	m = n = 4;
 
-      swap = i;
-      for (j = i + 1; j < m; j++)// m or n
-	  {
-		 if ( fabs(temp.M[j][i]) > fabs( temp.M[swap][i]) )
-            swap = j;
-	  }
-   
-      if (swap != i)
-      {
-         // Swap rows.
-         for (k = 0; k < n; k++)
-         {
-			 std::swap( temp.M[i][k],temp.M[swap][k]);
-			 std::swap( final.M[i][k], final.M[swap][k]);
-         }
-      }
+	for (i = 0; i < m; i++)
+	{
+		// Look for largest element in column
 
-      // No non-zero pivot.  The CMatrix is singular, which shouldn't
-      // happen.  This means the user gave us a bad CMatrix.
+		swap = i;
+		for (j = i + 1; j < m; j++)// m or n
+		{
+			if ( fabs(temp.M[j][i]) > fabs( temp.M[swap][i]) )
+				swap = j;
+		}
+
+		if (swap != i)
+		{
+			// Swap rows.
+			for (k = 0; k < n; k++)
+			{
+				std::swap( temp.M[i][k],temp.M[swap][k]);
+				std::swap( final.M[i][k], final.M[swap][k]);
+			}
+		}
+
+		// No non-zero pivot.  The CMatrix is singular, which shouldn't
+		// happen.  This means the user gave us a bad CMatrix.
 
 
 #define MATRIX_SINGULAR_THRESHOLD 0.00001 //change this if you experience problems with matrices
 
-      if ( fabsf(temp.M[i][i]) <= MATRIX_SINGULAR_THRESHOLD)
-	  {
-		  final.setIdentity();
-         return false;
-	  }
+		if ( fabsf(temp.M[i][i]) <= MATRIX_SINGULAR_THRESHOLD)
+		{
+			final.setIdentity();
+			return false;
+		}
 #undef MATRIX_SINGULAR_THRESHOLD
 
-      t = 1.0f/temp.M[i][i];
+		t = 1.0f/temp.M[i][i];
 
-      for (k = 0; k < n; k++)//m or n
-      {
-         temp.M[i][k] *= t;
-         final.M[i][k] *= t;
-      }
+		for (k = 0; k < n; k++)//m or n
+		{
+			temp.M[i][k] *= t;
+			final.M[i][k] *= t;
+		}
 
-      for (j = 0; j < m; j++) // m or n
-      {
-         if (j != i)
-         {
-            t = temp.M[j][i];
-            for (k = 0; k < n; k++)//m or n
-            {
-               temp.M[j][k] -= (temp.M[i][k] * t);
-               final.M[j][k] -= (final.M[i][k] * t);
-            }
-         }
-      }
-   }
+		for (j = 0; j < m; j++) // m or n
+		{
+			if (j != i)
+			{
+				t = temp.M[j][i];
+				for (k = 0; k < n; k++)//m or n
+				{
+					temp.M[j][k] -= (temp.M[i][k] * t);
+					final.M[j][k] -= (final.M[i][k] * t);
+				}
+			}
+		}
+	}
 
-   *this = final;
+	*this = final;
 
-   return true;
+	return true;
 }
 
-std::ostream& operator<<(std::ostream &out, const Vector3& v){
-	for(int i=0; i<3; i++){
-		out << v.v[i] << "\t";
-	}
+std::string Matrix44::toString() const {
+    std::stringstream ss;
+
+    for(int i=0; i<4; i++){
+        for(int j=0; j<4; j++){
+            ss << M[i][j] << "\t";
+        }
+        ss << "\n";
+    }
 }
 
 std::ostream& operator<<(std::ostream &out, const Matrix44& m){
-	for(int i=0; i<4; i++){
-		for(int j=0; j<4; j++){
-			out << m.M[i][j] << "\t";
-		}
-		out << "\n";
-	}
+    out << m.toString() << "\n";
+    return out;
 }
 
 float ComputeSignedAngle( Vector2 a, Vector2 b)
@@ -562,9 +581,57 @@ float ComputeSignedAngle( Vector2 a, Vector2 b)
 
 Vector3 RayPlaneCollision( const Vector3& plane_pos, const Vector3& plane_normal, const Vector3& ray_origin, const Vector3& ray_dir )
 {
-    double D = plane_pos.dot(plane_normal);
-    double numer = plane_normal.dot(ray_origin) + D;
-    double denom = plane_normal.dot(ray_dir);
-    float t = (float)-(numer / denom);
+	double D = plane_pos.dot(plane_normal);
+	double numer = plane_normal.dot(ray_origin) + D;
+	double denom = plane_normal.dot(ray_dir);
+	float t = (float)-(numer / denom);
 	return ray_origin + ray_dir * t;
+}
+
+bool RaySphereCollision( const Vector3& center, float radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& result )
+{
+	Vector3 c = center;
+	Vector3 s = ray_origin;
+	Vector3 d = ray_dir;
+	float r = radius;
+
+	Vector3 p = s - c;
+
+	float rSquared = r * r;
+	float p_d = p.dot(d);
+
+	// The sphere is behind or surrounding the start point.
+	if (p_d > 0 || p.dot(p) < rSquared)
+		return false;
+
+	// Flatten p into the plane passing through c perpendicular to the ray.
+	// This gives the closest approach of the ray to the center.
+	Vector3 a = p - d * p_d;
+
+	float aSquared = a.dot(a);
+
+	// Closest approach is outside the sphere.
+	if (aSquared > rSquared)
+		return false;
+
+	// Calculate distance from plane where ray enters/exits the sphere.
+	float h = sqrt(rSquared - aSquared);
+
+	// Calculate intersection point relative to sphere center.
+	Vector3 i = a - d * h;
+
+	result = c + i;
+
+	/*
+	Vector3 normal = i;
+	normal.x /= i.x;
+	normal.y /= i.y;
+	normal.z /= i.z;
+	*/
+	return true;
+}
+
+Vector3 mix(const Vector3& a, const Vector3& b, float& f)
+{
+	return a*(1.0 - f) + b*f;
 }
