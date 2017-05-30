@@ -28,26 +28,13 @@ void Entity::destroy_entities_to_destroy() {
 
 }
 
-UID Entity::entityPointed(double x, double y, Camera* camera){
+UID Entity::entityPointed(Vector3 mouse, int width, int height, Camera* camera){
     //Make a ray from the position of the eye of the camera
     //and get the uid of the entity that collides with it
-    Matrix44 viewprojection_inverse = camera->viewprojection_matrix;
-    viewprojection_inverse.inverse();
 
-    Vector3 mouseNormalized(x, y, 1);
-    Vector3 mouseWorld = viewprojection_inverse * mouseNormalized;
-
-    Vector3 direction = mouseWorld - camera->eye;
+    Vector3 pointingAt = camera->unproject(mouse, width, height);
+    Vector3 direction = camera->eye - pointingAt;
     direction.normalize();
-
-    
-    std::cout << "\n";
-    std::cout << "Mouse camera pos: " << x << " " << y << "\n";
-    std::cout << "Mouse pos: " << mouseWorld.toString() << "\n";
-    std::cout << "Eye pos: " << camera->eye.toString() << "\n";
-    std::cout << "Mouse RAY: dir " << direction.toString() << "\n";
-
-    BulletManager::getManager()->createBullet(camera->eye+((camera->center-camera->eye).normalize()), camera->eye+((camera->center-camera->eye).normalize()*10), direction, 1000.f, 10.f, 0, "No type yet");
 
     UID closest_uid = 0;
     Vector3 collision;

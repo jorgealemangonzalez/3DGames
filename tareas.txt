@@ -13,7 +13,9 @@ Controles usuario interfaz:
 
 (TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
 
-(TODO) Selector unidades , cuadrado alrededor y vida
+(DONE) Selector unidades
+
+(TODO) Cuadrado alrededor unidad seleccionada y vida
 
 (TODO) Click posicion , print plano y que se mueva
 

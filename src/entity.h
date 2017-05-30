@@ -32,7 +32,7 @@ public:
     //Static methods
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
-    static UID entityPointed(double x, double y, Camera* c);
+    static UID entityPointed(Vector3 mouse, int width, int height, Camera* camera);
 
         //Entity methods
     void save();

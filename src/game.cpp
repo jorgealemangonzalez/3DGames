@@ -116,10 +116,6 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             human->rotateControlling();
             break;
         case SDLK_c:
-            Entity::entityPointed(-0.5, -0.5, camera);
-            Entity::entityPointed(0.5, -0.5, camera);
-            Entity::entityPointed(-0.5, 0.5, camera);
-            Entity::entityPointed(0.5, 0.5, camera);
             break;
     }
 }
@@ -132,7 +128,7 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
     }else if (event.button == SDL_BUTTON_LEFT){
         double nx = ((double)event.x/window_width)*2.0 - 1.0;
         double ny = ((double)event.y/window_height)*2.0 -1.0;
-        UID pointed = Entity::entityPointed(nx, ny, camera);
+        UID pointed = Entity::entityPointed(Vector3(event.x, window_height-event.y, 1), window_width, window_height, camera);
         std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << pointed << "\n";
     }
 }
