@@ -180,11 +180,11 @@ public:
 //Matrix44 operator * ( const Matrix44& a, const Matrix44& b );
 Vector3 operator * (const Matrix44& matrix, const Vector3& v);
 Vector4 operator * (const Matrix44& matrix, const Vector4& v);
+Vector3 operator * (const Vector3& a, const Vector3& b);
+Vector3 operator * (const Vector3& a, float v);
 Vector3 operator + (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a, const Vector3& b);
-Vector3 operator * (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a);
-Vector3 operator * (const Vector3& a, float v);
 std::ostream& operator<<(std::ostream& out, const Vector3 &v);
 std::ostream& operator<<(std::ostream &out, const Matrix44& m);
 
