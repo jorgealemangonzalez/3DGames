@@ -8,6 +8,7 @@ class Scene {
     Scene();
     ~Scene();
 public:
+    bool debugMode;
     Entity* root;
     Entity* background;
     Entity* grid;

@@ -5,7 +5,7 @@
 #define MIPMAP_DISABLE false
 
 Scene* Scene::scene = NULL;
-Scene::Scene(){
+Scene::Scene() : debugMode(false) {
     root = new Entity();
     background = NULL;
     grid = NULL;
@@ -56,8 +56,13 @@ void Scene::render(Camera* camera) {
     }
     root->render(camera);
     BulletManager::getManager()->render();
-    debugPointsMesh->render(GL_POINT);
-    debugLinesMesh->render(GL_LINE);
+    if(debugMode){
+        if(debugPointsMesh->vertices.size() > 0)
+            debugPointsMesh->render(GL_POINT);
+        if(debugLinesMesh->vertices.size() > 0)
+            debugLinesMesh->render(GL_LINE);
+    }
+
 }
 
 void Scene::loadScene(const char* filename) {
