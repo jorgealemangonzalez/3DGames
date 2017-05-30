@@ -100,6 +100,9 @@ void mainLoop()
 					case SDL_MOUSEBUTTONUP:
 						//...
 						break;
+					case SDL_MOUSEWHEEL:
+						game->onMouseWheel( sdlEvent.wheel );
+						break;
 					case SDL_KEYDOWN: //EXAMPLE OF sync keyboard input
 						game->onKeyPressed( sdlEvent.key );
 						break;

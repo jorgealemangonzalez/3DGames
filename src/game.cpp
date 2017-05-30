@@ -126,11 +126,14 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
         mouse_locked = !mouse_locked;
         SDL_ShowCursor(!mouse_locked);
     }else if (event.button == SDL_BUTTON_LEFT){
-        double nx = ((double)event.x/window_width)*2.0 - 1.0;
-        double ny = ((double)event.y/window_height)*2.0 -1.0;
         UID pointed = Entity::entityPointed(Vector3(event.x, window_height-event.y, 1), window_width, window_height, camera);
         std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << pointed << "\n";
     }
+}
+
+void Game::onMouseWheel(SDL_MouseWheelEvent event) {
+    //event.x : the amount scrolled horizontally, positive to the right and negative to the left
+    //event.y : the amount scrolled vertically, positive away from the user and negative toward the user
 }
 
 void Game::setWindowSize(int width, int height) {
