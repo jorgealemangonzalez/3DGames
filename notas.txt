@@ -174,28 +174,11 @@ peliculas = recortar el sonido mediante programas
 
 Usar .wav
 -
-Bass: librería c++ sonido (problema: tiene version diferente para cada SO, mejor buscar una librería multiplataforma)
-
-    //El handler para un sample
-    HSAMPLE hSample;
-
-    //El handler para un canal
-    HCHANNEL hSampleChannel;
-
-    //Inicializamos BASS  (id_del_device, muestras por segundo, ...)
-    BASS_Init(1, 44100, 0, 0, NULL);
-
-    //Cargamos un sample (memoria, filename, offset, length, max, flags)
-    hSample = BASS_SampleLoad(false, "sounds/grenade.wav",0,0,3,0); //use BASS_SAMPLE_LOOP in the last param to have a looped sound
-
-    //Creamos un canal para el sample
-    hSampleChannel = BASS_SampleGetChannel(hSample,false);
-
-    //Lanzamos un sample
-    BASS_ChannelPlay(hSampleChannel, true);
+SFML: https://www.sfml-dev.org/tutorials/2.4/
+    linux: sudo apt-get install libsfml-dev
+    mac: brew install sfml
 
 -
-
 
 Audacity: programa gratuito para modificar sonidos
     Effect -> Equalization -> Disminuir agudos, aumentar graves -> Aplicar Efecto

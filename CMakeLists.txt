@@ -9,12 +9,12 @@ set(GLUT_LIB "-lGL -lGLU")
 set(LIBS "${SDL_LIB} ${GLUT_LIB}")
 
 if(NOT APPLE)
-    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lSDL2 -lGL -lGLU")
-    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lSDL2 -lGL -lGLU")
+    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lsfml-audio -lSDL2 -lGL -lGLU")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lsfml-audio -lSDL2 -lGL -lGLU")
 endif()
 if(APPLE)
-    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lSDL2 -framework OpenGL")
-    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lSDL2 -framework OpenGL")
+    set(CMAKE_CXX_FLAGS_RELEASE  "-g -Wall -lsfml-audio -lSDL2 -framework OpenGL")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-g -Wall -lsfml-audio -lSDL2 -framework OpenGL")
 endif()
 
 set(SOURCE_FILES
