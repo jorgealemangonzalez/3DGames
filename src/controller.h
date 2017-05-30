@@ -52,7 +52,6 @@ class AIController : public EntityController{
 public:
 
     double min_dist; //Minimum distance to entity follow
-    Matrix44 inverseModel;
 
     AIController();
     ~AIController();

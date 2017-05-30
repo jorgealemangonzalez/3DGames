@@ -205,6 +205,8 @@ AIController::~AIController() {
 
 void AIController::update(double seconds_elapsed, UID e_uid) {
     Entity* follow = Entity::getEntity(entity_follow);
+
+
     if(follow == NULL){
         //std::cout<<"Entity that AI follow is NULL\n";
         return;
@@ -213,25 +215,35 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     Entity* driving = Entity::getEntity(e_uid);
 
     Vector3 to_target = follow->getPosition() - driving->getPosition();
-    if(to_target.length() < min_dist)
-        return;
+    
+    float distance = to_target.length();
     Vector3 looking = driving->getDirection().normalize();
-    float angle = acosf(looking.dot(to_target.normalize()));
+    to_target.normalize();
+    float angle = acosf(looking.dot(to_target));
+    Vector3 perpendicular = to_target.cross(looking).normalize();
 
-    Vector3 perpendicular = to_target.cross(looking);
-    Matrix44 inv = this->inverseModel;
-    perpendicular = inv.rotateVector(perpendicular);
+    Matrix44 inv = follow->getGlobalModel();
+    inv.inverse();
+    Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
+    float angleRotate = (angle > 0.1 ? angle * seconds_elapsed : angle);    //Angulo pequeño rota directamente
+    driving->model.rotateLocal(angleRotate,perpendicularRotate);
 
-    driving->model.rotateLocal(angle * seconds_elapsed,perpendicular);
+    if(distance > min_dist)
+        driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
 
-
-    driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
+     //TODO quit this
+    Vector3 pos = driving->getPosition();
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+perpendicular*100);
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+looking*100);
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+to_target*100);
 }
 
 void AIController::setEntityFollow(UID entity_follow) {
     this->entity_follow = entity_follow;
-    this->inverseModel = Entity::getEntity(entity_follow)->getGlobalModel();
-    this->inverseModel.inverse();
+
 }
 //================================================
 
