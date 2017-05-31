@@ -23,7 +23,7 @@ Controles usuario interfaz:
 
 (DONE) EntitySpawner
 
-(TODO) AIcontroller , si esta cerca que se oriente hacia el objetivo pero que no se mueva
+(DONE) AIcontroller , si esta cerca que se oriente hacia el objetivo pero que no se mueva
 
 (TODO) Guardar en cada entidad su velocidad y demás parámetros que estan en controller ( quitar aceleracion )
 
