@@ -191,6 +191,10 @@ void Matrix44::rotateLocal( float angle_in_rad, const Vector3& axis )
 	*this = R * *this;
 }
 
+void Matrix44::setTranslation(const Vector3& v){
+	setTranslation(v.x, v.y, v.z);
+}
+
 //To create a traslation matrix
 void Matrix44::setTranslation(float x, float y, float z)
 {

@@ -167,7 +167,7 @@ int main(int argc, char **argv)
     sf::Music music;
     if (!music.openFromFile("../data/space.wav"))
         return -1; // error
-    music.play();
+    //music.play();
 
 	//main loop, application gets inside here till user closes it
 	mainLoop();

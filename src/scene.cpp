@@ -90,7 +90,7 @@ void Scene::loadScene(const char* filename) {
         this->addBackground(background);
     }
 
-    {   //Grid
+    /*{   //Grid
         Mesh *plane = new Mesh();
         plane->createQuad(0,0,1000,1000);
         plane->uvs[0] = Vector2(10,10);
@@ -109,7 +109,7 @@ void Scene::loadScene(const char* filename) {
             grid->setTexture(texture);
         }
         this->addGrid(grid);
-    }
+    }*/
 
     t.seek("*entities");
     int num_entities = t.getint();

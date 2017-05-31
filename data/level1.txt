@@ -10,9 +10,6 @@
     *mesh cubemaps/polar_map/sphere.ASE
     *texture cubemaps/polar_map/homewrld_background.tga
 
-*grid
-    *texture grid.tga
-
 *entities 10
     fighter
         *entity collider dynamic
@@ -73,7 +70,7 @@
     hunterSpawner
         *entity spawner
         *spawns hunter
-        *spawntime 5.1
+        *spawntime 100.1
 
 *scene level1 6
     *entity fighter

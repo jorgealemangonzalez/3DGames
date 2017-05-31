@@ -215,7 +215,7 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
     Entity* driving = Entity::getEntity(e_uid);
 
     Vector3 to_target = follow->getPosition() - driving->getPosition();
-    
+
     float distance = to_target.length();
     Vector3 looking = driving->getDirection().normalize();
     to_target.normalize();

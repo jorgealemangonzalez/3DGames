@@ -110,7 +110,7 @@ Vector3 Entity::getRotation() {
     return getGlobalModel().getRotationOnly() * Vector3();
 }
 
-Vector3 Entity::getDirection() {    //TODO use this everywhere
+Vector3 Entity::getDirection() {
     return getGlobalModel().rotateVector(Vector3(0,0,-1));
 }
 

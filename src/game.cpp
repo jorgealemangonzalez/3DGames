@@ -9,6 +9,7 @@
 RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
+Mesh Game::debugMesh;
 
 Game::Game(SDL_Window *window) {
     this->window = window;
@@ -75,6 +76,8 @@ void Game::render(void) {
 
     Scene::getScene()->render(camera);
     Explosion::renderAll(camera);
+    if(debugMesh.vertices.size())
+        debugMesh.render(GL_LINES);
     //drawGrid(500); //background grid
     drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
 
@@ -90,6 +93,7 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
+    debugMesh.vertices.clear();
     Explosion::updateAll(seconds_elapsed);
     human->update(seconds_elapsed);
     enemy->update(seconds_elapsed);
