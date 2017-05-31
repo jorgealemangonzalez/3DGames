@@ -76,6 +76,7 @@ void Game::render(void) {
 
     Scene::getScene()->render(camera);
     Explosion::renderAll(camera);
+    human->render(camera);
     if(debugMesh.vertices.size())
         debugMesh.render(GL_LINES);
     //drawGrid(500); //background grid

@@ -17,20 +17,22 @@ void Player::addControllableEntity(UID e_uid) {
 Human::Human() {
     cameraController = new CameraController();
     entityController = new FighterController();
-
+    std::string texture = "grid.tga";
+    Texture::Load(texture,true);
     Mesh *plane = new Mesh();
     plane->createQuad(0,0,1000,1000);
-    plane->uvs[0] = Vector2(10,10);
-    plane->uvs[1] = Vector2(10,-10);
-    plane->uvs[2] = Vector2(-10,-10);
-    plane->uvs[3] = Vector2(-10,10);
-    plane->uvs[4] = Vector2(10,10);
-    plane->uvs[5] = Vector2(-10,-10);
+    float tam = 100.f;
+    plane->uvs[0] = Vector2(tam,tam);
+    plane->uvs[1] = Vector2(0.0f,0.0f);
+    plane->uvs[2] = Vector2(tam,0.0f);
+    plane->uvs[3] = Vector2(0.0f,tam);
+    plane->uvs[4] = Vector2(0.0f,0.0f);
+    plane->uvs[5] = Vector2(tam,tam);
     Mesh::s_Meshes["_grid"] = plane;
 
     grid = new EntityMesh();
     grid->setMesh("_grid");
-    grid->setTexture("grid.tga");
+    grid->setTexture(texture);
 }
 
 Human::~Human() {
