@@ -47,6 +47,8 @@ void Human::update(double seconds_elapsed) {
     if(controlling_entity){
         Entity* controlling = Entity::getEntity(controlling_entity);
         grid->model.setTranslation(controlling->getPosition());
+        Vector3 axis(1.0,0,0);
+        grid->model.rotateLocal(DEG2RAD*90,axis);
     }
 }
 
@@ -74,6 +76,11 @@ void Human::render(Camera *camera) {
 }
 
 void Human::selectEntity(UID e_uid) {
+    if(e_uid == controlling_entity){    //double click
+        //TODO CREAR VECTOR DEL EYE A LA ENTITY Y PONER CERCA LA CAMARA
+        //Game::instance->camera->eye =
+    }
+
     controlling_entity = e_uid;
 }
 
