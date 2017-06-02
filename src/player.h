@@ -27,12 +27,13 @@ public:
 
     EntityController* entityController;
     CameraController* cameraController;
-    EntityMesh* grid;
+    EntityCollider* grid;
 
     UID selected_entity;                        // For selecting with mouse
     unsigned int controlling_entity;            // Index of controllable pool
     void rotateControlling();
     void selectEntity(UID e_uid);
+    void moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay);
     void render(Camera* camera);
     void update(double seconds_elapsed);
 

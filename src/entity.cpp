@@ -134,9 +134,37 @@ void Entity::render(Camera* camera){
     }
 }
 
-void Entity::update(float elapsed_time){
+void Entity::update(float seconds_elapsed){
+
     if(stats.movable){
+        std::cout<<"UDATE ENTITY\n";
         // use elapsed_time, stats.vel and stats.front to move the entity
+        if(stats.vel && stats.targetPos){
+            std::cout<<"UDATE ENTITY--------\n";
+
+            Vector3 to_target = stats.targetPos - getPosition();
+            to_target.normalize();
+            Vector3 looking = getDirection().normalize();
+
+
+            float angle = acosf(looking.dot(to_target));
+            Vector3 perpendicular = to_target.cross(looking).normalize();
+
+            Matrix44 inv = getGlobalModel();
+            inv.inverse();
+            Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
+            float angleRotate = (angle > 0.03 ? angle * seconds_elapsed : angle);    //Angulo pequeño rota directamente
+            if(angleRotate > 0) {
+                model.rotateLocal(angleRotate, perpendicularRotate);
+            }
+
+            model.traslateLocal(0,0,stats.vel * seconds_elapsed);     //TODO change this translate to some velocity vector
+
+            if((stats.targetPos - getPosition()).length() < 1) {
+                stats.vel = Vector3();
+                stats.targetPos = Vector3();
+            }
+        }
     }
     if(stats.has_hp){
         if(stats.hp < 0)
@@ -144,13 +172,13 @@ void Entity::update(float elapsed_time){
 
     }
     if(stats.has_ttl){
-        stats.ttl -= elapsed_time;
+        stats.ttl -= seconds_elapsed;
         if(stats.ttl < 0)
             destroy();
     }
 
     for(int i=0; i<children.size(); i++){
-        children[i]->update(elapsed_time);
+        children[i]->update(seconds_elapsed);
     }
 }
 
@@ -262,12 +290,6 @@ void EntityMesh::render(Camera* camera){
 
 }
 
-void EntityMesh::update(float elapsed_time){
-    for(int i=0; i<children.size(); i++){
-        children[i]->update(elapsed_time);
-    }
-}
-
 //================================================
 
 EntityCollider::EntityCollider() : EntityMesh(), dynamic(false) {}
@@ -368,10 +390,4 @@ EntityCollider* EntityCollider::clone() {
     *clon = *this;
     clon->uid = uid;
     return clon;
-}
-
-void EntityCollider::update(float elapsed_time) {
-    for(int i=0; i<children.size(); i++){
-        children[i]->update(elapsed_time);
-    }
 }

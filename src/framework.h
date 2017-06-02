@@ -89,6 +89,9 @@ public:
 
 	void operator *= (float v) { x *= v; y *= v; z *= v; }
 	void operator /= (float v) { x /= v; y /= v; z /= v; }
+	operator bool() const{
+		return (x || y || z);
+	}
 	std::string toString() const;
 };
 
@@ -156,6 +159,7 @@ public:
 	void rotate( float angle_in_rad, const Vector3& axis  );
 
 	//transform using local coordinates
+	void traslateLocal(const Vector3& v);
 	void traslateLocal(float x, float y, float z);
 	void rotateLocal( float angle_in_rad, const Vector3& axis  );
 

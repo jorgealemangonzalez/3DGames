@@ -2,6 +2,7 @@
 #include "player.h"
 #include "game.h"
 #include "mesh.h"
+#include "entity.h"
 
 Player::Player(){
 
@@ -31,7 +32,7 @@ Human::Human() {
     plane->uvs[5] = Vector2(tam,tam);
     Mesh::s_Meshes["_grid"] = plane;
 
-    grid = new EntityMesh();
+    grid = new EntityCollider();
     grid->setMesh("_grid");
     grid->setTexture(texture);
 }
@@ -60,9 +61,6 @@ void Human::rotateControlling() {
 
 void Human::render(Camera *camera) {
     if(controlling_entity){
-
-
-
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
@@ -89,6 +87,18 @@ void Human::selectEntity(UID e_uid) {
     }
 
     controlling_entity = e_uid;
+}
+
+void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
+    if(controlling_entity){
+        Vector3 move_position;
+        if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
+            Entity *control = Entity::getEntity(controlling_entity);
+            control->stats.targetPos = move_position;
+            control->stats.vel = 100;
+            std::cout<<"MOVE_POSITION: "<<move_position<<"\n";
+        }
+    }
 }
 
 //========================================

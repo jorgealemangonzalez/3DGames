@@ -19,8 +19,7 @@ typedef struct{
     int hp;             // Life remain
     float ttl;            // Time remain
     std::string team;   // Ingame team: 't1', 't2', 'neutral'
-    Vector3 front;      // Front direction
-    Vector3 vel;        // Velocity direction and intensity
+    int vel;        // Velocity intensity
     Vector3 targetPos;  // Target position of the entity
 } Stats;
 
@@ -99,7 +98,6 @@ public:
     //methods overwriten by derived classes
     virtual EntityMesh* clone();
     virtual void render(Camera* camera);
-    virtual void update(float elapsed_time);
 };
 
 
@@ -126,7 +124,6 @@ public:
 
     //methods overwriten by derived classes
     virtual EntityCollider* clone();
-    virtual void update(float elapsed_time);
 };
 
 class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE

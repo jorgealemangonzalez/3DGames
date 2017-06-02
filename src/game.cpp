@@ -142,6 +142,11 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
             human->selectEntity(pointed);
             std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << pointed << "\n";
         }
+    }else if(event.button == SDL_BUTTON_RIGHT){
+        Vector3 pointingAt = camera->unproject(Vector3(event.x, window_height-event.y, 0), window_width, window_height);
+        Vector3 direction = pointingAt - camera->eye;
+        direction.normalize();
+        human->moveSelectedInPlane(camera->eye,direction);
     }
 }
 

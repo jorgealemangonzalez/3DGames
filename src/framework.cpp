@@ -177,6 +177,10 @@ Vector3 Matrix44::rotateVector(const Vector3& v)
 	return temp * v;
 }
 
+void Matrix44::traslateLocal(const Vector3& v){
+	traslateLocal(v.x,v.y,v.z);
+}
+
 void Matrix44::traslateLocal(float x, float y, float z)
 {
 	Matrix44 T;
