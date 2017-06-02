@@ -123,6 +123,11 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         case SDLK_c:
             Scene::getScene()->root->print(0);
             break;
+        case SDLK_p:
+            UID uid;
+            std::cin >> uid;
+            human->controlling_entity = uid;
+            break;
     }
 }
 
@@ -132,7 +137,7 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
         mouse_locked = !mouse_locked;
         SDL_ShowCursor(!mouse_locked);
     }else if (event.button == SDL_BUTTON_LEFT){
-        UID pointed = Entity::entityPointed(Vector3(event.x, window_height-event.y, -1), window_width, window_height, camera);
+        UID pointed = Entity::entityPointed(Vector3(event.x, window_height-event.y, 0), window_width, window_height, camera);
         if(pointed != 0){
             human->selectEntity(pointed);
             std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << pointed << "\n";

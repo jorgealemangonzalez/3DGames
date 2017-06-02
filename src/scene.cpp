@@ -11,6 +11,23 @@ Scene::Scene() : debugMode(false) {
     background = NULL;
     grid = NULL;
 
+    root_background = new Entity();
+    EntityMesh* planet_background = new EntityMesh();
+    planet_background->mesh = "planet/sphere.ASE";
+    planet_background->texture = "planet/planet_surface.tga";
+    planet_background->model.setTranslation(400,-200,500);
+    root_background->addChild(planet_background);
+    EntityMesh* planet_background2 = new EntityMesh();
+    planet_background2->mesh = "planet/sphere.ASE";
+    planet_background2->texture = "planet/purple_planet.tga";
+    planet_background2->model.setTranslation(-200,20,200);
+    root_background->addChild(planet_background2);
+    EntityMesh* planet_background3 = new EntityMesh();
+    planet_background3->mesh = "planet/sphere.ASE";
+    planet_background3->texture = "planet/craters.tga";
+    planet_background3->model.setTranslation(200,0,-300);
+    root_background->addChild(planet_background3);
+
     debugPointsMesh = new Mesh();
     debugLinesMesh = new Mesh();
 }
@@ -55,6 +72,12 @@ void Scene::render(Camera* camera) {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
+    root_background->model.setIdentity().setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
+    glDisable(GL_CULL_FACE);
+    root_background->render(camera);
+    glEnable(GL_CULL_FACE);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     root->render(camera);
     BulletManager::getManager()->render();
     if(debugMode){

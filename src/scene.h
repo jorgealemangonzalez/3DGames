@@ -13,6 +13,8 @@ public:
     Entity* background;
     Entity* grid;
 
+    Entity* root_background;
+
     Mesh* debugPointsMesh;
     Mesh* debugLinesMesh;
 
