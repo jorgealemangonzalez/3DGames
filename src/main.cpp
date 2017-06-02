@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 	game->init();
 
     sf::Music music;
-    if (!music.openFromFile("../data/space.wav"))
+    if (!music.openFromFile("../data/sounds/space.wav"))
         return -1; // error
     //music.play();
 

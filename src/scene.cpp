@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "extra/textparser.h"
 #include "game.h"
+#include "entity.h"
 
 #define MIPMAP_DISABLE false
 
@@ -176,6 +177,15 @@ void Scene::loadScene(const char* filename) {
             es->entitySpawned = spawnEntity->uid;
             t.seek("*spawntime");
             es->spawnTime = t.getfloat();
+            t.seek("*stats");
+            Stats stats;
+            stats.movable = t.getword() == "true";
+            stats.has_hp = t.getword() == "true";
+            stats.has_ttl = t.getword() == "true";
+            stats.hp = t.getint();
+            stats.ttl = t.getfloat();
+            stats.team = t.getword();
+            es->statsSpawned = stats;
             e = es;
         }
         else{
@@ -202,6 +212,16 @@ void Scene::loadScene(const char* filename) {
         auto* clone = e->clone();
         t.seek("*position");
         clone->model.setTranslation(t.getint(),t.getint(),t.getint());
+
+        t.seek("*stats");
+        Stats stats;
+        stats.movable = t.getword() == "true";
+        stats.has_hp = t.getword() == "true";
+        stats.has_ttl = t.getword() == "true";
+        stats.hp = t.getint();
+        stats.ttl = t.getfloat();
+        stats.team = t.getword();
+        clone->stats = stats;
         this->addToRoot(clone);
 
         if(EntityCollider* ec = dynamic_cast<EntityCollider*>(clone)){

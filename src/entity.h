@@ -12,6 +12,18 @@
 #include "extra/coldet/src/coldet.h"
 #include "BulletManager.h"
 
+typedef struct{
+    bool movable;       // Puede alterar su movimiento?
+    bool has_hp;        // Puede destruirse a causa de hp <= 0
+    bool has_ttl;       // Puede destruirse a cause de ttl <= 0
+    int hp;             // Life remain
+    float ttl;            // Time remain
+    std::string team;   // Ingame team: 't1', 't2', 'neutral'
+    Vector3 front;      // Front direction
+    Vector3 vel;        // Velocity direction and intensity
+    Vector3 targetPos;  // Target position of the entity
+} Stats;
+
 class Entity{
 public:
     static UID s_created; //Up to 4M entities
@@ -29,12 +41,15 @@ public:
     Entity* parent;
     std::vector<Entity*> children;
 
+    //Game stats
+    Stats stats;
+
     //Static methods
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
     static UID entityPointed(Vector3 mouse, int width, int height, Camera* camera);
 
-        //Entity methods
+    //Entity methods
     void save();
     void addChild(Entity* ent);
     void removeChild(Entity* ent);
@@ -51,6 +66,8 @@ public:
     virtual Entity* clone();
     virtual void render(Camera* camera);
     virtual void update(float elapsed_time);
+    //debug
+    virtual void print(int depth);
 };
 
 class EntityMesh : public Entity{   //ATENCION NO PONER PUNTEROS EN ESTA CLASE
@@ -115,6 +132,7 @@ public:
 class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE
 public:
     UID entitySpawned;
+    Stats statsSpawned;
     float spawnTime;
     float lastSpawn;
 

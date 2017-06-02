@@ -71,19 +71,26 @@
         *entity spawner
         *spawns hunter
         *spawntime 100.1
+        *stats true true false 5000 0 t1
 
 *scene level1 6
     *entity fighter
         *position 0 900 28
+        *stats true true false 5000 0 t1
     *entity asteroide_gran
         *position 0 1900 448
+        *stats false false false 0 0 neutral
     *entity asteroide_peq
         *position 0 910 328
+        *stats false false false 0 0 neutral
     *entity asteroide_med
         *position 0 2910 128
+        *stats false false false 0 0 neutral
     *entity hunter
         *position 0 900 538
+        *stats true true false 5000 0 t2
     *entity hunterSpawner
         *position 0 900 538
+        *stats false false false 0 0 t1
 
 

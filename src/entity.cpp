@@ -25,7 +25,7 @@ Entity* Entity::getEntity(UID uid) {
 }
 
 void Entity::destroy_entities_to_destroy() {
-
+    //TODO
 }
 
 UID Entity::entityPointed(Vector3 mouse, int width, int height, Camera* camera){
@@ -33,7 +33,7 @@ UID Entity::entityPointed(Vector3 mouse, int width, int height, Camera* camera){
     //and get the uid of the entity that collides with it
 
     Vector3 pointingAt = camera->unproject(mouse, width, height);
-    Vector3 direction = camera->eye - pointingAt;
+    Vector3 direction = pointingAt - camera->eye;
     direction.normalize();
 
     UID closest_uid = 0;
@@ -135,8 +135,31 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::update(float elapsed_time){
+    if(stats.movable){
+        // use elapsed_time, stats.vel and stats.front to move the entity
+    }
+    if(stats.has_hp){
+        if(stats.hp < 0)
+            destroy();
+
+    }
+    if(stats.has_ttl){
+        stats.ttl -= elapsed_time;
+        if(stats.ttl < 0)
+            destroy();
+    }
+
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);
+    }
+}
+
+void Entity::print(int depth) {
+    for(int i=0; i<depth; i++) std::cout << "\t";
+    std::cout << uid << "\n";
+
+    for(int i=0; i<children.size(); i++){
+        children[i]->print(depth+1);
     }
 }
 //================================================
@@ -334,6 +357,8 @@ void EntityCollider::onCollision(EntityCollider *withEntity) {
 void EntityCollider::onCollision(Bullet *withBullet) {
     if(_DEBUG_)
         std::cout<<this->mesh<<" collides with BULLET"<<std::endl;
+    if(stats.has_hp)
+        stats.hp -= 500;
 }
 
 //methods overwriten by derived classes

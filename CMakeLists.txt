@@ -68,6 +68,7 @@ set(SOURCE_FILES
         src/explosion.h)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
+
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
