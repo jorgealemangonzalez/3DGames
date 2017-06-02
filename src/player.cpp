@@ -1,6 +1,7 @@
 
 #include "player.h"
 #include "game.h"
+#include "mesh.h"
 
 Player::Player(){
 
@@ -76,9 +77,15 @@ void Human::render(Camera *camera) {
 }
 
 void Human::selectEntity(UID e_uid) {
-    if(e_uid == controlling_entity){    //double click
+    if(e_uid && e_uid == controlling_entity){    //double click on non cero entity
         //TODO CREAR VECTOR DEL EYE A LA ENTITY Y PONER CERCA LA CAMARA
-        //Game::instance->camera->eye =
+        EntityMesh* control = (EntityMesh*)Entity::getEntity(e_uid);
+        Mesh* m = Mesh::Load(control->mesh);
+        Vector3 dir = Game::instance->camera->eye - control->getPosition();
+        dir.normalize();
+        Camera* camera = Game::instance->camera;
+        camera->eye = dir * 10 *m->info.radius + control->getPosition();
+        camera->center = control->getPosition();
     }
 
     controlling_entity = e_uid;
