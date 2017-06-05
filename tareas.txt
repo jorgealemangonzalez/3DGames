@@ -17,9 +17,9 @@ Controles usuario interfaz:
 
 (TODO) Cuadrado alrededor unidad seleccionada y vida
 
-(TODO) Click posicion , print plano y que se mueva
+(DONE) Click posicion , print plano y que se mueva
 
-(TODO) Scroll acercar y alejar
+(DONE) Scroll acercar y alejar
 
 (DONE) EntitySpawner
 

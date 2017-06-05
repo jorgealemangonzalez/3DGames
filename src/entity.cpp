@@ -158,9 +158,15 @@ void Entity::update(float seconds_elapsed){
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
 
-            model.traslateLocal(0,0,stats.vel * seconds_elapsed);     //TODO change this translate to some velocity vector
+            float distance = (stats.targetPos - getPosition()).length();
+            float velocity = stats.vel;
+            if(distance < 100){         //parking velocity :')
+                velocity = velocity* distance/100;
+            }
 
-            if((stats.targetPos - getPosition()).length() < 1) {
+            model.traslateLocal(0,0,-velocity * seconds_elapsed);     //TODO change this translate to some velocity vector
+
+            if(distance < 10) {
                 stats.vel = Vector3();
                 stats.targetPos = Vector3();
             }

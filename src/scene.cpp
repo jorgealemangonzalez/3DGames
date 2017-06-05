@@ -238,9 +238,9 @@ void Scene::loadScene(const char* filename) {
 
         t.seek("*stats");
         Stats stats;
-        stats.movable = t.getword() == "true";
-        stats.has_hp = t.getword() == "true";
-        stats.has_ttl = t.getword() == "true";
+        stats.movable = std::string(t.getword()) == "true";
+        stats.has_hp = std::string(t.getword()) == "true";
+        stats.has_ttl = std::string(t.getword()) == "true";
         stats.hp = t.getint();
         stats.ttl = t.getfloat();
         stats.team = t.getword();
