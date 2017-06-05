@@ -121,11 +121,12 @@ void EntityController::update(double seconds_elapsed, UID e_uid) {
 
     Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
     entity->model.traslate(dPos.x, dPos.y, dPos.z);
-    if (game->keystate[SDL_SCANCODE_SPACE]){
+    /*if (game->keystate[SDL_SCANCODE_SPACE]){
         Vector3 actual_pos = entity->getPosition();
         Vector3 dir =  actual_pos - prev_pos;
-        BulletManager::getManager()->createBullet(actual_pos,prev_pos,dir.normalize()*100,100.0f,10.0f,entity->uid,"No type yet");
-    }
+        dir.normalize();
+        BulletManager::getManager()->createBullet(actual_pos+dir*10000,actual_pos+dir*13000,dir*100,100.0f,10.0f,entity->uid,"No type yet");
+    }*/
 
     std::cout << entity->getPosition().toString() << "\n";
 
@@ -175,7 +176,9 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
         Vector3 actual_pos = entity->getPosition();
         Vector3 dir= entity->getDirection();
         dir.normalize();
-        BulletManager::getManager()->createBullet(actual_pos + dir*10,prev_pos + dir*10,dir*300,100.0f,10.0f,entity->uid,"No type yet");
+        EntityMesh* em = ((EntityMesh*)(entity));
+        float radius = Mesh::Load(em->mesh)->info.radius + 4.0f;
+        BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*300,100.0f,10.0f,entity->uid,"No type yet");
     }
     //End bullets
 

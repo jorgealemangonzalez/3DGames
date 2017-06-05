@@ -164,32 +164,8 @@ void Scene::loadScene(const char* filename) {
                 ec->setTexture(texture);
             t.seek("*munition");
             std::string munition = t.getword();
-            if(munition != "no") {
-                //It has munition
-                t.seek("*generate");
-                float x = t.getint();
-                float y = t.getint();
-                float z = t.getint();
-                Vector3 generatePos = Vector3(x,y,z);
-                std::cout<<"Generate Pos: "+generatePos.toString()+"\n";
-                if (munition == "ray") {
-                    //Ray munition
-                    std::cout<<"RAY: ";
-                    t.seek("*color");
-                    Vector3 color = Vector3(t.getint(),t.getint(),t.getint());
-                    std::cout<<"color "+color.toString()+"\n";
-                } else if (munition == "mesh") {
-                    //Mesh munition
-                    std::cout<<"MESH_MUNITION: ";
-                    t.seek("*mesh");
-
-                    std::string munition_mesh = t.getword();
-                    t.seek("*texture");
-                    std::string munition_tga = t.getword();
-
-                    std::cout<<" mesh "<<munition_mesh<<" tga "<<munition_tga<<"\n";
-
-                }
+            if(munition == "yes") {
+                //it has munition
             }
             e = ec;
         }else if(entityClass == "spawner"){

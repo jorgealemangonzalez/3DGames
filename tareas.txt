@@ -19,6 +19,8 @@ Controles usuario interfaz:
 
 (DONE) Click posicion , print plano y que se mueva
 
+(TODO) Movimiento en 3a dimension (¿Como lo hacemos?, yo digo click derecho y arrastrar hacia arriba o abajo)
+
 (DONE) Scroll acercar y alejar
 
 (DONE) EntitySpawner

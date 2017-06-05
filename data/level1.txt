@@ -15,17 +15,12 @@
         *entity collider dynamic
         *mesh fighter/x3_fighter.ASE
         *texture fighter/x3_fighter.tga
-        *munition ray
-            *generate 0 -3 0
-            *color  255 255 255
+        *munition yes
     hunter
         *entity collider dynamic
         *mesh hunter/hunter.ASE
         *texture hunter/hunter.tga
-        *munition mesh
-            *generate 3 0 0
-            *mesh misil/misil.ASE
-            *texture misil/misil.tga
+        *munition yes
     interceptor
         *entity collider dynamic
         *mesh interceptor/x3_interceptor.ASE

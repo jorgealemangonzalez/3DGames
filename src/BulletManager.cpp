@@ -53,8 +53,6 @@ void BulletManager::update(float elapsed_time) {
         }
         b.last_position = b.position;
         b.position = b.position + b.velocity*elapsed_time;
-        //Test collisions
-        //TODO test with mesh or with sphere ??
         bool hit = false;
         for(unsigned int i = 0 ; i < EntityCollider::dynamic_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
