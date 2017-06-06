@@ -193,6 +193,7 @@ void Scene::loadScene(const char* filename) {
         }
 
         templates[name] = e;
+        e->name = name;
     }
 
     t.seek("*scene");

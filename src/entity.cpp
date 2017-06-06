@@ -135,12 +135,13 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::update(float seconds_elapsed){
+    //std::cout<<"Entity_ "<< this->name <<"Health: "<<this->stats.hp<<"\n";
 
     if(stats.movable){
-        std::cout<<"UDATE ENTITY\n";
+        //std::cout<<"UDATE ENTITY\n";
         // use elapsed_time, stats.vel and stats.front to move the entity
         if(stats.vel && stats.targetPos){
-            std::cout<<"UDATE ENTITY--------\n";
+            //std::cout<<"UDATE ENTITY--------\n";
 
             Vector3 to_target = stats.targetPos - getPosition();
             to_target.normalize();
