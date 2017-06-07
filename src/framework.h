@@ -187,7 +187,7 @@ public:
 Vector3 operator * (const Matrix44& matrix, const Vector3& v);
 Vector4 operator * (const Matrix44& matrix, const Vector4& v);
 Vector3 operator * (const Vector3& a, const Vector3& b);
-Vector3 operator * (const Vector3& a, float v);
+template <typename T> Vector3 operator * (const Vector3& a, T v);
 Vector3 operator + (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a, const Vector3& b);
 Vector3 operator - (const Vector3& a);

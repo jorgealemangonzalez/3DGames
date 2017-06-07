@@ -16,6 +16,8 @@ typedef struct{
     bool movable;       // Puede alterar su movimiento?
     bool has_hp;        // Puede destruirse a causa de hp <= 0
     bool has_ttl;       // Puede destruirse a cause de ttl <= 0
+    bool selectable;    // Se puede seleccionar?
+    bool selected;
     int hp;             // Life remain
     float ttl;            // Time remain
     std::string team;   // Ingame team: 't1', 't2', 'neutral'
@@ -46,7 +48,7 @@ public:
     //Static methods
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
-    static UID entityPointed(Vector3 mouse, int width, int height, Camera* camera);
+    static std::vector<UID> entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera);
 
     //Entity methods
     void save();

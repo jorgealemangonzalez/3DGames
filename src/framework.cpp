@@ -398,10 +398,13 @@ Vector3 operator * (const Vector3& a, const Vector3& b)
 	return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-Vector3 operator * (const Vector3& a, float v)
+template <typename T> Vector3 operator * (const Vector3& a, T v)
 {
 	return Vector3(a.x * v, a.y * v, a.z * v);
 }
+template Vector3 operator * <int> (const Vector3& a, int v);
+template Vector3 operator * <float> (const Vector3& a, float v);
+template Vector3 operator * <double> (const Vector3& a, double v);
 
 //Multiplies a vector by a matrix and returns the new vector
 Vector3 operator * (const Matrix44& matrix, const Vector3& v)
@@ -577,6 +580,7 @@ std::string Matrix44::toString() const {
         }
         ss << "\n";
     }
+	return ss.str();
 }
 
 std::ostream& operator<<(std::ostream &out, const Matrix44& m){
@@ -645,5 +649,5 @@ bool RaySphereCollision( const Vector3& center, float radius, const Vector3& ray
 
 Vector3 mix(const Vector3& a, const Vector3& b, float& f)
 {
-	return a*(1.0 - f) + b*f;
+	return a*(1.0f - f) + b*f;
 }

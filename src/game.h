@@ -38,6 +38,7 @@ public:
 	Vector2 mouse_position; //last mouse position
 	Vector2 mouse_delta; //mouse movement in the last frame
 	bool mouse_locked; //tells if the mouse is locked (not seen)
+	Vector2 mouse_when_press;
 	
 	Camera* camera; //our global camera
 
@@ -48,6 +49,7 @@ public:
 
 	void onKeyPressed( SDL_KeyboardEvent event );
 	void onMouseButton( SDL_MouseButtonEvent event );
+	void onMouseButtonUp( SDL_MouseButtonEvent event );
 	void onMouseWheel( SDL_MouseWheelEvent event);
     void onResize( SDL_Event e );
     

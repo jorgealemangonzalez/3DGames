@@ -99,7 +99,6 @@ void Game::update(double seconds_elapsed) {
     human->update(seconds_elapsed);
     enemy->update(seconds_elapsed);
     Scene::getScene()->update(seconds_elapsed);
-
 }
 
 //Keyboard event handler (sync input)
@@ -137,10 +136,16 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
         mouse_locked = !mouse_locked;
         SDL_ShowCursor(!mouse_locked);
     }else if (event.button == SDL_BUTTON_LEFT){
-        UID pointed = Entity::entityPointed(Vector3(event.x, window_height-event.y, 0), window_width, window_height, camera);
-        if(pointed != 0){
-            human->selectEntity(pointed);
-            std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << pointed << "\n";
+        mouse_when_press = Vector2(event.x, window_height-event.y);
+    }
+}
+
+void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
+    if (event.button == SDL_BUTTON_LEFT){
+        std::cout << "Test pointed\n";
+        std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, Vector2(event.x, window_height-event.y), window_width, window_height, camera);
+        for(UID uid : pointed){
+            std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";
         }
     }else if(event.button == SDL_BUTTON_RIGHT){
         Vector3 pointingAt = camera->unproject(Vector3(event.x, window_height-event.y, 0), window_width, window_height);
@@ -154,8 +159,8 @@ void Game::onMouseWheel(SDL_MouseWheelEvent event) {
     //event.x: the amount scrolled horizontally, positive to the right and negative to the left
     //event.y: the amount scrolled vertically, positive away from the user and negative toward the user
 
-    if (event.y > 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * event.y*100);
-    if (event.y < 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100);
+    if (event.y > 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f);
+    if (event.y < 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100.f);
 }
 
 void Game::setWindowSize(int width, int height) {

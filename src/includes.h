@@ -58,8 +58,10 @@
 #define REGISTER_GLEXT(RET, FUNCNAME, ...) typedef RET ( * FUNCNAME ## _func)(__VA_ARGS__); FUNCNAME ## _func FUNCNAME = NULL; 
 #define IMPORT_GLEXT(FUNCNAME) FUNCNAME = (FUNCNAME ## _func) SDL_GL_GetProcAddress(#FUNCNAME); if (FUNCNAME == NULL) { std::cout << "ERROR: This Graphics card doesnt support " << #FUNCNAME << std::endl; }
 
-#define _DEBUG_ 1
 #define ABS(x) ( x < 0 ? -x : x)
+#define _DEBUG_ 1
+//bool debugMode = true;
+
 //OPENGL EXTENSIONS
 
 

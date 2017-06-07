@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "controller.h"
 #include "game.h"
+#include "scene.h"
 
 UID Entity::s_created = 1;
 std::map<UID,Entity*> Entity::s_entities;
@@ -12,7 +13,10 @@ std::vector<UID> Entity::to_destroy;
 std::vector<UID> EntityCollider::static_colliders;
 std::vector<UID> EntityCollider::dynamic_colliders;
 
-Entity::Entity() : uid(Entity::s_created++), parent(NULL) { save(); }
+Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
+    stats.selected = false;
+    save();
+}
 Entity::~Entity() {}
 
 //Static methods
@@ -28,11 +32,46 @@ void Entity::destroy_entities_to_destroy() {
     //TODO
 }
 
-UID Entity::entityPointed(Vector3 mouse, int width, int height, Camera* camera){
+std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
+    //Project all selectable entities into screen space and check if if are inside the region
+
+    float up = (mouseDown.y > mouseUp.y ? mouseDown.y : mouseUp.y) + 5;
+    float down = (mouseDown.y > mouseUp.y ? mouseUp.y : mouseDown.y) - 5;
+    float right = (mouseDown.x > mouseUp.x ? mouseDown.x : mouseUp.x) + 5;
+    float left = (mouseDown.x > mouseUp.x ? mouseUp.x : mouseDown.x) - 5;
+
+    std::vector<UID> inside;
+
+    for(auto &entry : Entity::s_entities){
+        if(entry.second->stats.selectable){
+            entry.second->stats.selected = false;
+            Vector3 pos = camera->project(entry.second->getPosition(), width, height);
+            if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
+                double meshRadius = Mesh::Load(em->mesh)->info.radius;
+                double radius = camera->getProjectScale(entry.second->getPosition(), meshRadius)/1200.;
+
+                if(up > pos.y-radius && down < pos.y+radius &&
+                        right > pos.x-radius && left < pos.x+radius){
+                    inside.push_back(entry.second->uid);
+                    entry.second->stats.selected = true;
+                }else if(up < pos.y+radius && down > pos.y-radius &&
+                        right < pos.x+radius && left > pos.x-radius){
+                    inside.push_back(entry.second->uid);
+                    entry.second->stats.selected = true;
+                }
+            }else{
+                if(pos.x >= left && pos.x <= right && pos.y >= down && pos.y <= up){
+                    inside.push_back(entry.second->uid);
+                    entry.second->stats.selected = true;
+                }
+            }
+        }
+    }
+    return inside;
+/*
     //Make a ray from the position of the eye of the camera
     //and get the uid of the entity that collides with it
-
-    Vector3 pointingAt = camera->unproject(mouse, width, height);
+    Vector3 pointingAt = camera->unproject(Vector3(mouseDown.x, mouseDown.y, 0), width, height);
     Vector3 direction = pointingAt - camera->eye;
     direction.normalize();
 
@@ -63,6 +102,7 @@ UID Entity::entityPointed(Vector3 mouse, int width, int height, Camera* camera){
     }
 
     return closest_uid;
+*/
 }
 
 

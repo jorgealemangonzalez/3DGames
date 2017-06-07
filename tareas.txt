@@ -13,7 +13,9 @@ Controles usuario interfaz:
 
 (TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
 
-(PROGRESS) Selector unidades
+(DONE) Selector unidades
+
+(DONE) Lineas y puntos DEBUG con colores concretos. (En scene)
 
 (TODO) Cuadrado alrededor unidad seleccionada y vida
 
@@ -27,7 +29,7 @@ Controles usuario interfaz:
 
 (DONE) AIcontroller , si esta cerca que se oriente hacia el objetivo pero que no se mueva
 
-(PROGRESS) Guardar en cada entidad su velocidad y demás parámetros que estan en controller ( quitar aceleracion )
+(DONE) Guardar en cada entidad su velocidad y demás parámetros que estan en controller ( quitar aceleracion )
 
 (DONE) Explosion cuando choca una bala ( sprite exposion )
 

@@ -99,7 +99,7 @@ void mainLoop()
 						game->onMouseButton( sdlEvent.button );
 						break;
 					case SDL_MOUSEBUTTONUP:
-						//...
+						game->onMouseButtonUp( sdlEvent.button );
 						break;
 					case SDL_MOUSEWHEEL:
 						game->onMouseWheel( sdlEvent.wheel );

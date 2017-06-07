@@ -6,7 +6,7 @@
 #define MIPMAP_DISABLE false
 
 Scene* Scene::scene = NULL;
-Scene::Scene() : debugMode(false) {
+Scene::Scene() {
     root = new Entity();
     background = NULL;
     grid = NULL;
@@ -28,6 +28,9 @@ Scene::Scene() : debugMode(false) {
     planet_background3->model.setTranslation(200,0,-300);
     root_background->addChild(planet_background3);
 
+    Game* game = Game::instance;
+    camera2d = new Camera();
+    camera2d->setOrthographic(0, game->window_width, 0, game->window_height, 0, 1);
     debugPointsMesh = new Mesh();
     debugLinesMesh = new Mesh();
 }
@@ -73,18 +76,40 @@ void Scene::render(Camera* camera) {
         glEnable(GL_DEPTH_TEST);
     }
     root_background->model.setIdentity().setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
-    glDisable(GL_CULL_FACE);
     root_background->render(camera);
-    glEnable(GL_CULL_FACE);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     root->render(camera);
     BulletManager::getManager()->render();
-    if(debugMode){
-        if(debugPointsMesh->vertices.size() > 0)
-            debugPointsMesh->render(GL_POINT);
-        if(debugLinesMesh->vertices.size() > 0)
-            debugLinesMesh->render(GL_LINE);
+
+    if(_DEBUG_){
+        debugPointsMesh->clear();
+        debugLinesMesh->clear();
+        for(auto &entry : Entity::s_entities){
+            if(entry.second->stats.selectable){
+                Vector4 color(0,0,1,1);
+                if(entry.second->stats.selected)
+                    color = Vector4(0,1,0,1);
+                Vector3 pos = camera->project(entry.second->getPosition(), Game::instance->window_width, Game::instance->window_height);
+                addDebugPoint(pos, color);
+                if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
+                    double meshRadius = Mesh::Load(em->mesh)->info.radius;
+                    double radius = camera->getProjectScale(entry.second->getPosition(), meshRadius) / 1200.;
+                    addDebugLine(Vector3(pos.x - radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y - radius, pos.z), color);
+                    addDebugLine(Vector3(pos.x + radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y + radius, pos.z), color);
+                    addDebugLine(Vector3(pos.x + radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y + radius, pos.z), color);
+                    addDebugLine(Vector3(pos.x - radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y - radius, pos.z), color);
+                }
+            }
+        }
+        camera2d->set();
+        glDisable(GL_DEPTH_TEST);
+        if(debugPointsMesh->vertices.size())
+            debugPointsMesh->render(GL_POINTS);
+        if(debugLinesMesh->vertices.size())
+            debugLinesMesh->render(GL_LINES);
+        glEnable(GL_DEPTH_TEST);
+        camera->set();
     }
 
 }
@@ -178,9 +203,10 @@ void Scene::loadScene(const char* filename) {
             es->spawnTime = t.getfloat();
             t.seek("*stats");
             Stats stats;
-            stats.movable = t.getword() == "true";
-            stats.has_hp = t.getword() == "true";
-            stats.has_ttl = t.getword() == "true";
+            stats.movable = (strcmp(t.getword(),"true") == 0);
+            stats.has_hp = (strcmp(t.getword(),"true") == 0);
+            stats.has_ttl = (strcmp(t.getword(),"true") == 0);
+            stats.selectable = (strcmp(t.getword(),"true") == 0);
             stats.hp = t.getint();
             stats.ttl = t.getfloat();
             stats.team = t.getword();
@@ -215,9 +241,10 @@ void Scene::loadScene(const char* filename) {
 
         t.seek("*stats");
         Stats stats;
-        stats.movable = std::string(t.getword()) == "true";
-        stats.has_hp = std::string(t.getword()) == "true";
-        stats.has_ttl = std::string(t.getword()) == "true";
+        stats.movable = (strcmp(t.getword(),"true") == 0);
+        stats.has_hp = (strcmp(t.getword(),"true") == 0);
+        stats.has_ttl = (strcmp(t.getword(),"true") == 0);
+        stats.selectable = (strcmp(t.getword(),"true") == 0);
         stats.hp = t.getint();
         stats.ttl = t.getfloat();
         stats.team = t.getword();
@@ -270,10 +297,26 @@ void Scene::update(float elapsed_time) {
     }*/
 }
 
-void Scene::addDebugPoint(Vector3 pos1) {}
+void Scene::addDebugPoint(Vector3 pos1) {
+    debugPointsMesh->vertices.push_back(pos1);
+    debugPointsMesh->colors.push_back(Vector4(1,1,1,1));
+}
 
-void Scene::addDebugPoint(Vector3 pos1, Vector3 color) {}
+void Scene::addDebugPoint(Vector3 pos1, Vector4 color) {
+    debugPointsMesh->vertices.push_back(pos1);
+    debugPointsMesh->colors.push_back(color);
+}
 
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2) {}
+void Scene::addDebugLine(Vector3 pos1, Vector3 pos2) {
+    debugLinesMesh->vertices.push_back(pos1);
+    debugLinesMesh->vertices.push_back(pos2);
+    debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
+    debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
+}
 
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, Vector3 color) {}
+void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, Vector4 color) {
+    debugLinesMesh->vertices.push_back(pos1);
+    debugLinesMesh->vertices.push_back(pos2);
+    debugLinesMesh->colors.push_back(color);
+    debugLinesMesh->colors.push_back(color);
+}

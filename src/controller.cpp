@@ -26,7 +26,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
                 break;
 
             Vector3 pos = entity->getPosition();
-            Vector3 dir = (pos - entityPreviusPos).normalize()*0.5 + entity->getDirection()*0.5;    //TODO Controll velocity
+            Vector3 dir = (pos - entityPreviusPos).normalize()*0.5f + entity->getDirection()*0.5f;    //TODO Controll velocity
             Game::instance->camera->lookAt(
                     pos + Vector3(20*(-dir.x), 20*(-dir.y)+10, 20*(-dir.z)),
                     pos,
@@ -64,7 +64,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
             Camera* camera = Game::instance->camera;
             //mouse input to rotate the cam
-            if ((Game::instance->mouse_state & SDL_BUTTON_LEFT) || Game::instance->mouse_locked) //is left button pressed?
+            if ((Game::instance->keystate[SDL_SCANCODE_Z] && (Game::instance->mouse_state & SDL_BUTTON_LEFT)) || Game::instance->mouse_locked) //is left button pressed?
             {
                 UID human_controlling = Game::instance->human->controlling_entity;
                 if(!human_controlling) {
