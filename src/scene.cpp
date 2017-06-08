@@ -170,28 +170,28 @@ void Scene::loadScene(const char* filename) {
         Entity *e;
         std::cout << entityClass << "\n";
 
-        if (entityClass == "collider") {
+        if (entityClass == "collider" || entityClass == "fighter") {
             EntityCollider *ec;
             std::string colliderType = t.getword();
+            bool dynamic;
             if (colliderType == "static") {
-                ec = new EntityCollider(false);
+                dynamic = false;
             } else if (colliderType == "dynamic") {
-                ec = new EntityCollider(true);
+                dynamic = false;
             } else {
                 std::cout << "Error reading collider type in " << name << std::endl;
                 exit(0);
             }
+            if(entityClass == "fighter")
+                ec = new EntityFighter(dynamic);
+            else
+                ec = new EntityCollider(dynamic);
             t.seek("*mesh");
             ec->setMesh(t.getword());
             t.seek("*texture");
             std::string texture = t.getword();
             if(texture != "no")   //Si tiene textura
                 ec->setTexture(texture);
-            t.seek("*munition");
-            std::string munition = t.getword();
-            if(munition == "yes") {
-                //it has munition
-            }
             e = ec;
         }else if(entityClass == "spawner"){
             EntitySpawner* es = new EntitySpawner();

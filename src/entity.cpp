@@ -339,8 +339,8 @@ void EntityMesh::render(Camera* camera){
 
 //================================================
 
-EntityCollider::EntityCollider() : EntityMesh(), dynamic(false) {}
 EntityCollider::EntityCollider(bool dynamic) : EntityMesh(), dynamic(dynamic) {}
+EntityCollider::EntityCollider():EntityCollider(false){}
 EntityCollider::~EntityCollider(){}
 
 //Static methods
@@ -437,4 +437,34 @@ EntityCollider* EntityCollider::clone() {
     *clon = *this;
     clon->uid = uid;
     return clon;
+}
+
+//==================================================
+
+EntityFighter::EntityFighter(bool dynamic = false):EntityCollider(dynamic) {
+
+}
+
+EntityFighter::~EntityFighter() {
+
+}
+
+EntityFighter* EntityFighter::clone() {
+    EntityFighter* clon = new EntityFighter();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
+
+void EntityFighter::shoot() {
+    Vector3 actual_pos = getPosition();
+    Vector3 dir= getDirection();
+    dir.normalize();
+    float radius = Mesh::Load(mesh)->info.radius + 4.0f;
+    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*300,100.0f,10.0f,uid,"No type yet");
+}
+
+void EntityFighter::update(float elapsed_time){
+    Entity::update(elapsed_time);
 }

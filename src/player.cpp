@@ -30,6 +30,7 @@ Human::Human() {
     plane->uvs[3] = Vector2(0.0f,tam);
     plane->uvs[4] = Vector2(0.0f,0.0f);
     plane->uvs[5] = Vector2(tam,tam);
+    plane->info.radius = tam*2;
     Mesh::s_Meshes["_grid"] = plane;
 
     grid = new EntityCollider();

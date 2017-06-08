@@ -12,31 +12,26 @@
 
 *entities 10
     fighter
-        *entity collider dynamic
+        *entity fighter dynamic
         *mesh fighter/x3_fighter.ASE
         *texture fighter/x3_fighter.tga
-        *munition yes
     hunter
-        *entity collider dynamic
+        *entity fighter dynamic
         *mesh hunter/hunter.ASE
         *texture hunter/hunter.tga
-        *munition yes
     interceptor
         *entity collider dynamic
         *mesh interceptor/x3_interceptor.ASE
         *texture interceptor/x3_interceptor.tga
-        *munition no
     runner
         *entity collider dynamic
         *mesh runner/x3_runner.ASE
         *texture runner/x3_runner.tga
-        *munition no
 
     space_train
         *entity collider dynamic
         *mesh bomber/bomber.ASE
         *texture bomber/bomber.tga
-        *munition no
 
     asteroide_gran
         *entity collider static

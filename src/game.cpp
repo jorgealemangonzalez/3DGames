@@ -137,6 +137,7 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
         SDL_ShowCursor(!mouse_locked);
     }else if (event.button == SDL_BUTTON_LEFT){
         mouse_when_press = Vector2(event.x, window_height-event.y);
+        std::cout<<"press"<<mouse_when_press.x<<" "<<mouse_when_press.y<<std::endl;
     }
 }
 
@@ -153,6 +154,7 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
         direction.normalize();
         human->moveSelectedInPlane(camera->eye,direction);
     }
+    mouse_when_press = Vector2(-1,-1);
 }
 
 void Game::onMouseWheel(SDL_MouseWheelEvent event) {

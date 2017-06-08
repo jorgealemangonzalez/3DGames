@@ -12,7 +12,7 @@
 #include "extra/coldet/src/coldet.h"
 #include "BulletManager.h"
 
-typedef struct{
+typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     bool movable;       // Puede alterar su movimiento?
     bool has_hp;        // Puede destruirse a causa de hp <= 0
     bool has_ttl;       // Puede destruirse a cause de ttl <= 0
@@ -110,8 +110,8 @@ public:
 
     bool dynamic;
 
-    EntityCollider();
     EntityCollider(bool dynamic);
+    EntityCollider();
     virtual ~EntityCollider();
 
     //Static methods
@@ -126,6 +126,16 @@ public:
 
     //methods overwriten by derived classes
     virtual EntityCollider* clone();
+};
+
+class EntityFighter : public EntityCollider{ //NO PONER PUNTEROS EN ESTA CLASE
+public:
+    EntityFighter(bool dynamic);
+    ~EntityFighter();
+
+    void shoot();
+    EntityFighter* clone();
+    void update(float elapsed_time);
 };
 
 class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE

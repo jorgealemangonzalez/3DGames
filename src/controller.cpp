@@ -199,18 +199,14 @@ void FighterController::update(double seconds_elapsed, UID e_uid) {
     vel = vel + acc * dTime * 20;
     //std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
 
-    //Bullets:::
-    Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
     entity->model.traslateLocal(0, 0, vel * dTime);     //TODO change this translate to some velocity vector
     if (game->keystate[SDL_SCANCODE_SPACE]){
-        Vector3 actual_pos = entity->getPosition();
-        Vector3 dir= entity->getDirection();
-        dir.normalize();
-        EntityMesh* em = ((EntityMesh*)(entity));
-        float radius = Mesh::Load(em->mesh)->info.radius + 4.0f;
-        BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*300,100.0f,10.0f,entity->uid,"No type yet");
+        printf("ho");
+        if(EntityFighter* ef = dynamic_cast<EntityFighter*>(entity)){
+            printf("tooto");
+            ef->shoot();
+        }
     }
-    //End bullets
 
     if (game->keystate[SDL_SCANCODE_A]) angX += -1.0f;
     if (game->keystate[SDL_SCANCODE_D]) angX += +1.0f;
