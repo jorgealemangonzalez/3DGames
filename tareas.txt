@@ -47,6 +47,7 @@ Controles usuario interfaz:
 
 (TODO) Quit main music and create effects
 
+(TODO) Poner la ia del movimiento(solo el giro) / disparo (las cosas que se hagan solas sin que el usuario toque nada )en entity fighter update. Desde el AI controller no se hara casi nada y desde el controller del humano que pueda habilitar/ desabilitar cosas que se hagan solas
 --------------------------
 
 -> CONTROL

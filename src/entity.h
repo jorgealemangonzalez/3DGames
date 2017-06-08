@@ -60,6 +60,7 @@ public:
     Vector3 getPosition();
     Vector3 getRotation();
     Vector3 getDirection();
+    void lookPosition(float seconds_elapsed, Vector3 toLook);
 
     void followWithCamera(Camera* camera);
 
@@ -130,6 +131,8 @@ public:
 
 class EntityFighter : public EntityCollider{ //NO PONER PUNTEROS EN ESTA CLASE
 public:
+    float fireRate = 3.0f; //bullets per second
+    float lastFireSec = 1000; //Seconds since last fire
     EntityFighter(bool dynamic);
     ~EntityFighter();
 

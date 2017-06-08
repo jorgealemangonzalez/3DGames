@@ -154,6 +154,33 @@ Vector3 Entity::getDirection() {
     return getGlobalModel().rotateVector(Vector3(0,0,-1));
 }
 
+void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
+    Vector3 to_target = toLook - getPosition();
+
+    float distance = to_target.length();
+    Vector3 looking = getDirection().normalize();
+    to_target.normalize();
+    float angle = acosf(looking.dot(to_target));
+    Vector3 perpendicular = to_target.cross(looking).normalize();
+
+    Matrix44 inv = getGlobalModel();
+    inv.inverse();
+    Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
+    float angleRotate = (angle > 0.03 ? angle * seconds_elapsed : angle);    //Angulo pequeño rota directamente
+    if(angleRotate > 0)
+        model.rotateLocal(angleRotate,perpendicularRotate);
+
+
+    //TODO quit this
+    Vector3 pos = getPosition();
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+perpendicular*100);
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+looking*100);
+    Game::debugMesh.vertices.push_back(pos);
+    Game::debugMesh.vertices.push_back(pos+to_target*100);
+}
+
 void Entity::followWithCamera(Camera* camera){
     Vector3 pos = getPosition();
     camera->lookAt(pos + Vector3(0.f, 10.f, 20.f), pos, Vector3(0.f, 1.f, 0.f));
@@ -463,8 +490,18 @@ void EntityFighter::shoot() {
     dir.normalize();
     float radius = Mesh::Load(mesh)->info.radius + 4.0f;
     BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*300,100.0f,10.0f,uid,"No type yet");
+    lastFireSec = 0;
 }
 
 void EntityFighter::update(float elapsed_time){
     Entity::update(elapsed_time);
+    lastFireSec+=elapsed_time;
+    for(UID e : Game::instance->enemy->controllable_entities){
+        Entity* focus = Entity::getEntity(e);
+        if((focus->getPosition() - getPosition()).length() < 1000 ){ //TODO fire range variable
+            lookPosition(elapsed_time,focus->getPosition());
+            if(lastFireSec > 1.0/fireRate)
+                shoot();
+        }
+    }
 }
