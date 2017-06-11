@@ -177,7 +177,7 @@ void Scene::loadScene(const char* filename) {
             if (colliderType == "static") {
                 dynamic = false;
             } else if (colliderType == "dynamic") {
-                dynamic = false;
+                dynamic = true;
             } else {
                 std::cout << "Error reading collider type in " << name << std::endl;
                 exit(0);

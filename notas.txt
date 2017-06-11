@@ -203,3 +203,9 @@ CLION: https://www.jetbrains.com/help/clion/changing-build-configuration-types.h
 ---
 
 -------------------------- CONTROLES DEL JUEGO --------------------------
+
+e       Centrar camara al rededor de las unidades seleccionadas
+z       Mantener presionado para girar al rededor de la nave seleccionada
+TAB     Pintar el plano para mover todas las unidades seleccionadas
+clik D  Mover a una posicion en el plano
+clik I  Seleccionar unidades

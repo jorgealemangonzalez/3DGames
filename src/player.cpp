@@ -74,17 +74,15 @@ void Human::centerCameraOnControlling(){
     Vector3 dir = Game::instance->camera->eye - center_controlling;
     dir.normalize();
     Camera* camera = Game::instance->camera;
-    camera->eye = dir * 10 *radius_controlling + center_controlling;
+    camera->eye = dir * (radius_controlling+100) + center_controlling;
     camera->center = center_controlling;
 }
 
 void Human::selectEntities(std::vector<UID>& entities) {
     controlling_entities = entities;
-    if(controlling_entities.size()) {
+    std::vector<Entity *> control_entities = getControlling_entities();
+    if(control_entities.size()) {
         center_controlling = Vector3();
-        std::vector<Entity *> control_entities;
-        for (UID e: controlling_entities)
-            control_entities.push_back(Entity::getEntity(e));
 
         for (Entity *e: control_entities)
             center_controlling += e->getPosition();
@@ -105,22 +103,78 @@ void Human::selectEntities(std::vector<UID>& entities) {
     }
 }
 
-void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
-    if(controlling_entities.size()){
-        Vector3 move_position;
-        if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
-            for(UID controlling_entity : controlling_entities) {
-                Entity *control = Entity::getEntity(controlling_entity);
-                control->stats.targetPos = move_position;
-                control->stats.vel = 100;
-                std::cout << "MOVE_POSITION: " << move_position << "\n";
-            }
+void Human::organizeSquadCircle(Vector3 position){
+    //Intentemos crear un circulo y poner las naves en este
+    std::vector<Entity*> controlling = getControlling_entities();
+    if(controlling.size()) {
+        float acum_sizes = 0.0;
+        for (Entity *e : controlling) {
+            acum_sizes += Mesh::Load(((EntityMesh *) e)->mesh)->info.radius * 2 + 50;
+        }
+
+        //L = 2 * PI * r
+        float circ_r = acum_sizes / (2.0 * PI);
+        float section = (360.0 / (float) controlling.size());
+        for (unsigned int i = 0; i < controlling.size(); ++i) {
+            Vector3 move = position +
+                           Vector3(circ_r * cos((i * section) * DEG2RAD), 0, circ_r * sin((i * section) * DEG2RAD));
+            controlling[i]->stats.targetPos = move;
+            controlling[i]->stats.vel = 100;
         }
     }
 }
 
-const std::vector<UID> &Human::getControlling_entities() const {
-    return controlling_entities;
+void Human::organizeSquadLine(Vector3 position){
+    //Intentemos crear un circulo y poner las naves en este
+    std::vector<Entity*> controlling = getControlling_entities();
+    if(controlling.size()) {
+        for (unsigned int i = 0; i < controlling.size(); ++i) {
+            int jump = i/2;
+            float radius = Mesh::Load(((EntityMesh*)controlling[i])->mesh)->info.radius;
+            Vector3 move;
+            if(i%2)
+                move = position +
+                               Vector3( (jump+1)*50 + radius, 0, 0);
+            else
+                move = position -
+                               Vector3( (jump+1)*50 + radius, 0, 0);            controlling[i]->stats.targetPos = move;
+            controlling[i]->stats.targetPos = move;
+            controlling[i]->stats.vel = 100;
+        }
+    }
+}
+
+void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
+    Vector3 move_position;
+    if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
+        if(_DEBUG_)
+            std::cout<<"MOVE TO POSITION: "<<move_position;
+        /*
+        for(Entity* control : controlling) {
+            control->stats.targetPos = move_position;
+            control->stats.vel = 100;
+            std::cout << "MOVE_POSITION: " << move_position << "\n";
+        }*/
+        organizeSquadLine(move_position);
+
+    }
+}
+
+std::vector<Entity*> Human::getControlling_entities(){
+    std::vector<Entity*> entities;
+    std::vector< std::vector<UID>::iterator > removeEntities;
+    for(std::vector<UID>::iterator it = controlling_entities.begin(); it != controlling_entities.end(); ++it) {
+        Entity* entity =Entity::getEntity((*it));
+        if (entity != NULL)
+            entities.push_back(entity);
+        else{
+            removeEntities.push_back(it);
+        }
+    }
+    for(std::vector<UID>::iterator it : removeEntities)
+        controlling_entities.erase(it);
+
+    return entities;
 }
 
 const float &Human::getRadius_controlling() const {

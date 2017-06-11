@@ -391,14 +391,13 @@ void EntityCollider::checkCollisions() {
         if(entitySource == NULL) {dynamic_colliders.erase(dynamic_colliders.begin() + i); --i; continue;}
         //entitySource->setTransform(); //Ahora mismo solo se
         Vector3 dinamic_pos_source = entitySource->getGlobalModel().getTranslationOnly();
-        double source_radius = 10.0;//TODO change this, make radius work
+        double source_radius = Mesh::Load(entitySource->mesh)->info.radius;//TODO change this, make radius work
 
         for(int st = 0 ; st < static_colliders.size(); ++st){
             entityDest = (EntityCollider*)Entity::getEntity(static_colliders[st]);
             if(entityDest == NULL) {static_colliders.erase(static_colliders.begin() + i); --st; continue;}
             if(entityDest->testSphereCollision(dinamic_pos_source, source_radius, collision)) { //TODO change sphere collision for Mesh collision when object is to big
                 entitySource->onCollision(entityDest);
-                entityDest->onCollision(entitySource);
             }
         }
 
@@ -448,6 +447,11 @@ bool EntityCollider::testMeshCollision(EntityMesh *testMesh) {
 void EntityCollider::onCollision(EntityCollider *withEntity) {
     if(_DEBUG_)
         std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
+
+    //Gravitational force--------
+    Vector3 gravDir = this->getPosition() - withEntity->getPosition();
+    gravDir.normalize();
+    this->model.traslateLocal(gravDir*3);
 }
 
 void EntityCollider::onCollision(Bullet *withBullet) {

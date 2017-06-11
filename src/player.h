@@ -33,7 +33,7 @@ public:
     CameraController* cameraController;
     EntityCollider* grid;
 
-    const std::vector<UID> &getControlling_entities() const;
+    std::vector<Entity*> getControlling_entities(); //Controla si una de las unidades ha desaparecido
 
     const float &getRadius_controlling() const;
 
@@ -45,6 +45,9 @@ public:
     void render(Camera* camera);
     void update(double seconds_elapsed);
     void showHideControlPlane();
+
+    void organizeSquadCircle(Vector3 position);
+    void organizeSquadLine(Vector3 position);
 
 };
 
