@@ -496,12 +496,14 @@ void EntityFighter::shoot() {
 void EntityFighter::update(float elapsed_time){
     Entity::update(elapsed_time);
     lastFireSec+=elapsed_time;
+    if(!stats.targetPos)
     for(UID e : Game::instance->enemy->controllable_entities){
         Entity* focus = Entity::getEntity(e);
         if((focus->getPosition() - getPosition()).length() < 1000 ){ //TODO fire range variable
             lookPosition(elapsed_time,focus->getPosition());
             if(lastFireSec > 1.0/fireRate)
                 shoot();
+            break;
         }
     }
 }

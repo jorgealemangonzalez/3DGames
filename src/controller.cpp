@@ -66,17 +66,15 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             //mouse input to rotate the cam
             if ((Game::instance->keystate[SDL_SCANCODE_Z] && (Game::instance->mouse_state & SDL_BUTTON_LEFT)) || Game::instance->mouse_locked) //is left button pressed?
             {
-                UID human_controlling = Game::instance->human->controlling_entity;
-                if(!human_controlling) {
+                std::vector<UID> human_controlling = Game::instance->human->getControlling_entities();
+                if(!human_controlling.size()) {
                     camera->rotate(Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
                     camera->rotate(Game::instance->mouse_delta.y * 0.005f,
                                                    Game::instance->camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
                 }else if (Game::instance->mouse_delta.x || Game::instance->mouse_delta.y){
                     std::cout<<"holallasjodfispofdighiuh";
 
-                    Entity* rotateEntityCenter = Entity::getEntity(human_controlling);
-                    std::cout<<"Direction: "<<rotateEntityCenter->getDirection();
-                    Vector3 rotateCenter = rotateEntityCenter->getPosition();
+                    Vector3 rotateCenter = Game::instance->human->getCenter_controlling();
                     Vector3 lastEye = camera->eye;
                     Vector3 to_entity = lastEye - rotateCenter;
                     bool changeRotation = false;

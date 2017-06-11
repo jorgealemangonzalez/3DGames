@@ -17,6 +17,7 @@ void Player::addControllableEntity(UID e_uid) {
 //========================================
 
 Human::Human() {
+    show_control_plane = false;
     cameraController = new CameraController();
     entityController = new FighterController();
     std::string texture = "grid.tga";
@@ -43,25 +44,19 @@ Human::~Human() {
 }
 
 void Human::update(double seconds_elapsed) {
-
-    entityController->update(seconds_elapsed, controllable_entities[controlling_entity]);
-    cameraController->update(seconds_elapsed, controllable_entities[controlling_entity]);
-
-    if(controlling_entity){
-        Entity* controlling = Entity::getEntity(controlling_entity);
-        grid->model.setTranslation(controlling->getPosition());
-        Vector3 axis(1.0,0,0);
-        grid->model.rotateLocal(DEG2RAD*90,axis);
-    }
+cameraController->update(seconds_elapsed,12);//TODO Quit entity from camera controller
 }
 
-void Human::rotateControlling() {
-    controlling_entity = (controlling_entity+1)%controllable_entities.size();
-    cameraController->notifyEntity(controllable_entities[controlling_entity]);
+void Human::showHideControlPlane(){
+    show_control_plane = !show_control_plane;
 }
 
 void Human::render(Camera *camera) {
-    if(controlling_entity){
+    if(show_control_plane){
+        grid->model.setTranslation(center_controlling);
+        Vector3 axis(1.0,0,0);
+        grid->model.rotateLocal(DEG2RAD*90,axis);
+
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
@@ -75,31 +70,65 @@ void Human::render(Camera *camera) {
     }
 }
 
-void Human::selectEntity(UID e_uid) {
-    if(e_uid && e_uid == controlling_entity){    //double click on non cero entity
-        //TODO CREAR VECTOR DEL EYE A LA ENTITY Y PONER CERCA LA CAMARA
-        EntityMesh* control = (EntityMesh*)Entity::getEntity(e_uid);
-        Mesh* m = Mesh::Load(control->mesh);
-        Vector3 dir = Game::instance->camera->eye - control->getPosition();
-        dir.normalize();
-        Camera* camera = Game::instance->camera;
-        camera->eye = dir * 10 *m->info.radius + control->getPosition();
-        camera->center = control->getPosition();
-    }
+void Human::centerCameraOnControlling(){
+    Vector3 dir = Game::instance->camera->eye - center_controlling;
+    dir.normalize();
+    Camera* camera = Game::instance->camera;
+    camera->eye = dir * 10 *radius_controlling + center_controlling;
+    camera->center = center_controlling;
+}
 
-    controlling_entity = e_uid;
+void Human::selectEntities(std::vector<UID>& entities) {
+    controlling_entities = entities;
+    if(controlling_entities.size()) {
+        center_controlling = Vector3();
+        std::vector<Entity *> control_entities;
+        for (UID e: controlling_entities)
+            control_entities.push_back(Entity::getEntity(e));
+
+        for (Entity *e: control_entities)
+            center_controlling += e->getPosition();
+
+        center_controlling /= control_entities.size();
+
+        radius_controlling = 0;
+        Entity *fartest;
+        for (Entity *e: control_entities) {
+            float dist = e->getPosition().distance(center_controlling);
+            if (dist >= radius_controlling) {
+                radius_controlling = dist;
+                fartest = e;
+            }
+        }
+        radius_controlling += Mesh::Load(
+                ((EntityMesh *) fartest)->mesh)->info.radius;        //TODO Solo se pueden seleccionar entity mesh
+    }
 }
 
 void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
-    if(controlling_entity){
+    if(controlling_entities.size()){
         Vector3 move_position;
         if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
-            Entity *control = Entity::getEntity(controlling_entity);
-            control->stats.targetPos = move_position;
-            control->stats.vel = 100;
-            std::cout<<"MOVE_POSITION: "<<move_position<<"\n";
+            for(UID controlling_entity : controlling_entities) {
+                Entity *control = Entity::getEntity(controlling_entity);
+                control->stats.targetPos = move_position;
+                control->stats.vel = 100;
+                std::cout << "MOVE_POSITION: " << move_position << "\n";
+            }
         }
     }
+}
+
+const std::vector<UID> &Human::getControlling_entities() const {
+    return controlling_entities;
+}
+
+const float &Human::getRadius_controlling() const {
+    return radius_controlling;
+}
+
+const Vector3 &Human::getCenter_controlling() const {
+    return center_controlling;
 }
 
 //========================================

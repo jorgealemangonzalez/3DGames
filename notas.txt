@@ -201,3 +201,5 @@ Settings de compilación: debug, release, personalizadas con macros de preproces
 CLION: https://www.jetbrains.com/help/clion/changing-build-configuration-types.html
 
 ---
+
+-------------------------- CONTROLES DEL JUEGO --------------------------

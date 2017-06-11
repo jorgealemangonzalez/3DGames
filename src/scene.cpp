@@ -259,7 +259,6 @@ void Scene::loadScene(const char* filename) {
         //TODO remove this
         if(entity_name == "fighter"){
             Game::instance->human->addControllableEntity(clone->uid);
-            Game::instance->human->controlling_entity = clone->uid;
             Game::instance->enemy->aiController->setEntityFollow(clone->uid);
 
         }

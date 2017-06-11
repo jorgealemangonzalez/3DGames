@@ -38,6 +38,7 @@ public:
 
 	void operator *= (float v) { x *= v; y *= v; }
 	void operator /= (float v) { x /= v; y /= v; }
+	bool operator != (Vector2 v) { return x == v.x && y == v.y;}
 };
 
 Vector2 operator * (const Vector2& a, float v);
@@ -89,6 +90,7 @@ public:
 
 	void operator *= (float v) { x *= v; y *= v; z *= v; }
 	void operator /= (float v) { x /= v; y /= v; z /= v; }
+	void operator += (const Vector3& v) { x += v.x; y += v.y; z += v.z; }
 	operator bool() const{
 		return (x || y || z);
 	}

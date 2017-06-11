@@ -59,6 +59,8 @@
 #define IMPORT_GLEXT(FUNCNAME) FUNCNAME = (FUNCNAME ## _func) SDL_GL_GetProcAddress(#FUNCNAME); if (FUNCNAME == NULL) { std::cout << "ERROR: This Graphics card doesnt support " << #FUNCNAME << std::endl; }
 
 #define ABS(x) ( x < 0 ? -x : x)
+#define MAX(a,b) ( a < b ? b : a)
+#define MIN(a,b) ( a > b ? b : a)
 #define _DEBUG_ 1
 //bool debugMode = true;
 

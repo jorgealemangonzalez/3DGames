@@ -21,6 +21,10 @@ public:
 };
 
 class Human: public Player{
+    std::vector<UID> controlling_entities;            // Index of controllable pool
+    float radius_controlling;
+    Vector3 center_controlling;
+    bool show_control_plane;
 public:
     Human();
     ~Human();
@@ -29,13 +33,18 @@ public:
     CameraController* cameraController;
     EntityCollider* grid;
 
-    UID selected_entity;                        // For selecting with mouse
-    unsigned int controlling_entity;            // Index of controllable pool
-    void rotateControlling();
-    void selectEntity(UID e_uid);
+    const std::vector<UID> &getControlling_entities() const;
+
+    const float &getRadius_controlling() const;
+
+    const Vector3 &getCenter_controlling() const;
+
+    void selectEntities(std::vector<UID>& entities);
+    void centerCameraOnControlling();
     void moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay);
     void render(Camera* camera);
     void update(double seconds_elapsed);
+    void showHideControlPlane();
 
 };
 
