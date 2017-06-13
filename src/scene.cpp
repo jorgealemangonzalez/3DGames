@@ -95,10 +95,10 @@ void Scene::render(Camera* camera) {
                 if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
                     double meshRadius = Mesh::Load(em->mesh)->info.radius;
                     double radius = camera->getProjectScale(entry.second->getPosition(), meshRadius) / 1200.;
-                    addDebugLine(Vector3(pos.x - radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y - radius, pos.z), color);
-                    addDebugLine(Vector3(pos.x + radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y + radius, pos.z), color);
-                    addDebugLine(Vector3(pos.x + radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y + radius, pos.z), color);
-                    addDebugLine(Vector3(pos.x - radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y - radius, pos.z), color);
+                    addDebugLine(Vector3(pos.x - radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y - radius, pos.z), color, true);
+                    addDebugLine(Vector3(pos.x + radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y + radius, pos.z), color, true);
+                    addDebugLine(Vector3(pos.x + radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y + radius, pos.z), color, true);
+                    addDebugLine(Vector3(pos.x - radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y - radius, pos.z), color, true);
                 }
             }
         }
@@ -282,24 +282,40 @@ void Scene::update(float elapsed_time) {
     Entity::destroy_entities_to_destroy();
 }
 
-void Scene::addDebugPoint(Vector3 pos1) {
+void Scene::addDebugPoint(Vector3 pos1, bool projected) {
+    if(!projected){
+        Camera* camera = Game::instance->camera;
+        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
+    }
     debugPointsMesh->vertices.push_back(pos1);
     debugPointsMesh->colors.push_back(Vector4(1,1,1,1));
 }
 
-void Scene::addDebugPoint(Vector3 pos1, Vector4 color) {
+void Scene::addDebugPoint(Vector3 pos1, Vector4 color, bool projected) {
+    if(!projected){
+        Camera* camera = Game::instance->camera;
+        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
+    }
     debugPointsMesh->vertices.push_back(pos1);
     debugPointsMesh->colors.push_back(color);
 }
 
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2) {
+void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, bool projected) {
+    if(!projected){
+        Camera* camera = Game::instance->camera;
+        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
+    }
     debugLinesMesh->vertices.push_back(pos1);
     debugLinesMesh->vertices.push_back(pos2);
     debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
     debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
 }
 
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, Vector4 color) {
+void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, Vector4 color, bool projected) {
+    if(!projected){
+        Camera* camera = Game::instance->camera;
+        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
+    }
     debugLinesMesh->vertices.push_back(pos1);
     debugLinesMesh->vertices.push_back(pos2);
     debugLinesMesh->colors.push_back(color);
