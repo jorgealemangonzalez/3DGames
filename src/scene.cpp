@@ -273,14 +273,13 @@ void Scene::loadScene(const char* filename) {
 }
 
 void Scene::update(float elapsed_time) {
-
+    Entity::destroy_entities_to_destroy();
     this->root->update(elapsed_time);
 
     Camera* camera = Game::instance->camera;
 
     BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions();
-    Entity::destroy_entities_to_destroy();
 }
 
 void Scene::addDebugPoint(Vector3 pos1, bool projected) {

@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "game.h"
 #include "mesh.h"
+#include "entity.h"
 
 #define MIN_DIST_AI 100
 
@@ -66,7 +67,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             //mouse input to rotate the cam
             if ((Game::instance->keystate[SDL_SCANCODE_Z] && (Game::instance->mouse_state & SDL_BUTTON_LEFT)) || Game::instance->mouse_locked) //is left button pressed?
             {
-                std::vector<Entity*> human_controlling = Game::instance->human->getControlling_entities();
+                std::vector<Entity*> human_controlling = Game::instance->human->getControllingEntities();
                 if(!human_controlling.size()) {
                     camera->rotate(Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
                     camera->rotate(Game::instance->mouse_delta.y * 0.005f,
@@ -226,17 +227,19 @@ AIController::~AIController() {
 
 }
 
-void AIController::update(double seconds_elapsed, UID e_uid) {
+void AIController::update(double seconds_elapsed, Entity* driving) {
 
+    driving->stats.followEntity = entity_follow;
+/*
     Entity* follow = Entity::getEntity(entity_follow);
-
-
+    if(follow == NULL)
+        return;
+*/
+/*
     if(follow == NULL){
         //std::cout<<"Entity that AI follow is NULL\n";
         return;
     }
-
-    Entity* driving = Entity::getEntity(e_uid);
 
     driving->lookPosition(seconds_elapsed,follow->getPosition());
 
@@ -246,6 +249,7 @@ void AIController::update(double seconds_elapsed, UID e_uid) {
 
     if(distance > min_dist)
         driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
+*/
 }
 
 void AIController::setEntityFollow(UID entity_follow) {

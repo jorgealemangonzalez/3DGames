@@ -32,13 +32,12 @@ Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
     stats.selected = false;
     save();
 }
-Entity::~Entity() {
-    //Destroy the entity and all their children recursively
-    for( Entity* child : children){
-        if(child != NULL)
-            delete child;
+Entity::~Entity() { //destructors are called automatically in the reverse order of construction. (Base classes last).
+    //Remove from s_entities
+    auto it = s_entities.find(this->uid);
+    if(it != s_entities.end()){
+        s_entities.erase(it);
     }
-    parent->removeChild(this);
 }
 
 //Static methods
@@ -52,12 +51,12 @@ Entity* Entity::getEntity(UID uid) {
 
 void Entity::destroy_entities_to_destroy() {
     // Destroy all entities in the list to_destroy (the destructor should destroy their children)
-
     for( UID uid : to_destroy){
         Entity* entity = s_entities[uid];
         if(entity != NULL)
             delete entity;
     }
+    to_destroy = std::vector<UID>();
 }
 
 std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
@@ -155,12 +154,14 @@ void Entity::removeChild(Entity* entity){
     if(it==children.end())
         return;
     children.erase(it);
-    entity->model = entity->model * getGlobalModel();   // WHY?
 }
 
 void Entity::destroy() {
-    Entity* e = this;
-    to_destroy.push_back(e->uid);
+    parent->removeChild(this);
+    for(Entity* child: children){
+        child->destroy();
+    }
+    to_destroy.push_back(uid);
 }
 
 Matrix44 Entity::getGlobalModel() {
@@ -238,6 +239,10 @@ void Entity::update(float seconds_elapsed){
         Game::instance->logger << "Pos: " << getPosition().toString() << "\n\n";
     }
 
+    if(stats.followEntity){
+        stats.targetPos = Entity::getEntity(stats.followEntity)->getPosition();
+        stats.vel = 100;
+    }
 
     if(stats.movable){
         //std::cout<<"UDATE ENTITY\n";
@@ -269,7 +274,7 @@ void Entity::update(float seconds_elapsed){
 
             model.traslateLocal(0,0,-velocity * seconds_elapsed);     //TODO change this translate to some velocity vector
 
-            if(distance < 10) {
+            if(distance < 10) { //TODO Cuidado con esto , si se empujan los unos a los otros y pasa cerca de su posición objetivo ya no intentará volver a ella
                 stats.vel = Vector3();
                 stats.targetPos = Vector3();
             }
@@ -305,8 +310,7 @@ EntitySpawner::EntitySpawner(): Entity() {
 
 }
 
-EntitySpawner::~EntitySpawner() {
-
+EntitySpawner::~EntitySpawner(){
 }
 
 void EntitySpawner::spawnEntity() {
@@ -352,7 +356,9 @@ EntityMesh::EntityMesh() : Entity() {
     shaderDesc.fs = "texture.fs";
 }
 
-EntityMesh::~EntityMesh(){}
+EntityMesh::~EntityMesh(){
+
+}
 
 //Static methods
 //Entity methods
@@ -408,7 +414,17 @@ void EntityMesh::render(Camera* camera){
 
 EntityCollider::EntityCollider(bool dynamic) : EntityMesh(), dynamic(dynamic) {}
 EntityCollider::EntityCollider():EntityCollider(false){}
-EntityCollider::~EntityCollider(){}
+EntityCollider::~EntityCollider(){
+    if(this->dynamic){
+        auto it = std::find(dynamic_colliders.begin(),dynamic_colliders.end(),this->uid);
+        if(it != dynamic_colliders.end())
+            dynamic_colliders.erase(it);
+    }else{
+        auto it = std::find(static_colliders.begin(),static_colliders.end(),this->uid);
+        if(it != static_colliders.end())
+            static_colliders.erase(it);
+    }
+}
 
 //Static methods
 void EntityCollider::registerCollider(EntityCollider* e) {
@@ -516,7 +532,7 @@ EntityFighter::EntityFighter(bool dynamic):EntityCollider(dynamic) {
 
 }
 
-EntityFighter::~EntityFighter() {
+EntityFighter::~EntityFighter(){
 
 }
 
@@ -541,8 +557,7 @@ void EntityFighter::update(float elapsed_time){
     Entity::update(elapsed_time);
     lastFireSec+=elapsed_time;
     if(!stats.targetPos)
-    for(UID e : Game::instance->enemy->controllable_entities){
-        Entity* focus = Entity::getEntity(e);
+    for(Entity* focus : Game::instance->enemy->getControllableEntities()){
         if((focus->getPosition() - getPosition()).length() < 1000 ){ //TODO fire range variable
             lookPosition(elapsed_time,focus->getPosition());
             if(lastFireSec > 1.0/fireRate)

@@ -23,6 +23,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
     int vel=0;                  // Velocity intensity
     Vector3 targetPos;          // Target position of the entity
+    UID followEntity = 0;
 } Stats;
 std::string sstats(Stats s);
 
@@ -135,7 +136,7 @@ public:
     float fireRate = 3.0f; //bullets per second
     float lastFireSec = 1000; //Seconds since last fire
     EntityFighter(bool dynamic = false);
-    ~EntityFighter();
+    virtual ~EntityFighter();
 
     void shoot();
     EntityFighter* clone();
@@ -150,7 +151,7 @@ public:
     float lastSpawn;
 
     EntitySpawner();
-    ~EntitySpawner();
+    virtual ~EntitySpawner();
 
     void spawnEntity();
     //Inherit from entity

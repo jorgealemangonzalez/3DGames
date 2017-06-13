@@ -8,13 +8,13 @@
 #include "controller.h"
 
 class Player {
-
+    std::vector<UID> controllable_entities;     // Pool of controllable (friendly) entities
 public:
     Player();
     ~Player();
 
-    std::vector<UID> controllable_entities;     // Pool of controllable (friendly) entities
 
+    std::vector<Entity*> getControllableEntities();
 
     void addControllableEntity(UID e_uid);
     virtual void update(double seconds_elapsed)= 0;
@@ -33,7 +33,7 @@ public:
     CameraController* cameraController;
     EntityCollider* grid;
 
-    std::vector<Entity*> getControlling_entities(); //Controla si una de las unidades ha desaparecido
+    std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
 
     const float &getRadius_controlling() const;
 

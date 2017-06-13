@@ -11,7 +11,7 @@ Controles usuario interfaz:
 
 (TODO) Mensajes debug de consola printados en pantalla
 
-(TODO) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
+(DONE) Cambiar colisiones de balas para que coja el mas cercano ( ejecutar bucle entero )
 
 (DONE) Selector unidades
 

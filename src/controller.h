@@ -56,7 +56,7 @@ public:
     AIController();
     ~AIController();
 
-    void update( double seconds_elapsed, UID e_uid);
+    void update( double seconds_elapsed, Entity* driving);
     void setEntityFollow(UID entity_follow);
 };
 

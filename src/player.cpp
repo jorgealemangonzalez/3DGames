@@ -14,6 +14,23 @@ void Player::addControllableEntity(UID e_uid) {
     controllable_entities.push_back(e_uid);
 }
 
+std::vector<Entity*> Player::getControllableEntities(){
+    std::vector<Entity*> entities;
+    std::vector< std::vector<UID>::iterator > removeEntities;
+    for(std::vector<UID>::iterator it = controllable_entities.begin(); it != controllable_entities.end(); ++it) {
+        Entity* entity =Entity::getEntity((*it));
+        if (entity != NULL)
+            entities.push_back(entity);
+        else{
+            removeEntities.push_back(it);
+        }
+    }
+    for(std::vector<UID>::iterator it : removeEntities)
+        controllable_entities.erase(it);
+
+    return entities;
+}
+
 //========================================
 
 Human::Human() {
@@ -80,7 +97,7 @@ void Human::centerCameraOnControlling(){
 
 void Human::selectEntities(std::vector<UID>& entities) {
     controlling_entities = entities;
-    std::vector<Entity *> control_entities = getControlling_entities();
+    std::vector<Entity *> control_entities = getControllingEntities();
     if(control_entities.size()) {
         center_controlling = Vector3();
 
@@ -105,7 +122,7 @@ void Human::selectEntities(std::vector<UID>& entities) {
 
 void Human::organizeSquadCircle(Vector3 position){
     //Intentemos crear un circulo y poner las naves en este
-    std::vector<Entity*> controlling = getControlling_entities();
+    std::vector<Entity*> controlling = getControllingEntities();
     if(controlling.size()) {
         float acum_sizes = 0.0;
         for (Entity *e : controlling) {
@@ -126,7 +143,7 @@ void Human::organizeSquadCircle(Vector3 position){
 
 void Human::organizeSquadLine(Vector3 position){
     //Intentemos crear un circulo y poner las naves en este
-    std::vector<Entity*> controlling = getControlling_entities();
+    std::vector<Entity*> controlling = getControllingEntities();
     if(controlling.size()) {
         for (unsigned int i = 0; i < controlling.size(); ++i) {
             int jump = i/2;
@@ -155,12 +172,12 @@ void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
             control->stats.vel = 100;
             std::cout << "MOVE_POSITION: " << move_position << "\n";
         }*/
-        organizeSquadLine(move_position);
+        organizeSquadCircle(move_position);
 
     }
 }
 
-std::vector<Entity*> Human::getControlling_entities(){
+std::vector<Entity*> Human::getControllingEntities(){
     std::vector<Entity*> entities;
     std::vector< std::vector<UID>::iterator > removeEntities;
     for(std::vector<UID>::iterator it = controlling_entities.begin(); it != controlling_entities.end(); ++it) {
@@ -196,7 +213,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(double seconds_elapsed) {
-    for(int i = 0 ; i < controllable_entities.size(); ++i){
-        aiController->update(seconds_elapsed,controllable_entities[i]);
+    for(Entity* e: getControllableEntities()){
+        aiController->update(seconds_elapsed,e);
     }
 }
