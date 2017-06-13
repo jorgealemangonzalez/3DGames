@@ -31,7 +31,7 @@ Game::Game(SDL_Window *window) {
     mouse_locked = false;
 
     logger.open("log.txt", std::fstream::out);
-    logger << "\n\nSTART\n";
+    logger << "START\n";
 }
 
 //Here we have already GL working, so we can create meshes and textures

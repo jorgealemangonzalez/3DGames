@@ -29,9 +29,9 @@ std::vector<UID> EntityCollider::static_colliders;
 std::vector<UID> EntityCollider::dynamic_colliders;
 
 Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
-    stats.selected = false;
     save();
 }
+
 Entity::~Entity() { //destructors are called automatically in the reverse order of construction. (Base classes last).
     //Remove from s_entities
     auto it = s_entities.find(this->uid);
@@ -190,7 +190,8 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     Vector3 looking = getDirection().normalize();
     to_target.normalize();
     float angle = acosf(looking.dot(to_target));
-    Vector3 perpendicular = to_target.cross(looking).normalize();
+    //Vector3 perpendicular = to_target.cross(looking).normalize(); // <- looking and to_target are parallel everytime
+    Vector3 perpendicular = to_target.cross(Vector3(0,1,0)).normalize();
 
     Matrix44 inv = getGlobalModel();
     inv.inverse();
