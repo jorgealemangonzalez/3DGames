@@ -72,8 +72,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
                     camera->rotate(Game::instance->mouse_delta.y * 0.005f,
                                                    Game::instance->camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
                 }else if (Game::instance->mouse_delta.x || Game::instance->mouse_delta.y){
-                    std::cout<<"holallasjodfispofdighiuh";
-
+                    
                     Vector3 rotateCenter = Game::instance->human->getCenter_controlling();
                     Vector3 lastEye = camera->eye;
                     Vector3 to_entity = lastEye - rotateCenter;
@@ -82,17 +81,14 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
                         changeRotation = true;
                     std::cout<<"Vector: "<<to_entity;
                     Matrix44 rotateYaw, rotatePitch;
-                    rotateYaw.setRotation(Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, 1.0, 0.0f));
-
-                    Vector3 rightVector = rotateYaw.rotateVector( Vector3(1.0f, 0.0f, 0.0f) );
-
+                    rotateYaw.setRotation(-Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, 1.0, 0.0f));
+                    Vector3 up = Vector3(0,1,0);
+                    Vector3 rightVector = up.cross(to_entity);//rotateYaw.rotateVector( Vector3(1.0f, 0.0f, 0.0f) )
+                    //TODO Controlar que no llegue nunca a ser cero el cross !PELIGROSO /0
                     rotatePitch.setRotation(Game::instance->mouse_delta.y * 0.005f,rightVector);
                     //rotatePitch.setRotation(Game::instance->mouse_delta.y * 0.005f,Vector3(1,0,0) );
 
-                    Vector3 rotated_to_entity = (rotatePitch*rotateYaw)*to_entity;
-
-
-
+                    Vector3 rotated_to_entity = (rotatePitch*rotateYaw).rotateVector(to_entity);
 
                     camera->eye = rotateCenter + rotated_to_entity;
                 }

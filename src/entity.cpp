@@ -200,6 +200,7 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
 
 
     //TODO quit this
+    /*
     Vector3 pos = getPosition();
     Game::debugMesh.vertices.push_back(pos);
     Game::debugMesh.vertices.push_back(pos+perpendicular*100);
@@ -207,7 +208,8 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     Game::debugMesh.vertices.push_back(pos+looking*100);
     Game::debugMesh.vertices.push_back(pos);
     Game::debugMesh.vertices.push_back(pos+to_target*100);
-}
+    */
+ }
 
 void Entity::followWithCamera(Camera* camera){
     Vector3 pos = getPosition();
