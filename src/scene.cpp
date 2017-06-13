@@ -8,6 +8,7 @@
 Scene* Scene::scene = NULL;
 Scene::Scene() {
     root = new Entity();
+    root->name = "root";
     background = NULL;
     grid = NULL;
 
