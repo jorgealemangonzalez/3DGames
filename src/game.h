@@ -10,6 +10,8 @@
 #include "controller.h"
 #include "player.h"
 
+#include <fstream>
+
 class Game
 {
 public:
@@ -18,6 +20,9 @@ public:
 
 	Human* human;
 	Enemy* enemy;
+
+	bool doLog = false;
+	std::fstream logger;
 
 	//window
 	SDL_Window* window;

@@ -29,6 +29,9 @@ Game::Game(SDL_Window *window) {
 
     keystate = NULL;
     mouse_locked = false;
+
+    logger.open("log.txt", std::fstream::out);
+    logger << "\n\nSTART\n";
 }
 
 //Here we have already GL working, so we can create meshes and textures
@@ -99,12 +102,20 @@ void Game::update(double seconds_elapsed) {
     human->update(seconds_elapsed);
     enemy->update(seconds_elapsed);
     Scene::getScene()->update(seconds_elapsed);
+
+    logger.close();
+    logger.open("log.txt", std::fstream::out | std::ios::app);
+
+    if(doLog)
+        logger << "\nNext frame---------------------\n";
 }
 
 //Keyboard event handler (sync input)
 void Game::onKeyPressed(SDL_KeyboardEvent event) {
     switch (event.keysym.sym) {
         case SDLK_ESCAPE:
+            logger << "\nFINISH\n";
+            logger.close();
             exit(0); //ESC key, kill the app
 
         case SDLK_1:
@@ -132,6 +143,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         }
         case SDLK_e:
             human->centerCameraOnControlling();
+            break;
+        case SDLK_l:
+            doLog = !doLog;
             break;
     }
 }

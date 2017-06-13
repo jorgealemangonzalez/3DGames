@@ -13,17 +13,18 @@
 #include "BulletManager.h"
 
 typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
-    bool movable;       // Puede alterar su movimiento?
-    bool has_hp;        // Puede destruirse a causa de hp <= 0
-    bool has_ttl;       // Puede destruirse a cause de ttl <= 0
-    bool selectable;    // Se puede seleccionar?
-    bool selected;
-    int hp;             // Life remain
-    float ttl;            // Time remain
-    std::string team;   // Ingame team: 't1', 't2', 'neutral'
-    int vel;        // Velocity intensity
-    Vector3 targetPos;  // Target position of the entity
+    bool movable=false;         // Puede alterar su movimiento?
+    bool has_hp=false;          // Puede destruirse a causa de hp <= 0
+    bool has_ttl=false;         // Puede destruirse a cause de ttl <= 0
+    bool selectable=false;      // Se puede seleccionar?
+    bool selected=false;
+    int hp=0;                   // Life remain
+    float ttl=0;                // Time remain
+    std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
+    int vel=0;                  // Velocity intensity
+    Vector3 targetPos;          // Target position of the entity
 } Stats;
+std::string sstats(Stats s);
 
 class Entity{
 public:

@@ -97,13 +97,13 @@ Vector3& Vector3::random(Vector3 range)
 std::string Vector3::toString() const{
 	std::stringstream ss;
 	ss << "x: " << x;
-	ss << "y: " << y;
-	ss << "z: " << z;
+	ss << " y: " << y;
+	ss << " z: " << z;
 	return ss.str();
 }
 
 std::ostream& operator<<(std::ostream &out, const Vector3 &v) {
-	out << v.toString() << "\n";
+	out << v.toString();
 	return out;
 }
 
@@ -584,7 +584,7 @@ std::string Matrix44::toString() const {
 }
 
 std::ostream& operator<<(std::ostream &out, const Matrix44& m){
-    out << m.toString() << "\n";
+    out << m.toString();
     return out;
 }
 

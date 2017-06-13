@@ -7,6 +7,21 @@
 #include "game.h"
 #include "scene.h"
 
+std::string sstats(Stats s){
+    std::stringstream ss;
+
+    ss << "HP: " << (s.has_hp ? "true " : "false ") << s.hp << "\n";
+
+    ss << "TTL: " << (s.has_ttl ? "true " : "false ") << s.ttl << "\n";
+
+    ss << "Select: " << (s.selectable ? "true " : "false ") << (s.selected ? "true" : "false") << "\n";
+
+    ss << "Team: " << s.team << "\n";
+
+    ss << "Movable: " << (s.movable ? "true " : "false ") << "vel: " << s.vel << " obj " << s.targetPos << "\n";
+    return ss.str();
+}
+
 UID Entity::s_created = 1;
 std::map<UID,Entity*> Entity::s_entities;
 std::vector<UID> Entity::to_destroy;
@@ -215,7 +230,12 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::update(float seconds_elapsed){
-    //std::cout<<"Entity_ "<< this->name <<"Health: "<<this->stats.hp<<"\n";
+    if(Game::instance->doLog){
+        Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
+        Game::instance->logger << sstats(this->stats);
+        Game::instance->logger << "Pos: " << getPosition().toString() << "\n\n";
+    }
+
 
     if(stats.movable){
         //std::cout<<"UDATE ENTITY\n";
@@ -309,6 +329,11 @@ void EntitySpawner::render(Camera *camera) {
 }
 
 void EntitySpawner::update(float elapsed_time) {
+    if(Game::instance->doLog){
+        Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
+        Game::instance->logger << sstats(this->stats);
+        Game::instance->logger << "Pos: " << getPosition().toString() << "\n\n";
+    }
     lastSpawn += elapsed_time;
     if(spawnTime < lastSpawn){
         lastSpawn = 0.0;
