@@ -17,7 +17,14 @@ Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
     stats.selected = false;
     save();
 }
-Entity::~Entity() {}
+Entity::~Entity() {
+    //Destroy the entity and all their children recursively
+    for( Entity* child : children){
+        if(child != NULL)
+            delete child;
+    }
+    parent->removeChild(this);
+}
 
 //Static methods
 
@@ -29,7 +36,13 @@ Entity* Entity::getEntity(UID uid) {
 }
 
 void Entity::destroy_entities_to_destroy() {
-    //TODO
+    // Destroy all entities in the list to_destroy (the destructor should destroy their children)
+
+    for( UID uid : to_destroy){
+        Entity* entity = s_entities[uid];
+        if(entity != NULL)
+            delete entity;
+    }
 }
 
 std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
@@ -127,7 +140,7 @@ void Entity::removeChild(Entity* entity){
     if(it==children.end())
         return;
     children.erase(it);
-    entity->model = entity->model * getGlobalModel();
+    entity->model = entity->model * getGlobalModel();   // WHY?
 }
 
 void Entity::destroy() {
@@ -472,7 +485,7 @@ EntityCollider* EntityCollider::clone() {
 
 //==================================================
 
-EntityFighter::EntityFighter(bool dynamic = false):EntityCollider(dynamic) {
+EntityFighter::EntityFighter(bool dynamic):EntityCollider(dynamic) {
 
 }
 

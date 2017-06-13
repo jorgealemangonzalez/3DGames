@@ -37,7 +37,7 @@ Controles usuario interfaz:
 
 (DONE) Añadir el camera que ha modificado javi al framework para poder hacer la GUI bien ( Puede que no haga falta )
 
-(TODO) Comprobar destrucción de entities (empezado en entity: to_destroy, destroy, destroy_entities_to_destroy)
+(PROGRESS) Comprobar destrucción de entities (empezado en entity: to_destroy, destroy, destroy_entities_to_destroy)
 
 (TODO) Ver como se comportan en combate entity v.s entity  // entity v.s nave
 

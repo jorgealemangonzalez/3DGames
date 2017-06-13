@@ -279,21 +279,7 @@ void Scene::update(float elapsed_time) {
 
     BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions();
-
-    //Test collisions with island: needs low res sphere
-    /*
-    Vector3 dir = camera->center - camera->eye;
-    Vector3 pos = camera->eye;
-    EntityCollider* island = (EntityCollider*)s_templates["island"];
-
-    if(island->testRayCollision(pos, dir, 1000000, collision)){
-        EntityMesh* em = new EntityMesh();
-        em->setMesh("sphere.ASE");
-        em->model.setTranslation(collision.x, collision.y, collision.z);
-        em->shaderDesc.fs = "color.fs";
-        em->shaderDesc.vs = "color.vs";
-        this->addToRoot(em);
-    }*/
+    Entity::destroy_entities_to_destroy();
 }
 
 void Scene::addDebugPoint(Vector3 pos1) {

@@ -133,7 +133,7 @@ class EntityFighter : public EntityCollider{ //NO PONER PUNTEROS EN ESTA CLASE
 public:
     float fireRate = 3.0f; //bullets per second
     float lastFireSec = 1000; //Seconds since last fire
-    EntityFighter(bool dynamic);
+    EntityFighter(bool dynamic = false);
     ~EntityFighter();
 
     void shoot();
