@@ -28,12 +28,6 @@ Scene::Scene() {
     planet_background3->texture = "planet/craters.tga";
     planet_background3->model.setTranslation(200,0,-300);
     root_background->addChild(planet_background3);
-
-    Game* game = Game::instance;
-    camera2d = new Camera();
-    camera2d->setOrthographic(0, game->window_width, 0, game->window_height, 0, 1);
-    debugPointsMesh = new Mesh();
-    debugLinesMesh = new Mesh();
 }
 Scene::~Scene(){
 
@@ -82,37 +76,6 @@ void Scene::render(Camera* camera) {
 
     root->render(camera);
     BulletManager::getManager()->render();
-
-    if(_DEBUG_){
-        debugPointsMesh->clear();
-        debugLinesMesh->clear();
-        for(auto &entry : Entity::s_entities){
-            if(entry.second->stats.selectable){
-                Vector4 color(0,0,1,1);
-                if(entry.second->stats.selected)
-                    color = Vector4(0,1,0,1);
-                Vector3 pos = camera->project(entry.second->getPosition(), Game::instance->window_width, Game::instance->window_height);
-                addDebugPoint(pos, color);
-                if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
-                    double meshRadius = Mesh::Load(em->mesh)->info.radius;
-                    double radius = camera->getProjectScale(entry.second->getPosition(), meshRadius) / 1200.;
-                    addDebugLine(Vector3(pos.x - radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y - radius, pos.z), color, true);
-                    addDebugLine(Vector3(pos.x + radius, pos.y - radius, pos.z), Vector3(pos.x + radius, pos.y + radius, pos.z), color, true);
-                    addDebugLine(Vector3(pos.x + radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y + radius, pos.z), color, true);
-                    addDebugLine(Vector3(pos.x - radius, pos.y + radius, pos.z), Vector3(pos.x - radius, pos.y - radius, pos.z), color, true);
-                }
-            }
-        }
-        camera2d->set();
-        glDisable(GL_DEPTH_TEST);
-        if(debugPointsMesh->vertices.size())
-            debugPointsMesh->render(GL_POINTS);
-        if(debugLinesMesh->vertices.size())
-            debugLinesMesh->render(GL_LINES);
-        glEnable(GL_DEPTH_TEST);
-        camera->set();
-    }
-
 }
 
 void Scene::loadScene(const char* filename) {
@@ -208,7 +171,8 @@ void Scene::loadScene(const char* filename) {
             stats.has_hp = (strcmp(t.getword(),"true") == 0);
             stats.has_ttl = (strcmp(t.getword(),"true") == 0);
             stats.selectable = (strcmp(t.getword(),"true") == 0);
-            stats.hp = t.getint();
+            stats.maxhp = t.getint();
+            stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
             stats.team = t.getword();
             es->statsSpawned = stats;
@@ -246,7 +210,8 @@ void Scene::loadScene(const char* filename) {
         stats.has_hp = (strcmp(t.getword(),"true") == 0);
         stats.has_ttl = (strcmp(t.getword(),"true") == 0);
         stats.selectable = (strcmp(t.getword(),"true") == 0);
-        stats.hp = t.getint();
+        stats.maxhp = t.getint();
+        stats.hp = stats.maxhp;
         stats.ttl = t.getfloat();
         stats.team = t.getword();
         clone->stats = stats;
@@ -280,44 +245,4 @@ void Scene::update(float elapsed_time) {
 
     BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions();
-}
-
-void Scene::addDebugPoint(Vector3 pos1, bool projected) {
-    if(!projected){
-        Camera* camera = Game::instance->camera;
-        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
-    }
-    debugPointsMesh->vertices.push_back(pos1);
-    debugPointsMesh->colors.push_back(Vector4(1,1,1,1));
-}
-
-void Scene::addDebugPoint(Vector3 pos1, Vector4 color, bool projected) {
-    if(!projected){
-        Camera* camera = Game::instance->camera;
-        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
-    }
-    debugPointsMesh->vertices.push_back(pos1);
-    debugPointsMesh->colors.push_back(color);
-}
-
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, bool projected) {
-    if(!projected){
-        Camera* camera = Game::instance->camera;
-        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
-    }
-    debugLinesMesh->vertices.push_back(pos1);
-    debugLinesMesh->vertices.push_back(pos2);
-    debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
-    debugLinesMesh->colors.push_back(Vector4(1,1,1,1));
-}
-
-void Scene::addDebugLine(Vector3 pos1, Vector3 pos2, Vector4 color, bool projected) {
-    if(!projected){
-        Camera* camera = Game::instance->camera;
-        pos1 = camera->project(pos1, Game::instance->window_width, Game::instance->window_height);
-    }
-    debugLinesMesh->vertices.push_back(pos1);
-    debugLinesMesh->vertices.push_back(pos2);
-    debugLinesMesh->colors.push_back(color);
-    debugLinesMesh->colors.push_back(color);
 }

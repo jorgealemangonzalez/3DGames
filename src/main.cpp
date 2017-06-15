@@ -19,6 +19,7 @@
 #include <SFML/Audio.hpp>
 
 long last_time = 0; //this is used to calcule the elapsed time between frames
+bool debugMode = false;
 
 Game* game = NULL;
 

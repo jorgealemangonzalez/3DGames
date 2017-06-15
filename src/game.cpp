@@ -2,14 +2,15 @@
 #include "utils.h"
 #include "rendertotexture.h"
 #include "scene.h"
+#include "GUI.h"
 #include "explosion.h"
+#include "entity.h"
 
 //some globals
 
 RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
-Mesh Game::debugMesh;
 
 Game::Game(SDL_Window *window) {
     this->window = window;
@@ -59,6 +60,7 @@ void Game::init(void) {
     Scene* scene = Scene::getScene();
     scene->loadScene("../data/level1.txt");
     std::cout<<"Init finish";
+    GUI* gui = GUI::getGUI();
 }
 
 //what to do when the image has to be draw
@@ -80,14 +82,12 @@ void Game::render(void) {
     Scene::getScene()->render(camera);
     Explosion::renderAll(camera);
     human->render(camera);
-    if(debugMesh.vertices.size())
-        debugMesh.render(GL_LINES);
+
     //drawGrid(500); //background grid
     drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
 
+    GUI::getGUI()->render();
     glDisable(GL_BLEND);
-
-
 
     //example to render the FPS every 10 frames
     //drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
@@ -97,7 +97,6 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
-    debugMesh.vertices.clear();
     Explosion::updateAll(seconds_elapsed);
     human->update(seconds_elapsed);
     enemy->update(seconds_elapsed);
@@ -144,8 +143,18 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         case SDLK_e:
             human->centerCameraOnControlling();
             break;
+
+        case SDLK_o:
+            debugMode = !debugMode;
+            break;
         case SDLK_l:
             doLog = !doLog;
+            break;
+        case SDLK_i:
+            for(auto &entry : Entity::s_entities){
+                if(entry.second->stats.has_hp)
+                    entry.second->stats.hp -= random()%1000;
+            }
             break;
     }
 }

@@ -16,7 +16,6 @@ class Game
 {
 public:
 	static Game* instance;
-	static Mesh debugMesh;
 
 	Human* human;
 	Enemy* enemy;

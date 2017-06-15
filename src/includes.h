@@ -62,8 +62,8 @@
 #define MAX(a,b) ( a < b ? b : a)
 #define MIN(a,b) ( a > b ? b : a)
 #define PI 3.14159
-#define _DEBUG_ 1
-//bool debugMode = true;
+
+extern bool debugMode;  //Global declarada en main
 
 //OPENGL EXTENSIONS
 

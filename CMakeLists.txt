@@ -38,7 +38,13 @@ set(SOURCE_FILES
         src/texture.cpp
         src/texture.h
         src/utils.cpp
-        src/utils.h src/entity.cpp src/entity.h src/game_entities.h src/game_entities.cpp src/controller.h src/controller.cpp
+        src/utils.h
+        src/entity.cpp
+        src/entity.h
+        src/game_entities.h
+        src/game_entities.cpp
+        src/controller.h
+        src/controller.cpp
         src/extra/coldet/src/box.cpp
         src/extra/coldet/src/box.h
         src/extra/coldet/src/box_bld.cpp
@@ -65,7 +71,9 @@ set(SOURCE_FILES
         src/BulletManager.cpp
         src/BulletManager.h
         src/explosion.cpp
-        src/explosion.h)
+        src/explosion.h
+        src/GUI.cpp
+        src/GUI.h)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
 

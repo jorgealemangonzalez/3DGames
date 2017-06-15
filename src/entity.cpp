@@ -186,12 +186,21 @@ Vector3 Entity::getDirection() {
 void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     Vector3 to_target = toLook - getPosition();
 
-    float distance = to_target.length();
     Vector3 looking = getDirection().normalize();
     to_target.normalize();
-    float angle = acosf(looking.dot(to_target));
-    //Vector3 perpendicular = to_target.cross(looking).normalize(); // <- looking and to_target are parallel everytime
-    Vector3 perpendicular = to_target.cross(Vector3(0,1,0)).normalize();
+    float dotres = looking.dot(to_target);
+
+    if(dotres > 0.999)   //Parallel, same direction
+        return;
+
+    Vector3 perpendicular;
+    if(dotres < -0.999){ //Parallel, oposite directions
+        perpendicular = to_target.cross(Vector3(looking.y, looking.z, looking.y)).normalize();
+    }else{
+        perpendicular = to_target.cross(looking).normalize();
+    }
+
+    float angle = acosf(dotres);
 
     Matrix44 inv = getGlobalModel();
     inv.inverse();
@@ -201,16 +210,12 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
         model.rotateLocal(angleRotate,perpendicularRotate);
 
 
-    //TODO quit this
-    /*
+    // Debug lines
+    GUI* gui = GUI::getGUI();
     Vector3 pos = getPosition();
-    Game::debugMesh.vertices.push_back(pos);
-    Game::debugMesh.vertices.push_back(pos+perpendicular*100);
-    Game::debugMesh.vertices.push_back(pos);
-    Game::debugMesh.vertices.push_back(pos+looking*100);
-    Game::debugMesh.vertices.push_back(pos);
-    Game::debugMesh.vertices.push_back(pos+to_target*100);
-    */
+    gui->addLine(pos, pos+perpendicular*100, true);
+    gui->addLine(pos, pos+looking*100, true);
+    gui->addLine(pos, pos+to_target*100, true);
  }
 
 void Entity::followWithCamera(Camera* camera){
@@ -233,7 +238,7 @@ void Entity::render(Camera* camera){
     }
 }
 
-void Entity::update(float seconds_elapsed){
+void Entity::updateStats(float elapsed_time) {
     if(Game::instance->doLog){
         Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
         Game::instance->logger << sstats(this->stats);
@@ -262,7 +267,7 @@ void Entity::update(float seconds_elapsed){
             Matrix44 inv = getGlobalModel();
             inv.inverse();
             Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
-            float angleRotate = (angle > 0.03 ? angle * seconds_elapsed : angle);    //Angulo pequeño rota directamente
+            float angleRotate = (angle > 0.03 ? angle * elapsed_time : angle);    //Angulo pequeño rota directamente
             if(angleRotate > 0) {
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
@@ -273,7 +278,7 @@ void Entity::update(float seconds_elapsed){
                 velocity = velocity* distance/100;
             }
 
-            model.traslateLocal(0,0,-velocity * seconds_elapsed);     //TODO change this translate to some velocity vector
+            model.traslateLocal(0,0,-velocity * elapsed_time);     //TODO change this translate to some velocity vector
 
             if(distance < 10) { //TODO Cuidado con esto , si se empujan los unos a los otros y pasa cerca de su posición objetivo ya no intentará volver a ella
                 stats.vel = Vector3();
@@ -287,13 +292,22 @@ void Entity::update(float seconds_elapsed){
 
     }
     if(stats.has_ttl){
-        stats.ttl -= seconds_elapsed;
+        stats.ttl -= elapsed_time;
         if(stats.ttl < 0)
             destroy();
     }
+}
+
+void Entity::updateGUI() {
+    //Do nothing
+}
+
+void Entity::update(float elapsed_time){
+    updateStats(elapsed_time);
+    updateGUI();
 
     for(int i=0; i<children.size(); i++){
-        children[i]->update(seconds_elapsed);
+        children[i]->update(elapsed_time);
     }
 }
 
@@ -336,11 +350,7 @@ void EntitySpawner::render(Camera *camera) {
 }
 
 void EntitySpawner::update(float elapsed_time) {
-    if(Game::instance->doLog){
-        Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
-        Game::instance->logger << sstats(this->stats);
-        Game::instance->logger << "Pos: " << getPosition().toString() << "\n\n";
-    }
+    updateStats(elapsed_time);
     lastSpawn += elapsed_time;
     if(spawnTime < lastSpawn){
         lastSpawn = 0.0;
@@ -408,7 +418,31 @@ void EntityMesh::render(Camera* camera){
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
+}
 
+void EntityMesh::updateGUI() {
+    Game* game = Game::instance;
+    Camera* camera = game->camera;
+    Vector4 color = GUI::getColor(stats.team, stats.selected);
+    GUI* gui = GUI::getGUI();
+
+    Vector3 pos = getPosition();
+    Vector3 posP = camera->project(getPosition(), game->window_width, game->window_height);
+    double meshRadius = Mesh::Load(mesh)->info.radius;
+    double radius = camera->getProjectScale(pos, meshRadius) / 1200.;
+
+    gui->addPoint(posP, false, color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y - radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y + radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y + radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y - radius, posP.z), false, color, true);
+
+    if(stats.has_hp){
+        double hpFraction = 2*radius*(double)stats.hp / (double)stats.maxhp;
+        Vector3 initHP = Vector3(posP.x - radius, posP.y + 2*radius, posP.z);
+        gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), false, Vector4(0,1,0,1), true);
+        gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), false, Vector4(1,0,0,1), true);
+    }
 }
 
 //================================================
@@ -502,7 +536,7 @@ bool EntityCollider::testMeshCollision(EntityMesh *testMesh) {
 }
 
 void EntityCollider::onCollision(EntityCollider *withEntity) {
-    if(_DEBUG_)
+    if(debugMode)
         std::cout<<this->mesh<<" collides with "<<withEntity->mesh<<std::endl;
 
     //Gravitational force--------
@@ -512,7 +546,7 @@ void EntityCollider::onCollision(EntityCollider *withEntity) {
 }
 
 void EntityCollider::onCollision(Bullet *withBullet) {
-    if(_DEBUG_)
+    if(debugMode)
         std::cout<<this->mesh<<" collides with BULLET"<<std::endl;
     if(stats.has_hp)
         stats.hp -= 500;
@@ -555,15 +589,31 @@ void EntityFighter::shoot() {
 }
 
 void EntityFighter::update(float elapsed_time){
-    Entity::update(elapsed_time);
+    updateStats(elapsed_time);
+    updateGUI();
     lastFireSec+=elapsed_time;
-    if(!stats.targetPos)
-    for(Entity* focus : Game::instance->enemy->getControllableEntities()){
-        if((focus->getPosition() - getPosition()).length() < 1000 ){ //TODO fire range variable
-            lookPosition(elapsed_time,focus->getPosition());
-            if(lastFireSec > 1.0/fireRate)
-                shoot();
-            break;
+    Entity* enemy = NULL;
+
+    if(!stats.targetPos){
+        double distance = INFINITY;
+        for(Entity* focus : Game::instance->enemy->getControllableEntities()){
+            double d = (focus->getPosition() - getPosition()).length();
+            if(d < distance){
+                distance = d;
+                enemy = focus;
+            }
+        }
+
+        if(enemy != NULL){
+            lookPosition(elapsed_time,enemy->getPosition());
+            if( (enemy->getPosition() - getPosition()).length() < 1000 ){ //TODO fire range variable
+                if(lastFireSec > 1.0/fireRate) {
+                    shoot();
+                    lastFireSec = 0;
+                }
+            }
+        }else{
+            stats.vel = 0;
         }
     }
 }

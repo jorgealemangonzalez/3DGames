@@ -164,7 +164,7 @@ void Human::organizeSquadLine(Vector3 position){
 void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
     Vector3 move_position;
     if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
-        if(_DEBUG_)
+        if(debugMode)
             std::cout<<"MOVE TO POSITION: "<<move_position;
         /*
         for(Entity* control : controlling) {

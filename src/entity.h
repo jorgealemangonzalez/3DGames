@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "extra/coldet/src/coldet.h"
 #include "BulletManager.h"
+#include "GUI.h"
 
 typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     bool movable=false;         // Puede alterar su movimiento?
@@ -19,6 +20,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     bool selectable=false;      // Se puede seleccionar?
     bool selected=false;
     int hp=0;                   // Life remain
+    int maxhp=0;                // Max life
     float ttl=0;                // Time remain
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
     int vel=0;                  // Velocity intensity
@@ -70,6 +72,8 @@ public:
     virtual Entity* clone();
     virtual void render(Camera* camera);
     virtual void update(float elapsed_time);
+    virtual void updateGUI();
+    void updateStats(float elapsed_time);
     //debug
     virtual void print(int depth);
 };
@@ -103,6 +107,7 @@ public:
     //methods overwriten by derived classes
     virtual EntityMesh* clone();
     virtual void render(Camera* camera);
+    virtual void updateGUI();
 };
 
 
