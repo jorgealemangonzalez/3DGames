@@ -17,7 +17,7 @@ Controles usuario interfaz:
 
 (DONE) Lineas y puntos DEBUG con colores concretos. (En scene)
 
-(TODO) Cuadrado alrededor unidad seleccionada y vida
+(DONE) Cuadrado alrededor unidad seleccionada y vida
 
 (DONE) Click posicion , print plano y que se mueva
 
