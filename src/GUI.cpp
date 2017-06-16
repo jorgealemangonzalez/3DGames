@@ -19,10 +19,47 @@ GUI::GUI() {
     debugLinesMesh = new Mesh();
     guiPointsMesh = new Mesh();
     guiLinesMesh = new Mesh();
+
+    std::string texture = "grid.tga";
+    Texture::Load(texture,true);
+    Mesh *plane = new Mesh();
+    plane->createQuad(0,0,1000,1000);
+    float tam = 100.f;
+    plane->uvs[0] = Vector2(tam,tam);
+    plane->uvs[1] = Vector2(0.0f,0.0f);
+    plane->uvs[2] = Vector2(tam,0.0f);
+    plane->uvs[3] = Vector2(0.0f,tam);
+    plane->uvs[4] = Vector2(0.0f,0.0f);
+    plane->uvs[5] = Vector2(tam,tam);
+    plane->info.radius = tam*2;
+    Mesh::s_Meshes["_grid"] = plane;
+    grid = new EntityCollider();
+    grid->setMesh("_grid");
+    grid->setTexture(texture);
+    show_grid = false;
     gui = this;
 }
 
+void GUI::setGridCenter(Vector3 center){
+
+    grid->model.setTranslation(center);
+    Vector3 axis(1.0,0,0);
+    grid->model.rotateLocal(DEG2RAD*90,axis);
+}
+
 void GUI::render() {
+    if(show_grid){
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        grid->render(Game::instance->camera);
+        glDisable(GL_BLEND);
+
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+    }
     camera2d->set();
     glDisable(GL_DEPTH_TEST);
     if(debugMode){
@@ -37,6 +74,7 @@ void GUI::render() {
         guiLinesMesh->render(GL_LINES);
     glEnable(GL_DEPTH_TEST);
     Game::instance->camera->set();
+
     debugPointsMesh->clear();
     debugLinesMesh->clear();
     guiPointsMesh->clear();
@@ -93,4 +131,8 @@ void GUI::addLine(Vector3 pos1, Vector3 pos2, bool debug, Vector4 color, bool pr
         guiLinesMesh->colors.push_back(color);
         guiLinesMesh->colors.push_back(color);
     }
+}
+
+void GUI::showHideGrid(){
+    show_grid = !show_grid;
 }

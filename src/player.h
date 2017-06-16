@@ -24,14 +24,12 @@ class Human: public Player{
     std::vector<UID> controlling_entities;            // Index of controllable pool
     float radius_controlling;
     Vector3 center_controlling;
-    bool show_control_plane;
 public:
     Human();
     ~Human();
 
     EntityController* entityController;
     CameraController* cameraController;
-    EntityCollider* grid;
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
 
@@ -44,7 +42,6 @@ public:
     void moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay);
     void render(Camera* camera);
     void update(double seconds_elapsed);
-    void showHideControlPlane();
 
     void organizeSquadCircle(Vector3 position);
     void organizeSquadLine(Vector3 position);

@@ -34,26 +34,8 @@ std::vector<Entity*> Player::getControllableEntities(){
 //========================================
 
 Human::Human() {
-    show_control_plane = false;
     cameraController = new CameraController();
     entityController = new FighterController();
-    std::string texture = "grid.tga";
-    Texture::Load(texture,true);
-    Mesh *plane = new Mesh();
-    plane->createQuad(0,0,1000,1000);
-    float tam = 100.f;
-    plane->uvs[0] = Vector2(tam,tam);
-    plane->uvs[1] = Vector2(0.0f,0.0f);
-    plane->uvs[2] = Vector2(tam,0.0f);
-    plane->uvs[3] = Vector2(0.0f,tam);
-    plane->uvs[4] = Vector2(0.0f,0.0f);
-    plane->uvs[5] = Vector2(tam,tam);
-    plane->info.radius = tam*2;
-    Mesh::s_Meshes["_grid"] = plane;
-
-    grid = new EntityCollider();
-    grid->setMesh("_grid");
-    grid->setTexture(texture);
 }
 
 Human::~Human() {
@@ -64,27 +46,8 @@ void Human::update(double seconds_elapsed) {
 cameraController->update(seconds_elapsed,12);//TODO Quit entity from camera controller
 }
 
-void Human::showHideControlPlane(){
-    show_control_plane = !show_control_plane;
-}
-
 void Human::render(Camera *camera) {
-    if(show_control_plane){
-        grid->model.setTranslation(center_controlling);
-        Vector3 axis(1.0,0,0);
-        grid->model.rotateLocal(DEG2RAD*90,axis);
 
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        grid->render(camera);
-        glDisable(GL_BLEND);
-
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-    }
 }
 
 void Human::centerCameraOnControlling(){
@@ -117,6 +80,10 @@ void Human::selectEntities(std::vector<UID>& entities) {
         }
         radius_controlling += Mesh::Load(
                 ((EntityMesh *) fartest)->mesh)->info.radius;        //TODO Solo se pueden seleccionar entity mesh
+        //Put the grid in the center
+        //TODO update it when selected moves
+
+        GUI::getGUI()->setGridCenter(center_controlling);
     }
 }
 
@@ -154,7 +121,8 @@ void Human::organizeSquadLine(Vector3 position){
                                Vector3( (jump+1)*50 + radius, 0, 0);
             else
                 move = position -
-                               Vector3( (jump+1)*50 + radius, 0, 0);            controlling[i]->stats.targetPos = move;
+                               Vector3( (jump+1)*50 + radius, 0, 0);
+            controlling[i]->stats.targetPos = move;
             controlling[i]->stats.targetPos = move;
             controlling[i]->stats.vel = 100;
         }
@@ -163,7 +131,7 @@ void Human::organizeSquadLine(Vector3 position){
 
 void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
     Vector3 move_position;
-    if(grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
+    if(GUI::getGUI()->grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
         if(debugMode)
             std::cout<<"MOVE TO POSITION: "<<move_position;
         /*

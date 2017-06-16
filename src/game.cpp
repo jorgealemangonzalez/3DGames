@@ -127,7 +127,7 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             human->cameraController->setMode(3);
             break;
         case SDLK_TAB:
-            human->showHideControlPlane();
+            GUI::getGUI()->showHideGrid();
             break;
         case SDLK_c:
             Scene::getScene()->root->print(0);
