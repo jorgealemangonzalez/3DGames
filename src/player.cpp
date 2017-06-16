@@ -129,20 +129,71 @@ void Human::organizeSquadLine(Vector3 position){
     }
 }
 
-void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
-    Vector3 move_position;
-    if(GUI::getGUI()->grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
-        if(debugMode)
-            std::cout<<"MOVE TO POSITION: "<<move_position;
-        /*
-        for(Entity* control : controlling) {
-            control->stats.targetPos = move_position;
-            control->stats.vel = 100;
-            std::cout << "MOVE_POSITION: " << move_position << "\n";
-        }*/
-        organizeSquadCircle(move_position);
+void Human::moveSelectedInPlane(){
 
-    }
+    Game* g = Game::instance;
+    Camera* camera = g->camera;
+    GUI *gui = GUI::getGUI();
+    EntityCollider *plane = gui->grid;//Copy the plane
+    /*
+    Vector3 pos2DMove;
+    if(plane.testRayCollision(positionRay,directionRay,10000000.0,pos2DMove)) {
+        move_position = pos2DMove + camera->unproject(g->mouse_position)
+        if () {
+            if (debugMode)
+                std::cout << "MOVE TO POSITION: " << move_position;
+
+            organizeSquadCircle(move_position);
+
+        }
+    }*/
+    //X de cuando empezamos en la 3a dimension Y de cuando terminamos
+    //Una linea va de la camara hacia la posicion 3D y otra desde el plano en perpendicular hasta la posicion 3D
+    //Encontramos la posicion mediante la intersección de estas lineas
+    //TODO cuidado , si se mueve la camara mientras seleccionas donde mover el objetivo entonces esto no funciona
+
+    Vector3 pointingAt = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_position.y, 0), g->window_width, g->window_height);
+    Vector3 directionLineCam = pointingAt - camera->eye;
+    directionLineCam.normalize();
+    Vector3 startLineCam = camera->eye;
+
+
+    Vector3 startLinePlane;
+    Vector3 directionLinePlane = Vector3(0,1,0);
+    //Obtenemos la posicion 3D donde hizo click el usuario en el plano
+    Vector3 positionRay = camera->eye;
+    Vector3 directionRayPlane = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y, 0), g->window_width, g->window_height) - positionRay;
+    plane->testRayCollision(positionRay,directionRayPlane,10000000.0,startLinePlane);
+
+    //ALGEBRA PARA SACAR EL PUNTO ELEVADO E = eye , G = Goal= move_position , P = punto en plano
+    //Mediante la intersección de rectas en forma parametrica 3D ( a manija )
+    Vector3 E = camera->eye, P = startLinePlane;
+    //Vectores unitarios
+    Vector3 EG = directionLineCam, PG = Vector3(0,1,0);
+
+    float ecuacion1 = -E.y + P.y - (EG.y*P.y)/EG.x + (E.x*EG.y)/EG.x;
+    float ecuacion2 = (PG.x*EG.y)/EG.x - PG.y;
+    float modulo = ecuacion1 / ecuacion2;
+    modulo = (modulo < 0.0 ? -modulo : modulo); //VALOR ABSOLUTO
+
+    Vector3 move_position = PG*modulo + P;
+
+    organizeSquadCircle(move_position);
+
+    //TODO QUIT THIS VISUALIZAR VECTORES
+    Vector4 white(1,1,1,1);
+    std::cout<<"P: "<<P<<"\n";
+    gui->debugPointsMesh->vertices.push_back(E);
+    std::cout<<"move: "<<move_position<<"\n";
+    gui->debugPointsMesh->vertices.push_back(move_position);
+    gui->debugPointsMesh->colors.push_back(white);
+    gui->debugPointsMesh->colors.push_back(white);
+    gui->debugPointsMesh->colors.push_back(white);
+
+    std::cout<<"E: "<<E<<"\n";
+    gui->addLine(P,P+PG*10,true,white,false);
+    gui->addLine(E,E+EG*1100,true,white,false);
+    gui->debugPointsMesh->vertices.push_back(P);
 }
 
 std::vector<Entity*> Human::getControllingEntities(){

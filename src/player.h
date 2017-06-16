@@ -39,7 +39,7 @@ public:
 
     void selectEntities(std::vector<UID>& entities);
     void centerCameraOnControlling();
-    void moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay);
+    void moveSelectedInPlane();
     void render(Camera* camera);
     void update(double seconds_elapsed);
 
