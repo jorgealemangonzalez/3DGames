@@ -146,6 +146,7 @@ public:
     void shoot();
     EntityFighter* clone();
     void update(float elapsed_time);
+    virtual void updateGUI();
 };
 
 class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE

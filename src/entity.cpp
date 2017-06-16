@@ -210,7 +210,7 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
         model.rotateLocal(angleRotate,perpendicularRotate);
 
 
-    // Debug lines
+    //TODO quit this: Debug lines
     GUI* gui = GUI::getGUI();
     Vector3 pos = getPosition();
     gui->addLine(pos, pos+perpendicular*100, true);
@@ -421,28 +421,7 @@ void EntityMesh::render(Camera* camera){
 }
 
 void EntityMesh::updateGUI() {
-    Game* game = Game::instance;
-    Camera* camera = game->camera;
-    Vector4 color = GUI::getColor(stats.team, stats.selected);
-    GUI* gui = GUI::getGUI();
 
-    Vector3 pos = getPosition();
-    Vector3 posP = camera->project(getPosition(), game->window_width, game->window_height);
-    double meshRadius = Mesh::Load(mesh)->info.radius;
-    double radius = camera->getProjectScale(pos, meshRadius) / 1200.;
-
-    gui->addPoint(posP, false, color, true);
-    gui->addLine(Vector3(posP.x - radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y - radius, posP.z), false, color, true);
-    gui->addLine(Vector3(posP.x + radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y + radius, posP.z), false, color, true);
-    gui->addLine(Vector3(posP.x + radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y + radius, posP.z), false, color, true);
-    gui->addLine(Vector3(posP.x - radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y - radius, posP.z), false, color, true);
-
-    if(stats.has_hp){
-        double hpFraction = 2*radius*(double)stats.hp / (double)stats.maxhp;
-        Vector3 initHP = Vector3(posP.x - radius, posP.y + 2*radius, posP.z);
-        gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), false, Vector4(0,1,0,1), true);
-        gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), false, Vector4(1,0,0,1), true);
-    }
 }
 
 //================================================
@@ -615,5 +594,30 @@ void EntityFighter::update(float elapsed_time){
         }else{
             stats.vel = 0;
         }
+    }
+}
+
+void EntityFighter::updateGUI() {
+    Game* game = Game::instance;
+    Camera* camera = game->camera;
+    Vector4 color = GUI::getColor(stats.team, stats.selected);
+    GUI* gui = GUI::getGUI();
+
+    Vector3 pos = getPosition();
+    Vector3 posP = camera->project(getPosition(), game->window_width, game->window_height);
+    double meshRadius = Mesh::Load(mesh)->info.radius;
+    double radius = camera->getProjectScale(pos, meshRadius*2);
+
+    gui->addPoint(posP, false, color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y - radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y + radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y + radius, posP.z), false, color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y - radius, posP.z), false, color, true);
+
+    if(stats.has_hp){
+        double hpFraction = 2*radius*(double)stats.hp / (double)stats.maxhp;
+        Vector3 initHP = Vector3(posP.x - radius, posP.y + 2*radius, posP.z);
+        gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), false, Vector4(0,1,0,1), true);
+        gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), false, Vector4(1,0,0,1), true);
     }
 }

@@ -213,5 +213,6 @@ void Game::setWindowSize(int width, int height) {
     camera->aspect = width / (float) height;
     window_width = width;
     window_height = height;
+    GUI::getGUI()->camera2d->setOrthographic(0, window_width, 0, window_height, 0, 1);
 }
 
