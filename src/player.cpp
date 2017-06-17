@@ -129,20 +129,42 @@ void Human::organizeSquadLine(Vector3 position){
     }
 }
 
-void Human::moveSelectedInPlane(Vector3 positionRay, Vector3 directionRay){
-    Vector3 move_position;
-    if(GUI::getGUI()->grid->testRayCollision(positionRay,directionRay,10000000.0,move_position)) {
-        if(debugMode)
-            std::cout<<"MOVE TO POSITION: "<<move_position;
-        /*
-        for(Entity* control : controlling) {
-            control->stats.targetPos = move_position;
-            control->stats.vel = 100;
-            std::cout << "MOVE_POSITION: " << move_position << "\n";
-        }*/
-        organizeSquadCircle(move_position);
+void Human::moveSelectedInPlane(){
+    Vector3 move_position; //LO QUE QUEREMOS CALCULAR
+    Game* g = Game::instance;
+    Camera* camera = g->camera;
+    GUI *gui = GUI::getGUI();
+    //TODO cuidado , si se mueve la camara mientras seleccionas donde mover el objetivo entonces esto no funciona ¿ O si ?
 
+    Vector3 initCameraToGoal= camera->eye;
+    Vector3 cameraToGoal= camera->unproject(Vector3(g->mouse_when_press.x,g->window_height - g->mouse_position.y,0)
+                                         ,g->window_width, g->window_height)
+                                            - camera->eye;
+    Vector3 initStartInPlaneToGoal;//Interseccion del rayo con la grid
+    Vector3 auxDir = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),
+                                                        g->window_width,g->window_height) - camera->eye;
+    gui->grid->testRayCollision(camera->eye,auxDir,1000000000.0,initStartInPlaneToGoal);
+    Vector3 startInPlaneToGoal = camera->unproject(Vector3(g->mouse_when_press.x,g->window_height - g->mouse_position.y,0),g->window_width,g->window_height)
+    -camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),g->window_width,g->window_height);
+
+    if(startInPlaneToGoal == Vector3(0,0,0))
+        move_position = initStartInPlaneToGoal;
+    else{
+        //ALGEBRA PARA SACAR EL PUNTO ELEVADO E = eye , G = Goal= move_position , P = punto en plano
+        //Mediante la intersección de rectas en forma parametrica 3D ( a manija )
+        Vector3 E = initCameraToGoal, P = initStartInPlaneToGoal;
+        //Vectores unitarios
+        Vector3 EG = cameraToGoal.normalize(), PG = startInPlaneToGoal.normalize();
+
+        float ecuacion1 = -E.y + P.y - (EG.y*P.x)/EG.x + (E.x*EG.y)/EG.x;
+        float ecuacion2 = (PG.x*EG.y)/EG.x - PG.y;
+        float modulo = ecuacion1 / ecuacion2;
+        modulo = (modulo < 0.0 ? -modulo : modulo); //VALOR ABSOLUTO
+
+        move_position = PG*modulo + P;
     }
+
+    organizeSquadCircle(move_position);
 }
 
 std::vector<Entity*> Human::getControllingEntities(){

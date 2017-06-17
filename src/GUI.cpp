@@ -49,7 +49,7 @@ void GUI::setGridCenter(Vector3 center){
 
 void GUI::render() {
     if(show_grid){
-        glDisable(GL_DEPTH_TEST);
+        //glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
         glEnable(GL_BLEND);
@@ -60,6 +60,14 @@ void GUI::render() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
+    Game* game = Game::instance;
+    if(show_grid && game->mouse_when_press.x != -1){    //TODO cuando levanta el mouse crear plano perpendicular y calcular la interseccion con la posicion del mouse para mandar la uni alli
+        guiLinesMesh->vertices.push_back(Vector3(game->mouse_when_press.x,game->mouse_when_press.y,0.99));
+        guiLinesMesh->vertices.push_back(Vector3(game->mouse_when_press.x,game->window_height-game->mouse_position.y,0.99));
+        guiLinesMesh->colors.push_back(Vector4(1,1,1,0));
+        guiLinesMesh->colors.push_back(Vector4(1,1,1,0));
+    }
+
     camera2d->set();
     glDisable(GL_DEPTH_TEST);
     if(debugMode){
@@ -75,8 +83,8 @@ void GUI::render() {
     glEnable(GL_DEPTH_TEST);
     Game::instance->camera->set();
 
-    debugPointsMesh->clear();
-    debugLinesMesh->clear();
+    //debugPointsMesh->clear();
+    //debugLinesMesh->clear();
     guiPointsMesh->clear();
     guiLinesMesh->clear();
 }

@@ -172,19 +172,25 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
 
 void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
     if (event.button == SDL_BUTTON_LEFT){
-        std::cout << "Test pointed\n";
-        Vector2 mouse_when_up = Vector2(event.x, window_height-event.y);
-        std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width, window_height, camera);
-        for(UID uid : pointed){
-            std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";
+        if(GUI::getGUI()->show_grid){
+            human->moveSelectedInPlane();
+        }else {
+
+            std::cout << "Test pointed\n";
+            Vector2 mouse_when_up = Vector2(event.x, window_height - event.y);
+            std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
+                                                             window_height, camera);
+            for (UID uid : pointed) {
+                std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";
+            }
+            if (mouse_when_press != mouse_when_up || pointed.size())
+                human->selectEntities(pointed);
         }
-        if(mouse_when_press != mouse_when_up || pointed.size())
-        human->selectEntities(pointed);
     }else if(event.button == SDL_BUTTON_RIGHT){
         Vector3 pointingAt = camera->unproject(Vector3(event.x, window_height-event.y, 0), window_width, window_height);
         Vector3 direction = pointingAt - camera->eye;
         direction.normalize();
-        human->moveSelectedInPlane(camera->eye,direction);
+        human->moveSelectedInPlane();
     }
     mouse_when_press = Vector2(-1,-1);
 }
