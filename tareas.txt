@@ -21,7 +21,9 @@ Controles usuario interfaz:
 
 (DONE) Click posicion , print plano y que se mueva
 
-(TODO) Movimiento en 3a dimension (¿Como lo hacemos?, yo digo click derecho y arrastrar hacia arriba o abajo)
+(DONE) Movimiento en 3a dimension (¿Como lo hacemos?, yo digo click derecho y arrastrar hacia arriba o abajo)
+
+(TODO) Poner circulo paralelo al plano de movimiento para marcar donde se van a mover en 3D la unidades
 
 (DONE) Scroll acercar y alejar
 

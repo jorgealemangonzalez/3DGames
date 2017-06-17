@@ -207,7 +207,7 @@ CLION: https://www.jetbrains.com/help/clion/changing-build-configuration-types.h
 e       Centrar camara al rededor de las unidades seleccionadas
 z       Mantener presionado para girar al rededor de la nave seleccionada
 TAB     Pintar el plano para mover todas las unidades seleccionadas
-click D Mover a una posicion en el plano
+click D Mover a una posicion en el plano , arrastrar arriba o abajo para moverlas en 3D
 click I Seleccionar unidades
 
 ~ DEBUG ~
