@@ -43,7 +43,7 @@ Controles usuario interfaz:
 
 (TODO) Ver como se comportan en combate entity v.s entity  // entity v.s nave
 
-(TODO) Si tienes seleccionada una entidad que cuando gires la camara te gire con este siguiendo en el centro
+(PROGRESS) Si tienes seleccionada una entidad que cuando gires la camara te gire con este siguiendo en el centro
 
 (TODO) (SAME SOL_)Que las tropas no se choquen contra los asteroides ( AI ) Fuerza gravitacional de los que estan cerca
 (TODO) (SAME SOL^)Movimiento de varias unidades que no se choquen las unas con las otras (Preguntar a javi como era lo de los movimientos conjuntos)

@@ -15,6 +15,7 @@ public:
     Camera* camera2d;
     Mesh* guiPointsMesh;
     Mesh* guiLinesMesh;
+    Mesh* guiPlanesMesh;    //Used in selection at the moment
     EntityCollider* grid;
     bool show_grid;
 
@@ -24,10 +25,11 @@ public:
     void render();
 
     static Vector4 getColor(std::string team = "neutral", bool selected = false);
-    void addPoint(Vector3 pos1, bool debug = false, Vector4 color = Vector4(1,1,1,1), bool projected=false);
-    void addLine(Vector3 pos1, Vector3 pos2, bool debug = false, Vector4 color = Vector4(1,1,1,1), bool projected=false);
+    void addPoint(Vector3 pos1, Vector4 color = Vector4(1,1,1,1), bool projected=false, bool debug = false);
+    void addLine(Vector3 pos1, Vector3 pos2, Vector4 color = Vector4(1,1,1,1), bool projected=false, bool debug = false);
+    void addPlane(Vector2 pos1, Vector2 pos2, Vector4 color = Vector4(1,1,1,0.3));
     void showHideGrid();
-    void setGridCenter(Vector3 center);
+    void setGrid(bool show = false, Vector3 center = Vector3(0,0,0));
 };
 
 

@@ -174,6 +174,7 @@ void Scene::loadScene(const char* filename) {
             stats.maxhp = t.getint();
             stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
+            stats.range = t.getfloat();
             stats.team = t.getword();
             es->statsSpawned = stats;
             e = es;
@@ -213,6 +214,7 @@ void Scene::loadScene(const char* filename) {
         stats.maxhp = t.getint();
         stats.hp = stats.maxhp;
         stats.ttl = t.getfloat();
+        stats.range = t.getfloat();
         stats.team = t.getword();
         clone->stats = stats;
         this->addToRoot(clone);
@@ -224,12 +226,10 @@ void Scene::loadScene(const char* filename) {
         //HACK
         //TODO remove this
         if(entity_name == "fighter"){
-            Game::instance->human->addControllableEntity(clone->uid);
             Game::instance->enemy->aiController->setEntityFollow(clone->uid);
 
         }
         if(entity_name == "hunter"){
-            Game::instance->enemy->addControllableEntity(clone->uid);
         }
         //FIN_HACK
         std::cout<<"Entity loaded: "<<entity_name<<"\n";

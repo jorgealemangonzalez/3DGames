@@ -29,7 +29,10 @@ Game::Game(SDL_Window *window) {
     angle = 0;
 
     keystate = NULL;
+    pause = false;
     mouse_locked = false;
+    mouseLeft = false;
+    mouseRight = false;
 
     logger.open("log.txt", std::fstream::out);
     logger << "START\n";
@@ -97,16 +100,31 @@ void Game::render(void) {
 }
 
 void Game::update(double seconds_elapsed) {
-    Explosion::updateAll(seconds_elapsed);
+    if(!pause){
+        Explosion::updateAll(seconds_elapsed);
+        enemy->update(seconds_elapsed);
+        Scene::getScene()->update(seconds_elapsed);
+
+        if(doLog){
+            logger.close();
+            logger.open("log.txt", std::fstream::out | std::ios::app);
+            logger << "\nNext frame---------------------\n";
+        }
+    }
+
     human->update(seconds_elapsed);
-    enemy->update(seconds_elapsed);
-    Scene::getScene()->update(seconds_elapsed);
-
-    logger.close();
-    logger.open("log.txt", std::fstream::out | std::ios::app);
-
-    if(doLog)
-        logger << "\nNext frame---------------------\n";
+    if(!keystate[SDL_SCANCODE_LSHIFT]){
+        GUI* gui = GUI::getGUI();
+        if(mouseLeft){
+            gui->addPlane(mouse_when_press, mouse_position);
+            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+        }else if(mouseRight){
+            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,0.5), true);
+        }
+    }
 }
 
 //Keyboard event handler (sync input)
@@ -126,9 +144,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         case SDLK_3:
             human->cameraController->setMode(3);
             break;
-        case SDLK_TAB:
-            GUI::getGUI()->showHideGrid();
-            break;
+        //case SDLK_TAB:    automatic: if units selected, show grid
+        //    GUI::getGUI()->showHideGrid();
+        //    break;
         case SDLK_c:
             Scene::getScene()->root->print(0);
             break;
@@ -142,6 +160,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         }
         case SDLK_e:
             human->centerCameraOnControlling();
+            break;
+        case SDLK_SPACE:
+            pause = !pause;
             break;
 
         case SDLK_o:
@@ -161,38 +182,36 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
 
 
 void Game::onMouseButton(SDL_MouseButtonEvent event) {
+    mouse_when_press = Vector2(event.x, window_height - event.y);
     if (event.button == SDL_BUTTON_MIDDLE){ //middle mouse
         mouse_locked = !mouse_locked;
         SDL_ShowCursor(!mouse_locked);
     }else if (event.button == SDL_BUTTON_LEFT){
-        mouse_when_press = Vector2(event.x, window_height-event.y);
-        std::cout<<"press"<<mouse_when_press.x<<" "<<mouse_when_press.y<<std::endl;
+        mouseLeft = true;
+    }else if (event.button == SDL_BUTTON_RIGHT){
+        mouseRight = true;
     }
 }
 
 void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
-    if (event.button == SDL_BUTTON_LEFT){
-        if(GUI::getGUI()->show_grid){
-            human->moveSelectedInPlane();
-        }else {
+    mouseLeft = false;
+    mouseRight = false;
+    Vector2 mouse_when_up = Vector2(event.x, window_height - event.y);
 
-            std::cout << "Test pointed\n";
-            Vector2 mouse_when_up = Vector2(event.x, window_height - event.y);
+    if (!keystate[SDL_SCANCODE_LSHIFT]){
+        if (event.button == SDL_BUTTON_LEFT){
             std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
-                                                             window_height, camera);
+                                                                 window_height, camera);
             for (UID uid : pointed) {
-                std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";
+                std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";  //TODO QUIT
             }
             if (mouse_when_press != mouse_when_up || pointed.size())
                 human->selectEntities(pointed);
+
+        }else if(event.button == SDL_BUTTON_RIGHT){
+            human->moveSelectedInPlane();
         }
-    }else if(event.button == SDL_BUTTON_RIGHT){
-        Vector3 pointingAt = camera->unproject(Vector3(event.x, window_height-event.y, 0), window_width, window_height);
-        Vector3 direction = pointingAt - camera->eye;
-        direction.normalize();
-        human->moveSelectedInPlane();
     }
-    mouse_when_press = Vector2(-1,-1);
 }
 
 void Game::onMouseWheel(SDL_MouseWheelEvent event) {

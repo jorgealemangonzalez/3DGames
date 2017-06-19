@@ -19,6 +19,8 @@ void CameraController::notifyEntity(UID e_uid) {
 
 void CameraController::update(double seconds_elapsed, UID e_uid) {
     Entity* entity = Entity::getEntity(e_uid);
+    Game* game = Game::instance;
+    Camera* camera = game->camera;
 
     switch(mode){
         case 2:
@@ -28,7 +30,7 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
 
             Vector3 pos = entity->getPosition();
             Vector3 dir = (pos - entityPreviusPos).normalize()*0.5f + entity->getDirection()*0.5f;    //TODO Controll velocity
-            Game::instance->camera->lookAt(
+            camera->lookAt(
                     pos + Vector3(20*(-dir.x), 20*(-dir.y)+10, 20*(-dir.z)),
                     pos,
                     Vector3(0.f, 1.f, 0.f)
@@ -57,37 +59,37 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             //up = Vector3(0,1, -front.y/front.z).normalize();
             //-(x*v.x + y*v.y)/z = v.z
 
-            Game::instance->camera->lookAt(eye,center,up);
+            camera->lookAt(eye,center,up);
         }
         default:
         {
             //FREE CAMERA
             double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
-            Camera* camera = Game::instance->camera;
+
             //mouse input to rotate the cam
-            if ((Game::instance->keystate[SDL_SCANCODE_Z] && (Game::instance->mouse_state & SDL_BUTTON_LEFT)) || Game::instance->mouse_locked) //is left button pressed?
+            if ((game->keystate[SDL_SCANCODE_LSHIFT] && (game->mouseLeft)) || game->mouse_locked) //is left button pressed?
             {
-                std::vector<Entity*> human_controlling = Game::instance->human->getControllingEntities();
+                std::vector<Entity*> human_controlling = game->human->getControllingEntities();
                 if(!human_controlling.size()) {
-                    camera->rotate(Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
-                    camera->rotate(Game::instance->mouse_delta.y * 0.005f,
-                                                   Game::instance->camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
-                }else if (Game::instance->mouse_delta.x || Game::instance->mouse_delta.y){
+                    camera->rotate(game->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
+                    camera->rotate(game->mouse_delta.y * 0.005f,
+                                                   camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
+                }else if (game->mouse_delta.x || game->mouse_delta.y){
                     
-                    Vector3 rotateCenter = Game::instance->human->getCenter_controlling();
+                    Vector3 rotateCenter = game->human->getCenterControlling();
                     Vector3 lastEye = camera->eye;
                     Vector3 to_entity = lastEye - rotateCenter;
                     bool changeRotation = false;
                     if(to_entity.z < 0)
                         changeRotation = true;
-                    std::cout<<"Vector: "<<to_entity;
+                    //std::cout<<"Vector: "<<to_entity;
                     Matrix44 rotateYaw, rotatePitch;
-                    rotateYaw.setRotation(-Game::instance->mouse_delta.x * 0.005f, Vector3(0.0f, 1.0, 0.0f));
+                    rotateYaw.setRotation(-game->mouse_delta.x * 0.005f, Vector3(0.0f, 1.0, 0.0f));
                     Vector3 up = Vector3(0,1,0);
+                        //TODO Controlar que no llegue nunca a ser cero el cross !PELIGROSO /0
                     Vector3 rightVector = up.cross(to_entity);//rotateYaw.rotateVector( Vector3(1.0f, 0.0f, 0.0f) )
-                    //TODO Controlar que no llegue nunca a ser cero el cross !PELIGROSO /0
-                    rotatePitch.setRotation(Game::instance->mouse_delta.y * 0.005f,rightVector);
-                    //rotatePitch.setRotation(Game::instance->mouse_delta.y * 0.005f,Vector3(1,0,0) );
+                    rotatePitch.setRotation(game->mouse_delta.y * 0.005f,rightVector);
+                    //rotatePitch.setRotation(game->mouse_delta.y * 0.005f,Vector3(1,0,0) );
 
                     Vector3 rotated_to_entity = (rotatePitch*rotateYaw).rotateVector(to_entity);
 
@@ -95,23 +97,27 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
                 }
             }
 
-            //async input to move the camera around
-            if (Game::instance->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-            if (Game::instance->keystate[SDL_SCANCODE_UP]) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_DOWN]) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_LEFT]) Game::instance->camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-            if (Game::instance->keystate[SDL_SCANCODE_RIGHT]) Game::instance->camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
+            //async input to move the camera around or if mouse in window edge
+            if (game->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
+            if (game->keystate[SDL_SCANCODE_UP] || game->mouse_position.y > game->window_height-game->window_height*0.1)
+                camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+            if (game->keystate[SDL_SCANCODE_DOWN] || game->mouse_position.y < game->window_height*0.1)
+                camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
+            if (game->keystate[SDL_SCANCODE_LEFT] || game->mouse_position.x < game->window_width*0.1)
+                camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+            if (game->keystate[SDL_SCANCODE_RIGHT] || game->mouse_position.x > game->window_width-game->window_width*0.1)
+                camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
 
             //to navigate with the mouse fixed in the middle
-            if (Game::instance->mouse_locked) {
-                int center_x = (int) floor(Game::instance->window_width * 0.5f);
-                int center_y = (int) floor(Game::instance->window_height * 0.5f);
+            if (game->mouse_locked) {
+                int center_x = (int) floor(game->window_width * 0.5f);
+                int center_y = (int) floor(game->window_height * 0.5f);
                 //center_x = center_y = 50;
-                SDL_WarpMouseInWindow(Game::instance->window, center_x, center_y); //put the mouse back in the middle of the screen
+                SDL_WarpMouseInWindow(game->window, center_x, center_y); //put the mouse back in the middle of the screen
                 //SDL_WarpMouseGlobal(center_x, center_y); //put the mouse back in the middle of the screen
 
-                Game::instance->mouse_position.x = (float) center_x;
-                Game::instance->mouse_position.y = (float) center_y;
+                game->mouse_position.x = (float) center_x;
+                game->mouse_position.y = (float) center_y;
             }
 
 

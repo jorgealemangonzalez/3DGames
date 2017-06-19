@@ -32,6 +32,7 @@ public:
 	void set(float x, float y) { this->x = x; this->y = y; }
 
 	Vector2& normalize() { *this *= 1.0f / (float)length(); return *this; }
+	Vector2 reverseY(float height) const { return Vector2(this->x, height-this->y); }
 
 	float distance(const Vector2& v);
 	void random(float range);
@@ -73,6 +74,7 @@ public:
 
 	Vector3() { x = y = z = 0.0f; }
 	Vector3(float x, float y, float z) { this->x = x; this->y = y; this->z = z;	}
+	Vector3(Vector2 v, float z=0) { this->x = v.x; this->y = v.y; this->z = z; }
 
 	double length();
 	double length() const;

@@ -19,11 +19,12 @@ GUI::GUI() {
     debugLinesMesh = new Mesh();
     guiPointsMesh = new Mesh();
     guiLinesMesh = new Mesh();
+    guiPlanesMesh = new Mesh();
 
     std::string texture = "grid.tga";
     Texture::Load(texture,true);
     Mesh *plane = new Mesh();
-    plane->createQuad(0,0,1000,1000);
+    plane->createQuad(0,0,10000,10000);
     float tam = 100.f;
     plane->uvs[0] = Vector2(tam,tam);
     plane->uvs[1] = Vector2(0.0f,0.0f);
@@ -40,13 +41,6 @@ GUI::GUI() {
     gui = this;
 }
 
-void GUI::setGridCenter(Vector3 center){
-
-    grid->model.setTranslation(center);
-    Vector3 axis(1.0,0,0);
-    grid->model.rotateLocal(DEG2RAD*90,axis);
-}
-
 void GUI::render() {
     if(show_grid){
         //glDisable(GL_DEPTH_TEST);
@@ -58,35 +52,38 @@ void GUI::render() {
         glDisable(GL_BLEND);
 
         glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-    }
-    Game* game = Game::instance;
-    if(show_grid && game->mouse_when_press.x != -1){    //TODO cuando levanta el mouse crear plano perpendicular y calcular la interseccion con la posicion del mouse para mandar la uni alli
-        guiLinesMesh->vertices.push_back(Vector3(game->mouse_when_press.x,game->mouse_when_press.y,0.99));
-        guiLinesMesh->vertices.push_back(Vector3(game->mouse_when_press.x,game->window_height-game->mouse_position.y,0.99));
-        guiLinesMesh->colors.push_back(Vector4(1,1,1,0));
-        guiLinesMesh->colors.push_back(Vector4(1,1,1,0));
+        //glEnable(GL_DEPTH_TEST);
     }
 
     camera2d->set();
     glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if(debugMode){
         if(debugPointsMesh->vertices.size())
             debugPointsMesh->render(GL_POINTS);
         if(debugLinesMesh->vertices.size())
             debugLinesMesh->render(GL_LINES);
+        debugPointsMesh->clear();
+        debugLinesMesh->clear();
     }
     if(guiPointsMesh->vertices.size())
         guiPointsMesh->render(GL_POINTS);
     if(guiLinesMesh->vertices.size())
         guiLinesMesh->render(GL_LINES);
+    if(guiPlanesMesh->vertices.size()){
+        glDisable(GL_CULL_FACE);
+        guiPlanesMesh->render(GL_TRIANGLES);
+        glEnable(GL_CULL_FACE);
+    }
+
+    glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     Game::instance->camera->set();
 
-    //debugPointsMesh->clear();
-    //debugLinesMesh->clear();
     guiPointsMesh->clear();
     guiLinesMesh->clear();
+    guiPlanesMesh->clear();
 }
 
 Vector4 GUI::getColor(std::string team, bool selected) {
@@ -106,7 +103,7 @@ Vector4 GUI::getColor(std::string team, bool selected) {
     }
 }
 
-void GUI::addPoint(Vector3 pos1, bool debug, Vector4 color, bool projected) {
+void GUI::addPoint(Vector3 pos1, Vector4 color, bool projected, bool debug) {
     if(!projected){
         Game* game = Game::instance;
         Camera* camera = game->camera;
@@ -121,7 +118,7 @@ void GUI::addPoint(Vector3 pos1, bool debug, Vector4 color, bool projected) {
     }
 }
 
-void GUI::addLine(Vector3 pos1, Vector3 pos2, bool debug, Vector4 color, bool projected) {
+void GUI::addLine(Vector3 pos1, Vector3 pos2, Vector4 color, bool projected, bool debug) {
     if(!projected){
         Game* game = Game::instance;
         Camera* camera = game->camera;
@@ -139,6 +136,41 @@ void GUI::addLine(Vector3 pos1, Vector3 pos2, bool debug, Vector4 color, bool pr
         guiLinesMesh->colors.push_back(color);
         guiLinesMesh->colors.push_back(color);
     }
+}
+
+void GUI::addPlane(Vector2 pos1, Vector2 pos2, Vector4 color) { //No debug, always projected
+    float minX, maxX, minY, maxY;
+    if(pos1.x < pos2.x){
+        minX = pos1.x; maxX = pos2.x;
+    }else{
+        minX = pos2.x; maxX = pos1.x;
+    }
+    if(pos1.y < pos2.x){
+        minY = pos1.y; maxY = pos2.y;
+    }else{
+        minY = pos2.y; maxY = pos1.y;
+    }
+
+    guiPlanesMesh->vertices.push_back(Vector3(maxX, maxY, 0));
+    guiPlanesMesh->vertices.push_back(Vector3(minX, minY, 0));
+    guiPlanesMesh->vertices.push_back(Vector3(maxX, minY, 0));
+    guiPlanesMesh->vertices.push_back(Vector3(minX, maxY, 0));
+    guiPlanesMesh->vertices.push_back(Vector3(minX, minY, 0));
+    guiPlanesMesh->vertices.push_back(Vector3(maxX, maxY, 0));
+
+    guiPlanesMesh->colors.push_back(color);
+    guiPlanesMesh->colors.push_back(color);
+    guiPlanesMesh->colors.push_back(color);
+    guiPlanesMesh->colors.push_back(color);
+    guiPlanesMesh->colors.push_back(color);
+    guiPlanesMesh->colors.push_back(color);
+}
+
+void GUI::setGrid(bool show, Vector3 center) {
+    show_grid = show;
+    grid->model.setTranslation(center);
+    Vector3 axis(1.0,0,0);
+    grid->model.rotateLocal(DEG2RAD*90,axis);
 }
 
 void GUI::showHideGrid(){

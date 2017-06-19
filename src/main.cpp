@@ -119,8 +119,8 @@ void mainLoop()
 
 		//get mouse position and delta (do after pump events)
 		game->mouse_state = SDL_GetMouseState(&x,&y);
-		game->mouse_delta.set( game->mouse_position.x - x, game->mouse_position.y - y );
-		game->mouse_position.set((float)x, (float)y);
+		game->mouse_delta.set( game->mouse_position.x - x, game->mouse_position.y - (game->window_height-y) );
+		game->mouse_position.set((float)x, game->window_height - (float)y);
         
         
 		//update logic

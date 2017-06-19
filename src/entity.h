@@ -22,6 +22,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     int hp=0;                   // Life remain
     int maxhp=0;                // Max life
     float ttl=0;                // Time remain
+    float range=1000;           // Range
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
     int vel=0;                  // Velocity intensity
     Vector3 targetPos;          // Target position of the entity

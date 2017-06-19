@@ -4,20 +4,30 @@
 #include "mesh.h"
 #include "entity.h"
 
-Player::Player(){
+Player::Player(std::string t) : team(t){
 
 }
 
 Player::~Player() {}
 
 void Player::addControllableEntity(UID e_uid) {
-    controllable_entities.push_back(e_uid);
+    controllableEntities.push_back(e_uid);
+}
+
+void Player::updateControllableEntities() {
+    //Controllable of a player are selectable entities of the same team
+    controllableEntities.clear();
+    for(auto &entry : Entity::s_entities){
+        if(entry.second->stats.team.compare(team) == 0){
+            controllableEntities.push_back(entry.second->uid);
+        }
+    }
 }
 
 std::vector<Entity*> Player::getControllableEntities(){
     std::vector<Entity*> entities;
     std::vector< std::vector<UID>::iterator > removeEntities;
-    for(std::vector<UID>::iterator it = controllable_entities.begin(); it != controllable_entities.end(); ++it) {
+    for(std::vector<UID>::iterator it = controllableEntities.begin(); it != controllableEntities.end(); ++it) {
         Entity* entity =Entity::getEntity((*it));
         if (entity != NULL)
             entities.push_back(entity);
@@ -26,14 +36,14 @@ std::vector<Entity*> Player::getControllableEntities(){
         }
     }
     for(std::vector<UID>::iterator it : removeEntities)
-        controllable_entities.erase(it);
+        controllableEntities.erase(it);
 
     return entities;
 }
 
 //========================================
 
-Human::Human() {
+Human::Human() : Player("t1") {
     cameraController = new CameraController();
     entityController = new FighterController();
 }
@@ -43,7 +53,42 @@ Human::~Human() {
 }
 
 void Human::update(double seconds_elapsed) {
-cameraController->update(seconds_elapsed,12);//TODO Quit entity from camera controller
+    updateControllableEntities();
+    cameraController->update(seconds_elapsed,12);//TODO Quit entity from camera controller
+
+    //Entity position and existence can change in every frame, update controlling and center here
+    Vector3 center;
+    std::vector<Entity*> entities;
+    std::vector< std::vector<UID>::iterator > removeEntities;
+    for(std::vector<UID>::iterator it = controllingEntities.begin(); it != controllingEntities.end(); ++it) {
+        Entity* entity =Entity::getEntity((*it));
+        if (entity != NULL){
+            if(EntityMesh* em = dynamic_cast<EntityMesh*>(entity)) {    // Ignore not EntityMesh
+                entities.push_back(entity);
+                center += entity->getPosition();
+            }
+        }else{
+            removeEntities.push_back(it);
+        }
+    }
+    for(std::vector<UID>::iterator it : removeEntities)
+        controllingEntities.erase(it);
+    center /= entities.size();
+    centerControlling = center;
+
+    radiusControlling = 0;
+    Entity *farthest = NULL;
+    for (Entity *e: entities) {
+        float dist = e->getPosition().distance(centerControlling);
+        if (dist >= radiusControlling) {
+            radiusControlling = dist;
+            farthest = e;
+        }
+    }
+    if(farthest != NULL)
+        radiusControlling += Mesh::Load(((EntityMesh *) farthest)->mesh)->info.radius;
+
+    GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
 }
 
 void Human::render(Camera *camera) {
@@ -51,40 +96,16 @@ void Human::render(Camera *camera) {
 }
 
 void Human::centerCameraOnControlling(){
-    Vector3 dir = Game::instance->camera->eye - center_controlling;
+    if(!controllingEntities.size()) return;
+    Vector3 dir = Game::instance->camera->eye - centerControlling;
     dir.normalize();
     Camera* camera = Game::instance->camera;
-    camera->eye = dir * (radius_controlling+100) + center_controlling;
-    camera->center = center_controlling;
+    camera->eye = dir * (radiusControlling+100) + centerControlling;
+    camera->center = centerControlling;
 }
 
 void Human::selectEntities(std::vector<UID>& entities) {
-    controlling_entities = entities;
-    std::vector<Entity *> control_entities = getControllingEntities();
-    if(control_entities.size()) {
-        center_controlling = Vector3();
-
-        for (Entity *e: control_entities)
-            center_controlling += e->getPosition();
-
-        center_controlling /= control_entities.size();
-
-        radius_controlling = 0;
-        Entity *fartest;
-        for (Entity *e: control_entities) {
-            float dist = e->getPosition().distance(center_controlling);
-            if (dist >= radius_controlling) {
-                radius_controlling = dist;
-                fartest = e;
-            }
-        }
-        radius_controlling += Mesh::Load(
-                ((EntityMesh *) fartest)->mesh)->info.radius;        //TODO Solo se pueden seleccionar entity mesh
-        //Put the grid in the center
-        //TODO update it when selected moves
-
-        GUI::getGUI()->setGridCenter(center_controlling);
-    }
+    controllingEntities = entities;
 }
 
 void Human::organizeSquadCircle(Vector3 position){
@@ -134,17 +155,16 @@ void Human::moveSelectedInPlane(){
     Game* g = Game::instance;
     Camera* camera = g->camera;
     GUI *gui = GUI::getGUI();
-    //TODO cuidado , si se mueve la camara mientras seleccionas donde mover el objetivo entonces esto no funciona ¿ O si ?
 
     Vector3 initCameraToGoal= camera->eye;
-    Vector3 cameraToGoal= camera->unproject(Vector3(g->mouse_when_press.x,g->window_height - g->mouse_position.y,0)
+    Vector3 cameraToGoal= camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y,0)
                                          ,g->window_width, g->window_height)
                                             - camera->eye;
     Vector3 initStartInPlaneToGoal;//Interseccion del rayo con la grid
     Vector3 auxDir = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),
                                                         g->window_width,g->window_height) - camera->eye;
     gui->grid->testRayCollision(camera->eye,auxDir,1000000000.0,initStartInPlaneToGoal);
-    Vector3 startInPlaneToGoal = camera->unproject(Vector3(g->mouse_when_press.x,g->window_height - g->mouse_position.y,0),g->window_width,g->window_height)
+    Vector3 startInPlaneToGoal = camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y,0),g->window_width,g->window_height)
     -camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),g->window_width,g->window_height);
 
     if(startInPlaneToGoal == Vector3(0,0,0))
@@ -170,7 +190,7 @@ void Human::moveSelectedInPlane(){
 std::vector<Entity*> Human::getControllingEntities(){
     std::vector<Entity*> entities;
     std::vector< std::vector<UID>::iterator > removeEntities;
-    for(std::vector<UID>::iterator it = controlling_entities.begin(); it != controlling_entities.end(); ++it) {
+    for(std::vector<UID>::iterator it = controllingEntities.begin(); it != controllingEntities.end(); ++it) {
         Entity* entity =Entity::getEntity((*it));
         if (entity != NULL)
             entities.push_back(entity);
@@ -179,22 +199,22 @@ std::vector<Entity*> Human::getControllingEntities(){
         }
     }
     for(std::vector<UID>::iterator it : removeEntities)
-        controlling_entities.erase(it);
+        controllingEntities.erase(it);
 
     return entities;
 }
 
-const float &Human::getRadius_controlling() const {
-    return radius_controlling;
+const float &Human::getRadiusControlling() const {
+    return radiusControlling;
 }
 
-const Vector3 &Human::getCenter_controlling() const {
-    return center_controlling;
+const Vector3 &Human::getCenterControlling() const {
+    return centerControlling;
 }
 
 //========================================
 
-Enemy::Enemy() {
+Enemy::Enemy() : Player("t2") {
     aiController = new AIController();
 }
 
@@ -203,6 +223,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(double seconds_elapsed) {
+    updateControllableEntities();
     for(Entity* e: getControllableEntities()){
         aiController->update(seconds_elapsed,e);
     }

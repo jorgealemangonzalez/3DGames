@@ -205,10 +205,11 @@ CLION: https://www.jetbrains.com/help/clion/changing-build-configuration-types.h
 -------------------------- CONTROLES DEL JUEGO --------------------------
 
 e       Centrar camara al rededor de las unidades seleccionadas
-z       Mantener presionado para girar al rededor de la nave seleccionada
-TAB     Pintar el plano para mover todas las unidades seleccionadas
-click D Mover a una posicion en el plano , arrastrar arriba o abajo para moverlas en 3D
+LSHIFT  Mantener presionado para girar al rededor de la nave seleccionada
+---     Pintar el plano para mover todas las unidades seleccionadas -> ahora automático
+click D Mover a una posicion en el plano , arrastrar arriba o abajo para moverlas en 3D (in code is I when TAB is toggled!)
 click I Seleccionar unidades
+SPACE   Activar/desactivar pausa (default false)
 
 ~ DEBUG ~
 o       Activar/desactivar debugMode (usado en visualización e impresión por consola, default false)

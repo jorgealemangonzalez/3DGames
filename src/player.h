@@ -8,12 +8,15 @@
 #include "controller.h"
 
 class Player {
-    std::vector<UID> controllable_entities;     // Pool of controllable (friendly) entities
+protected:
+    std::vector<UID> controllableEntities;     // Pool of controllable (friendly) entities
+    std::string team;
+
 public:
-    Player();
+    Player(std::string t);
     ~Player();
 
-
+    void updateControllableEntities();
     std::vector<Entity*> getControllableEntities();
 
     void addControllableEntity(UID e_uid);
@@ -21,9 +24,10 @@ public:
 };
 
 class Human: public Player{
-    std::vector<UID> controlling_entities;            // Index of controllable pool
-    float radius_controlling;
-    Vector3 center_controlling;
+protected:
+    std::vector<UID> controllingEntities;            // Index of controllable pool
+    float radiusControlling;
+    Vector3 centerControlling;
 public:
     Human();
     ~Human();
@@ -33,9 +37,8 @@ public:
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
 
-    const float &getRadius_controlling() const;
-
-    const Vector3 &getCenter_controlling() const;
+    const float &getRadiusControlling() const;
+    const Vector3 &getCenterControlling() const;
 
     void selectEntities(std::vector<UID>& entities);
     void centerCameraOnControlling();

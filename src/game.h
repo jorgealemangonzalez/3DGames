@@ -34,15 +34,19 @@ public:
 	int fps;
 	float angle;
 
+	bool pause;
+
 	//keyboard state
 	const Uint8* keystate;
 
 	//mouse state
 	int mouse_state; //tells which buttons are pressed
-	Vector2 mouse_position; //last mouse position
+	Vector2 mouse_position; //last mouse position					// y 0 up (inverted)
 	Vector2 mouse_delta; //mouse movement in the last frame
 	bool mouse_locked; //tells if the mouse is locked (not seen)
-	Vector2 mouse_when_press;
+	Vector2 mouse_when_press;										// y 0 down
+
+	bool mouseLeft, mouseRight;	// For some reason 'mouse_state & SDL_BUTTON_RIGHT' doesn't work, so we keep the boolean
 	
 	Camera* camera; //our global camera
 
