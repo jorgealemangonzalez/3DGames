@@ -52,6 +52,9 @@ Controles usuario interfaz:
 
 (TODO) Poner la ia del movimiento(solo el giro) / disparo (las cosas que se hagan solas sin que el usuario toque nada )en entity fighter update. Desde el AI controller no se hara casi nada y desde el controller del humano que pueda habilitar/ desabilitar cosas que se hagan solas
 
+(TODO) Que se vea la traza de la entity mientras se mueve (si o no ?)
+
+(TODO) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
 --------------------------
 
 -> CONTROL

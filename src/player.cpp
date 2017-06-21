@@ -88,6 +88,9 @@ void Human::update(double seconds_elapsed) {
     if(farthest != NULL)
         radiusControlling += Mesh::Load(((EntityMesh *) farthest)->mesh)->info.radius;
 
+    //MOVE CAMERA TO ENTITIES SELECTED CENTER
+    if(controllingEntities.size())
+        Game::instance->camera->center = centerControlling;
     GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
 }
 

@@ -244,5 +244,5 @@ void Scene::update(float elapsed_time) {
     Camera* camera = Game::instance->camera;
 
     BulletManager::getManager()->update(elapsed_time);
-    EntityCollider::checkCollisions();
+    EntityCollider::checkCollisions(elapsed_time);
 }

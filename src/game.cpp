@@ -110,19 +110,19 @@ void Game::update(double seconds_elapsed) {
             logger.open("log.txt", std::fstream::out | std::ios::app);
             logger << "\nNext frame---------------------\n";
         }
-    }
 
-    human->update(seconds_elapsed);
-    if(!keystate[SDL_SCANCODE_LSHIFT]){
-        GUI* gui = GUI::getGUI();
-        if(mouseLeft){
-            gui->addPlane(mouse_when_press, mouse_position);
-            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-        }else if(mouseRight){
-            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,0.5), true);
+        human->update(seconds_elapsed);
+        if(!keystate[SDL_SCANCODE_LSHIFT]){
+            GUI* gui = GUI::getGUI();
+            if(mouseLeft){
+                gui->addPlane(mouse_when_press, mouse_position);
+                gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+                gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+                gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+                gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+            }else if(mouseRight){
+                gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,0.5), true);
+            }
         }
     }
 }
