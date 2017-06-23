@@ -597,4 +597,11 @@ void EntityFighter::updateGUI() {
         gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), Vector4(0,1,0,1), true);
         gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), Vector4(1,0,0,1), true);
     }
+
+    if(stats.targetPos){
+        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
+    }else if(stats.followEntity){
+        if(Entity* e = Entity::getEntity(stats.followEntity))
+            gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));
+    }
 }
