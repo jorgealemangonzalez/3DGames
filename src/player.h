@@ -36,6 +36,7 @@ public:
     CameraController* cameraController;
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
+    std::vector<Entity*> getControllableEntities();
 
     const float &getRadiusControlling() const;
     const Vector3 &getCenterControlling() const;

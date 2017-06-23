@@ -234,8 +234,10 @@ AIController::~AIController() {
 }
 
 void AIController::update(double seconds_elapsed, Entity* driving) {
-
-    driving->stats.followEntity = entity_follow;
+    for(Entity* e: Game::instance->human->getControllableEntities()){
+        driving->stats.followEntity = e->uid;
+        break;
+    }
 /*
     Entity* follow = Entity::getEntity(entity_follow);
     if(follow == NULL)

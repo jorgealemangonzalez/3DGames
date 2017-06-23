@@ -207,6 +207,23 @@ std::vector<Entity*> Human::getControllingEntities(){
     return entities;
 }
 
+std::vector<Entity*> Human::getControllableEntities(){
+    std::vector<Entity*> entities;
+    std::vector< std::vector<UID>::iterator > removeEntities;
+    for(std::vector<UID>::iterator it = controllableEntities.begin(); it != controllableEntities.end(); ++it) {
+        Entity* entity =Entity::getEntity((*it));
+        if (entity != NULL)
+            entities.push_back(entity);
+        else{
+            removeEntities.push_back(it);
+        }
+    }
+    for(std::vector<UID>::iterator it : removeEntities)
+        controllableEntities.erase(it);
+
+    return entities;
+}
+
 const float &Human::getRadiusControlling() const {
     return radiusControlling;
 }

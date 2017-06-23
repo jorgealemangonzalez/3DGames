@@ -26,6 +26,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
     int vel=0;                  // Velocity intensity
     Vector3 targetPos;          // Target position of the entity
+    Vector3 gravity;            // 3D force applied to the movement of the entity
     UID followEntity = 0;
 } Stats;
 std::string sstats(Stats s);

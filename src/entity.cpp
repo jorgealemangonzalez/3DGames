@@ -235,22 +235,29 @@ void Entity::updateStats(float elapsed_time) {
             Matrix44 inv = getGlobalModel();
             inv.inverse();
             Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
-            float angleRotate = (angle > 0.03 ? angle * elapsed_time : angle);    //Angulo pequeño rota directamente
+            float angleRotate = (angle > 0.03 ? angle * elapsed_time*3 : angle);    //Angulo pequeño rota directamente
             if(angleRotate > 0) {
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
 
             float distance = (stats.targetPos - getPosition()).length();
-            float velocity = stats.vel;
-            if(distance < 100){         //parking velocity :')
-                velocity = velocity* distance/100;
-            }
-
-            model.traslateLocal(0,0,-velocity * elapsed_time);     //TODO change this translate to some velocity vector
 
             if(distance < 10) { //TODO Cuidado con esto , si se empujan los unos a los otros y pasa cerca de su posición objetivo ya no intentará volver a ella
                 stats.vel = Vector3();
                 stats.targetPos = Vector3();
+            }else{
+                float velocity = stats.vel;
+                if(distance < 100){         //parking velocity :')
+                    velocity = velocity* distance/100;
+                }
+                if(debugMode)
+                    std::cout<<"GRAVITY:: "<<stats.gravity<<std::endl;
+                stats.gravity *= elapsed_time;
+                Vector3 vel = model.rotateVector(Vector3(0,0,-velocity * elapsed_time));
+                Vector3 added = vel + stats.gravity;
+                added.normalize();
+                added*=(velocity*elapsed_time);
+                model.traslate(added.x, added.y, added.z);
             }
         }
     }
@@ -263,6 +270,12 @@ void Entity::updateStats(float elapsed_time) {
         stats.ttl -= elapsed_time;
         if(stats.ttl < 0)
             destroy();
+    }
+
+    if(stats.gravity && !(stats.vel && stats.targetPos)){
+        stats.gravity *= elapsed_time;
+        model.traslate(stats.gravity.x,stats.gravity.y,stats.gravity.z);
+        stats.gravity = Vector3();
     }
 }
 
@@ -441,8 +454,11 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             Vector3 gravDir = entitySource->getPosition() - entityDest->getPosition();
             double distance = gravDir.length();
             gravDir.normalize();
-            if(distance < total_radius + 20)
-                entitySource->model.traslateLocal(gravDir*(total_radius + 20 - distance)*elapsed_time);
+            if(distance < total_radius) {
+                entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
+                std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
+                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
+            }
         }
 
         for(int j = i+1 ; j < dynamic_colliders.size(); ++j){
@@ -459,8 +475,11 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             Vector3 gravDir = entitySource->getPosition() - entityDest->getPosition();
             double distance = gravDir.length();
             gravDir.normalize();
-            if(distance < total_radius + 5)
-                entitySource->model.traslateLocal(gravDir*(total_radius + 5 - distance)*elapsed_time);
+            if(distance < total_radius) {
+                entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
+                std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
+                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
+            }
         }
     }
     //std::cout<<"Time checkcollisions: "<<getTime()-now<<"\n";
