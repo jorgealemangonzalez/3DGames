@@ -107,7 +107,7 @@ void BulletManager::render() {
 }
 
 void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity,
-                                 float ttl, float power, UID author, const std::string &type) {HDB
+                                 float ttl, float power, UID author, const std::string &type) {
 
     if(last_pos_pool >= MAX_BULLETS){
         unsigned int mini = -1;

@@ -55,6 +55,8 @@ Controles usuario interfaz:
 (TODO) Que se vea la traza de la entity mientras se mueve (si o no ?)
 
 (DONE) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
+
+(TODO) boton para seleccionar todas las tropas posibles
 --------------------------
 
 -> CONTROL

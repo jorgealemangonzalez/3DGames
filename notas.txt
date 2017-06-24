@@ -192,6 +192,10 @@ Explosión : para explosiones
 Rayo : para misiles
 Maquinaria, Motores, Lavadora : para naves espaciales
 
+LOS ASTEROIDES SON DE DONDE SALEN TUS TROPAS PERO TIENES QUE HACER CLICK EN ELLOS Y TIENEN UN COOLDOWN
+MOLA PORQUE PUEDEN ESTAR MUY LEJOS Y LO MISMO NI TE VALE LA PENA SACAR UNA TROPA DE ALLI , TE TARDARA MUCHO EN LLEGAR
+
+
 ---
 
 Librerías externas:
@@ -210,6 +214,7 @@ LSHIFT  Mantener presionado para girar al rededor de la nave seleccionada
 click D Mover a una posicion en el plano , arrastrar arriba o abajo para moverlas en 3D (in code is I when TAB is toggled!)
 click I Seleccionar unidades
 SPACE   Activar/desactivar pausa (default false)
+(TODO) boton para seleccionar todas las tropas posibles
 
 ~ DEBUG ~
 o       Activar/desactivar debugMode (usado en visualización e impresión por consola, default false)
