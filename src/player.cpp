@@ -4,8 +4,6 @@
 #include "mesh.h"
 #include "entity.h"
 
-#define ENEMY_TEAM "t2"
-#define HUMAN_TEAM "t1"
 Player::Player(std::string t) : team(t){
 
 }
@@ -45,7 +43,7 @@ std::vector<Entity*> Player::getControllableEntities(){
 
 //========================================
 
-Human::Human() : Player("t1") {
+Human::Human() : Player(HUMAN_TEAM) {
     cameraController = new CameraController();
     entityController = new FighterController();
 }
@@ -240,7 +238,7 @@ const Vector3 &Human::getCenterControlling() const {
 
 //========================================
 
-Enemy::Enemy() : Player("t2") {
+Enemy::Enemy() : Player(ENEMY_TEAM) {
     aiController = new AIController();
 }
 

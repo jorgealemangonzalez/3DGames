@@ -89,8 +89,8 @@ void GUI::render() {
 
 Vector4 GUI::getColor(std::string team, bool selected) {
     int t = 0;
-    if(team.compare("t1")==0) t = 1;
-    else if(team.compare("t2")==0) t = 2;
+    if(team.compare(HUMAN_TEAM)==0) t = 1;
+    else if(team.compare(ENEMY_TEAM)==0) t = 2;
 
     switch(t){
         case 1:

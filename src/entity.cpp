@@ -41,7 +41,7 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
     }
 
     //Play sound enemy down if enemy
-    if(stats.team == "t2"){
+    if(stats.team == ENEMY_TEAM){
         MusicManager::playEnemyDown(getPosition());
     }
 }

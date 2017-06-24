@@ -62,6 +62,8 @@
 #define MAX(a,b) ( a < b ? b : a)
 #define MIN(a,b) ( a > b ? b : a)
 #define PI 3.14159
+#define HUMAN_TEAM "t1"
+#define ENEMY_TEAM "t2"
 
 extern bool debugMode;  //Global declarada en main
 
