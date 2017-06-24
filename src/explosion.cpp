@@ -5,6 +5,7 @@
 #include "explosion.h"
 #include "mesh.h"
 #include "entity.h"
+#include "MusicManager.h"
 
 std::vector<Explosion*> Explosion::explosions;
 
@@ -20,6 +21,7 @@ Explosion::~Explosion() {
 void Explosion::generateExplosion(Vector3 exploding_point) {
     Explosion* e = new Explosion();
     e->exploding_point = exploding_point;
+    MusicManager::playExplosion(exploding_point);
     Explosion::explosions.push_back(e);
 }
 

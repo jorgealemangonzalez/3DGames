@@ -102,6 +102,10 @@ std::string Vector3::toString() const{
 	return ss.str();
 }
 
+sf::Vector3<float> Vector3::toMusicVector() {
+	return sf::Vector3<float>(x,y,z);
+}
+
 std::ostream& operator<<(std::ostream &out, const Vector3 &v) {
 	out << v.toString();
 	return out;

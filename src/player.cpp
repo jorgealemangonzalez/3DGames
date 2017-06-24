@@ -4,6 +4,8 @@
 #include "mesh.h"
 #include "entity.h"
 
+#define ENEMY_TEAM "t2"
+#define HUMAN_TEAM "t1"
 Player::Player(std::string t) : team(t){
 
 }

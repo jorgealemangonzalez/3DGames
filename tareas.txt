@@ -49,6 +49,7 @@ Controles usuario interfaz:
 (DONE) (SAME SOL^)Movimiento de varias unidades que no se choquen las unas con las otras (Preguntar a javi como era lo de los movimientos conjuntos)
 
 (TODO) Quit main music and create effects
+(TODO) Que no pete el sonido en la consola al cerrar el juego ( Memory leaks ? )
 
 (TODO) Poner la ia del movimiento(solo el giro) / disparo (las cosas que se hagan solas sin que el usuario toque nada )en entity fighter update. Desde el AI controller no se hara casi nada y desde el controller del humano que pueda habilitar/ desabilitar cosas que se hagan solas
 
@@ -57,6 +58,9 @@ Controles usuario interfaz:
 (DONE) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
 
 (TODO) boton para seleccionar todas las tropas posibles
+
+(TODO) arreglar movimiento raro que le hace mayormente a miquel ( las tropas no van a la punta de la linea sino al circulo )
+
 --------------------------
 
 -> CONTROL

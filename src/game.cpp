@@ -5,6 +5,7 @@
 #include "GUI.h"
 #include "explosion.h"
 #include "entity.h"
+#include "MusicManager.h"
 
 //some globals
 
@@ -42,6 +43,10 @@ Game::Game(SDL_Window *window) {
 void Game::init(void) {
     std::cout << " * Path: " << getPath() << std::endl;
 
+    //music
+    MusicManager::init();
+
+    MusicManager::ambientTense.play();
     //SDL_SetWindowSize(window, 50,50);
 
     //OpenGL flags
@@ -101,6 +106,7 @@ void Game::render(void) {
 
 void Game::update(double seconds_elapsed) {
     if(!pause){
+        MusicManager::update();
         Explosion::updateAll(seconds_elapsed);
         enemy->update(seconds_elapsed);
         Scene::getScene()->update(seconds_elapsed);

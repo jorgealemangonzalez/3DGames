@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "game.h"
 #include "scene.h"
+#include "MusicManager.h"
 
 std::string sstats(Stats s){
     std::stringstream ss;
@@ -37,6 +38,11 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
     auto it = s_entities.find(this->uid);
     if(it != s_entities.end()){
         s_entities.erase(it);
+    }
+
+    //Play sound enemy down if enemy
+    if(stats.team == "t2"){
+        MusicManager::playEnemyDown(getPosition());
     }
 }
 

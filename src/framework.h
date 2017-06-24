@@ -8,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <SFML/System/Vector3.hpp>
 
 #define DEG2RAD 0.0174532925
 
@@ -98,6 +99,7 @@ public:
 		return (x || y || z);
 	}
 	std::string toString() const;
+	sf::Vector3<float> toMusicVector();
 };
 
 class Vector4

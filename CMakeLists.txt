@@ -73,7 +73,7 @@ set(SOURCE_FILES
         src/explosion.cpp
         src/explosion.h
         src/GUI.cpp
-        src/GUI.h)
+        src/GUI.h src/MusicManager.cpp src/MusicManager.h)
 
 add_executable(TJE_framework_2017 ${SOURCE_FILES})
 

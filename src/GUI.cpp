@@ -194,7 +194,6 @@ void GUI::addCenteredCircles(Vector3 center, float radius, Vector4 color){
 
     if(guiLinesMesh->vertices.size() % 2 != 0)
         guiLinesMesh->vertices.pop_back(), guiLinesMesh->colors.pop_back();
-    std::cout<<"SIZE:: "<<guiLinesMesh->vertices.size()<<"\n";
 
 }
 

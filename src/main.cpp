@@ -16,7 +16,6 @@
 #include "game.h"
 
 #include <iostream> //to output
-#include <SFML/Audio.hpp>
 
 long last_time = 0; //this is used to calcule the elapsed time between frames
 bool debugMode = false;
@@ -164,11 +163,6 @@ int main(int argc, char **argv)
 	//launch the game (game is a global variable)
 	game = new Game(window);
 	game->init();
-
-    sf::Music music;
-    if (!music.openFromFile("../data/sounds/space.wav"))
-        return -1; // error
-    //music.play();
 
 	//main loop, application gets inside here till user closes it
 	mainLoop();
