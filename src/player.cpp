@@ -143,7 +143,9 @@ void Human::organizeSquadLine(Vector3 position){
     }
 }
 
-Vector3 Human::getPositionSelectedMove(){
+//Si el click inicial no colisiona con la grid no iba bien, esta función lo soluciona.
+bool Human::getPositionSelectedMove(Vector3 &selectedMove) {
+
     Vector3 move_position; //LO QUE QUEREMOS CALCULAR
     Game* g = Game::instance;
     Camera* camera = g->camera;
@@ -156,7 +158,8 @@ Vector3 Human::getPositionSelectedMove(){
     Vector3 initStartInPlaneToGoal;//Interseccion del rayo con la grid
     Vector3 auxDir = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),
                                        g->window_width,g->window_height) - camera->eye;
-    gui->grid->testRayCollision(camera->eye,auxDir,1000000000.0,initStartInPlaneToGoal);
+    if(!gui->grid->testRayCollision(camera->eye,auxDir,1000000000.0,initStartInPlaneToGoal))
+        return false;
     Vector3 startInPlaneToGoal = camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y,0),g->window_width,g->window_height)
                                  -camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),g->window_width,g->window_height);
 
@@ -176,12 +179,36 @@ Vector3 Human::getPositionSelectedMove(){
 
         move_position = PG*modulo + P;
     }
-    return move_position;
+    selectedMove = move_position;
+    return true;
+
+    /*  Va bien, pero mismo comportamiento raro de no sacar siempre el punto vertical...
+     *  Eso si, parece más limpio y directo. Si quieres poner este, tu mismo.
+     *  Solución con teorema de Tales
+    Game* g = Game::instance;
+    Camera* camera = g->camera;
+    GUI *gui = GUI::getGUI();
+
+    Vector3 O = camera->eye;
+    Vector3 A = camera->unproject(Vector2(g->mouse_when_press.x, g->mouse_position.y), g->window_width, g->window_height);
+    Vector3 B = camera->unproject(Vector2(g->mouse_when_press), g->window_width, g->window_height);
+
+    Vector3 Bp;
+    Vector3 dir = B-O;
+    if(!gui->grid->testRayCollision(camera->eye,dir,INFINITY,Bp))
+        return false;
+
+    double dist = ( (O-A).length() * (O-Bp).length() ) / (O-B).length();
+    Vector3 Ap = O + (A-O).normalize()*dist;
+    selectedMove = Ap;
+    return true;
+     */
 }
 
 void Human::moveSelectedInPlane(){
-
-    organizeSquadCircle(getPositionSelectedMove());
+    Vector3 selectedMove;
+    if(getPositionSelectedMove(selectedMove))
+        organizeSquadCircle(selectedMove);
 }
 
 std::vector<Entity*> Human::getControllingEntities(){

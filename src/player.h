@@ -52,6 +52,7 @@ public:
     void organizeSquadCircle(Vector3 position);
     void organizeSquadLine(Vector3 position);
     Vector3 getPositionSelectedMove();
+    bool getPositionSelectedMove(Vector3 &selectedMove);
 
 };
 

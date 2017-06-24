@@ -129,10 +129,12 @@ void Game::update(double seconds_elapsed) {
             gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
             gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
         }else if(mouseRight){
-            Vector3 selectedMove = human->getPositionSelectedMove();
-            Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
-            gui->addLine(mouse_when_press, selectedMoveP, Vector4(1,1,1,0.5), true);
-            gui->addCenteredCircles(selectedMove, human->getRadiusControlling());
+            Vector3 selectedMove;
+            if(human->getPositionSelectedMove(selectedMove)){
+                Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
+                gui->addLine(mouse_when_press, selectedMoveP, Vector4(1,1,1,0.5), true);
+                gui->addCenteredCircles(selectedMove, human->getRadiusControlling());
+            }
         }
     }
 }
