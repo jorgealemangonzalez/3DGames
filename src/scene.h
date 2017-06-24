@@ -25,6 +25,7 @@ public:
     void render(Camera* camera);
     void loadScene(const char* filename);
     void update(float elapsed_time);
+    void updateGUI();
 };
 
 

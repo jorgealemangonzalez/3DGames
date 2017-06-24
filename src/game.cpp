@@ -106,30 +106,33 @@ void Game::render(void) {
 
 void Game::update(double seconds_elapsed) {
     if(!pause){
-        MusicManager::update();
         Explosion::updateAll(seconds_elapsed);
         enemy->update(seconds_elapsed);
         Scene::getScene()->update(seconds_elapsed);
 
-        if(doLog){
+        if (doLog) {
             logger.close();
             logger.open("log.txt", std::fstream::out | std::ios::app);
             logger << "\nNext frame---------------------\n";
         }
+    }
+    Scene::getScene()->updateGUI();
+    MusicManager::update();
+    human->update(seconds_elapsed);
 
-        human->update(seconds_elapsed);
-        if(!keystate[SDL_SCANCODE_LSHIFT]){
-            GUI* gui = GUI::getGUI();
-            if(mouseLeft){
-                gui->addPlane(mouse_when_press, mouse_position);
-                gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-                gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-                gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-                gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-            }else if(mouseRight){
-                gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,0.5), true);
-                gui->addCenteredCircles(human->getPositionSelectedMove(), human->getRadiusControlling());
-            }
+    if(!keystate[SDL_SCANCODE_LSHIFT]){
+        GUI* gui = GUI::getGUI();
+        if(mouseLeft){
+            gui->addPlane(mouse_when_press, mouse_position);
+            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+            gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
+        }else if(mouseRight){
+            Vector3 selectedMove = human->getPositionSelectedMove();
+            Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
+            gui->addLine(mouse_when_press, selectedMoveP, Vector4(1,1,1,0.5), true);
+            gui->addCenteredCircles(selectedMove, human->getRadiusControlling());
         }
     }
 }
@@ -197,6 +200,7 @@ void Game::onMouseButton(SDL_MouseButtonEvent event) {
         mouseLeft = true;
     }else if (event.button == SDL_BUTTON_RIGHT){
         mouseRight = true;
+        human->updateCenter = false;
     }
 }
 
@@ -217,6 +221,7 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
 
         }else if(event.button == SDL_BUTTON_RIGHT){
             human->moveSelectedInPlane();
+            human->updateCenter = true;
         }
     }
 }

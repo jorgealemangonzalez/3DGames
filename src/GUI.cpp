@@ -168,7 +168,6 @@ void GUI::addPlane(Vector2 pos1, Vector2 pos2, Vector4 color) { //No debug, alwa
 }
 
 void GUI::addCenteredCircles(Vector3 center, float radius, Vector4 color){
-
     Vector3 point;
 
     Game* game = Game::instance;

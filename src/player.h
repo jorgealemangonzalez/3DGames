@@ -9,14 +9,15 @@
 
 class Player {
 protected:
-    std::vector<UID> controllableEntities;     // Pool of controllable (friendly) entities
+    std::vector<UID> controllableEntities;      // Pool of controllable (friendly) entities
     std::string team;
 
 public:
     Player(std::string t);
     ~Player();
 
-    void updateControllableEntities();
+    std::vector<UID> maintainAliveEntities;     // List of entities that keep the player without losing
+
     std::vector<Entity*> getControllableEntities();
 
     void addControllableEntity(UID e_uid);
@@ -34,6 +35,7 @@ public:
 
     EntityController* entityController;
     CameraController* cameraController;
+    bool updateCenter;
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
     std::vector<Entity*> getControllableEntities();

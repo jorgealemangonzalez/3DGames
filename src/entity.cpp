@@ -206,7 +206,6 @@ Entity* Entity::clone() {
 }
 
 void Entity::render(Camera* camera){
-    updateGUI();
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
@@ -285,15 +284,17 @@ void Entity::updateStats(float elapsed_time) {
     }
 }
 
-void Entity::updateGUI() {
-    //Do nothing
-}
-
 void Entity::update(float elapsed_time){
     updateStats(elapsed_time);
 
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);
+    }
+}
+
+void Entity::updateGUI() {
+    for(int i=0; i<children.size(); i++){
+        children[i]->updateGUI();
     }
 }
 
@@ -330,16 +331,16 @@ Entity* EntitySpawner::clone() {
     return clon;
 }
 
-void EntitySpawner::render(Camera *camera) {
-    updateGUI();
-}
-
 void EntitySpawner::update(float elapsed_time) {
     updateStats(elapsed_time);
     lastSpawn += elapsed_time;
     if(spawnTime < lastSpawn){
         lastSpawn = 0.0;
         spawnEntity();
+    }
+
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
     }
 }
 
@@ -381,8 +382,6 @@ EntityMesh* EntityMesh::clone() {
 }
 
 void EntityMesh::render(Camera* camera){
-    updateGUI();
-
     Matrix44 globalModel = getGlobalModel();
     Matrix44 mvp = globalModel * camera->viewprojection_matrix;
     Mesh* m = Mesh::Load(mesh);
@@ -405,8 +404,36 @@ void EntityMesh::render(Camera* camera){
     }
 }
 
-void EntityMesh::updateGUI() {
+void EntityMesh::unitGUI() {
+    Game* game = Game::instance;
+    Camera* camera = game->camera;
+    Vector4 color = GUI::getColor(stats.team, stats.selected);
+    GUI* gui = GUI::getGUI();
 
+    Vector3 pos = getPosition();
+    Vector3 posP = camera->project(getPosition(), game->window_width, game->window_height);
+    double meshRadius = Mesh::Load(mesh)->info.radius;
+    double radius = camera->getProjectScale(pos, meshRadius*2);
+
+    gui->addPoint(posP, color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y - radius, posP.z), color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y + radius, posP.z), color, true);
+    gui->addLine(Vector3(posP.x + radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y + radius, posP.z), color, true);
+    gui->addLine(Vector3(posP.x - radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y - radius, posP.z), color, true);
+
+    if(stats.has_hp){
+        double hpFraction = 2*radius*(double)stats.hp / (double)stats.maxhp;
+        Vector3 initHP = Vector3(posP.x - radius, posP.y + 2*radius, posP.z);
+        gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), Vector4(0,1,0,1), true);
+        gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), Vector4(1,0,0,1), true);
+    }
+
+    if(stats.followEntity){
+        if(Entity* e = Entity::getEntity(stats.followEntity))
+            gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));
+    }else if(stats.targetPos){
+        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
+    }
 }
 
 //================================================
@@ -460,8 +487,8 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             Vector3 gravDir = entitySource->getPosition() - entityDest->getPosition();
             double distance = gravDir.length();
             gravDir.normalize();
-            if(distance < total_radius) {
-                entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
+            if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
+                entitySource->stats.gravity += gravDir * 100.0*(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
@@ -482,7 +509,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             double distance = gravDir.length();
             gravDir.normalize();
             if(distance < total_radius) {
-                entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
+                entitySource->stats.gravity += gravDir * 100.0*(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
@@ -597,36 +624,49 @@ void EntityFighter::update(float elapsed_time){
             stats.vel = 0;
         }
     }
+
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
+    }
 }
 
 void EntityFighter::updateGUI() {
-    Game* game = Game::instance;
-    Camera* camera = game->camera;
-    Vector4 color = GUI::getColor(stats.team, stats.selected);
-    GUI* gui = GUI::getGUI();
+    unitGUI();
 
-    Vector3 pos = getPosition();
-    Vector3 posP = camera->project(getPosition(), game->window_width, game->window_height);
-    double meshRadius = Mesh::Load(mesh)->info.radius;
-    double radius = camera->getProjectScale(pos, meshRadius*2);
-
-    gui->addPoint(posP, color, true);
-    gui->addLine(Vector3(posP.x - radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y - radius, posP.z), color, true);
-    gui->addLine(Vector3(posP.x + radius, posP.y - radius, posP.z), Vector3(posP.x + radius, posP.y + radius, posP.z), color, true);
-    gui->addLine(Vector3(posP.x + radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y + radius, posP.z), color, true);
-    gui->addLine(Vector3(posP.x - radius, posP.y + radius, posP.z), Vector3(posP.x - radius, posP.y - radius, posP.z), color, true);
-
-    if(stats.has_hp){
-        double hpFraction = 2*radius*(double)stats.hp / (double)stats.maxhp;
-        Vector3 initHP = Vector3(posP.x - radius, posP.y + 2*radius, posP.z);
-        gui->addLine(initHP, initHP+Vector3(hpFraction, 0, 0), Vector4(0,1,0,1), true);
-        gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), Vector4(1,0,0,1), true);
+    for(int i=0; i<children.size(); i++){
+        children[i]->updateGUI();
     }
+}
 
-    if(stats.targetPos){
-        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
-    }else if(stats.followEntity){
-        if(Entity* e = Entity::getEntity(stats.followEntity))
-            gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));
+//==================================================
+
+EntityStation::EntityStation(bool dynamic) : EntityCollider(dynamic) {
+
+}
+
+EntityStation::~EntityStation() {}
+
+EntityStation* EntityStation::clone() {
+    EntityStation* clon = new EntityStation();
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}
+
+void EntityStation::update(float elapsed_time) {
+    updateStats(elapsed_time);
+    unitGUI();
+
+    for(int i=0; i<children.size(); i++){
+        children[i]->update(elapsed_time);
+    }
+}
+
+void EntityStation::updateGUI() {
+    unitGUI();
+
+    for(int i=0; i<children.size(); i++){
+        children[i]->updateGUI();
     }
 }

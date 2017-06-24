@@ -80,61 +80,40 @@ void Scene::render(Camera* camera) {
 
 void Scene::loadScene(const char* filename) {
     TextParser t;
-    if(!t.create(filename)){
-        std::cout<<"File not found"<<std::endl;
+    if (!t.create(filename)) {
+        std::cout << "File not found" << std::endl;
         exit(0);
     }
     t.reset();
 
-    std::map<std::string,Entity*> templates;  //Mesh info for position
+    std::map<std::string, Entity *> templates;  //Mesh info for position
 
     {   //Background
-        EntityMesh* background = new EntityMesh();
+        EntityMesh *background = new EntityMesh();
         t.seek("*background");
         t.seek("*mesh");
         background->setMesh(t.getword());
         t.seek("*texture");
         std::string texture = t.getword();
-        if(texture != "no") {   //Si tiene textura
+        if (texture != "no") {   //Si tiene textura
             background->setTexture(texture);
         }
         //background->setPixelShader("polar_background.fs");
-        Texture::Load(texture,MIPMAP_DISABLE);  //Load here to disable mipmaps ( cube lines )
+        Texture::Load(texture, MIPMAP_DISABLE);  //Load here to disable mipmaps ( cube lines )
         this->addBackground(background);
     }
-
-    /*{   //Grid
-        Mesh *plane = new Mesh();
-        plane->createQuad(0,0,1000,1000);
-        plane->uvs[0] = Vector2(10,10);
-        plane->uvs[1] = Vector2(10,-10);
-        plane->uvs[2] = Vector2(-10,-10);
-        plane->uvs[3] = Vector2(-10,10);
-        plane->uvs[4] = Vector2(10,10);
-        plane->uvs[5] = Vector2(-10,-10);
-        Mesh::s_Meshes["_grid"] = plane;
-        EntityMesh* grid = new EntityMesh();
-        grid->setMesh("_grid");
-        t.seek("*grid");
-        t.seek("*texture");
-        std::string texture = t.getword();
-        if(texture != "no") {
-            grid->setTexture(texture);
-        }
-        this->addGrid(grid);
-    }*/
 
     t.seek("*entities");
     int num_entities = t.getint();
 
-    for(int i = 0 ; i < num_entities ; i++) {
+    for (int i = 0; i < num_entities; i++) {
         std::string name = t.getword();
         t.seek("*entity");
         std::string entityClass = t.getword();
         Entity *e;
         std::cout << entityClass << "\n";
 
-        if (entityClass == "collider" || entityClass == "fighter") {
+        if (entityClass == "collider" || entityClass == "fighter" || entityClass == "station") {
             EntityCollider *ec;
             std::string colliderType = t.getword();
             bool dynamic;
@@ -146,31 +125,34 @@ void Scene::loadScene(const char* filename) {
                 std::cout << "Error reading collider type in " << name << std::endl;
                 exit(0);
             }
-            if(entityClass == "fighter")
+            if (entityClass == "fighter")
                 ec = new EntityFighter(dynamic);
+            else if (entityClass == "station")
+                ec = new EntityStation(dynamic);
             else
                 ec = new EntityCollider(dynamic);
             t.seek("*mesh");
             ec->setMesh(t.getword());
             t.seek("*texture");
             std::string texture = t.getword();
-            if(texture != "no")   //Si tiene textura
+            if (texture != "no")   //Si tiene textura
                 ec->setTexture(texture);
             e = ec;
-        }else if(entityClass == "spawner"){
-            EntitySpawner* es = new EntitySpawner();
+        } else if (entityClass == "spawner") {
+            EntitySpawner *es = new EntitySpawner();
             t.seek("*spawns");
             std::string spawnName = t.getword();
-            EntityCollider* spawnEntity = (EntityCollider*)templates[spawnName];
+            EntityCollider *spawnEntity = (EntityCollider *) templates[spawnName];
             es->entitySpawned = spawnEntity->uid;
             t.seek("*spawntime");
             es->spawnTime = t.getfloat();
             t.seek("*stats");
             Stats stats;
-            stats.movable = (strcmp(t.getword(),"true") == 0);
-            stats.has_hp = (strcmp(t.getword(),"true") == 0);
-            stats.has_ttl = (strcmp(t.getword(),"true") == 0);
-            stats.selectable = (strcmp(t.getword(),"true") == 0);
+            stats.movable = (strcmp(t.getword(), "true") == 0);
+            stats.has_hp = (strcmp(t.getword(), "true") == 0);
+            stats.has_ttl = (strcmp(t.getword(), "true") == 0);
+            stats.selectable = (strcmp(t.getword(), "true") == 0);
+            bool winning = (strcmp(t.getword(), "true") == 0);
             stats.maxhp = t.getint();
             stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
@@ -178,9 +160,8 @@ void Scene::loadScene(const char* filename) {
             stats.team = t.getword();
             es->statsSpawned = stats;
             e = es;
-        }
-        else{
-            std::cout<<"Error reading entity class type for "<<name<<std::endl;
+        } else {
+            std::cout << "Error reading entity class type for " << name << std::endl;
             exit(0);
         }
 
@@ -192,25 +173,30 @@ void Scene::loadScene(const char* filename) {
     this->name = t.getword();
     num_entities = t.getint();
 
-    for(int i = 0 ; i < num_entities ; i++){
+    for (int i = 0; i < num_entities; i++) {
         t.seek("*entity");
         std::string entity_name = t.getword();
         auto *e = templates[entity_name];
-        if(!e){
-            std::cout<<"Entity in file not found: "<<entity_name<<std::endl;
+        if (!e) {
+            std::cout << "Entity in file not found: " << entity_name << std::endl;
             continue;
         }
 
-        auto* clone = e->clone();
+        auto *clone = e->clone();
         t.seek("*position");
-        clone->model.setTranslation(t.getint(),t.getint(),t.getint());
+        int x, y, z;
+        x = t.getint();
+        y = t.getint();
+        z = t.getint();
+        clone->model.setTranslation(x, y, z);
 
         t.seek("*stats");
         Stats stats;
-        stats.movable = (strcmp(t.getword(),"true") == 0);
-        stats.has_hp = (strcmp(t.getword(),"true") == 0);
-        stats.has_ttl = (strcmp(t.getword(),"true") == 0);
-        stats.selectable = (strcmp(t.getword(),"true") == 0);
+        stats.movable = (strcmp(t.getword(), "true") == 0);
+        stats.has_hp = (strcmp(t.getword(), "true") == 0);
+        stats.has_ttl = (strcmp(t.getword(), "true") == 0);
+        stats.selectable = (strcmp(t.getword(), "true") == 0);
+        bool winning = (strcmp(t.getword(), "true") == 0);
         stats.maxhp = t.getint();
         stats.hp = stats.maxhp;
         stats.ttl = t.getfloat();
@@ -219,21 +205,34 @@ void Scene::loadScene(const char* filename) {
         clone->stats = stats;
         this->addToRoot(clone);
 
-        if(EntityCollider* ec = dynamic_cast<EntityCollider*>(clone)){
+        if(stats.team == "t1"){
+            Human* human = Game::instance->human;
+            human->addControllableEntity(clone->uid);
+            if(winning)
+                human->maintainAliveEntities.push_back(clone->uid);
+        }else if(stats.team == "t2"){
+            Enemy* enemy = Game::instance->enemy;
+            enemy->addControllableEntity(clone->uid);
+            if(winning)
+                enemy->maintainAliveEntities.push_back(clone->uid);
+        }
+
+        if (EntityCollider *ec = dynamic_cast<EntityCollider *>(clone)) {
             EntityCollider::registerCollider(ec);
         }
 
         //HACK
         //TODO remove this
-        if(entity_name == "fighter"){
+        if (entity_name == "fighter") {
             Game::instance->enemy->aiController->setEntityFollow(clone->uid);
 
         }
-        if(entity_name == "hunter"){
+        if (entity_name == "hunter") {
         }
         //FIN_HACK
-        std::cout<<"Entity loaded: "<<entity_name<<"\n";
-        std::cout<<"\t"<<clone->uid<<": "<<clone->getPosition().x<<" "<<clone->getPosition().y<<" "<<clone->getPosition().z<<"\n";
+        std::cout << "Entity loaded: " << entity_name << "\n";
+        std::cout << "\t" << clone->uid << ": " << clone->getPosition().x << " " << clone->getPosition().y << " "
+                  << clone->getPosition().z << "\n";
     }
 }
 
@@ -245,4 +244,8 @@ void Scene::update(float elapsed_time) {
 
     BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions(elapsed_time);
+}
+
+void Scene::updateGUI() {
+    this->root->updateGUI();
 }

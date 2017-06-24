@@ -14,16 +14,19 @@
 #include "GUI.h"
 
 typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
+    //Level.txt values
     bool movable=false;         // Puede alterar su movimiento?
     bool has_hp=false;          // Puede destruirse a causa de hp <= 0
     bool has_ttl=false;         // Puede destruirse a cause de ttl <= 0
     bool selectable=false;      // Se puede seleccionar?
-    bool selected=false;
-    int hp=0;                   // Life remain
     int maxhp=0;                // Max life
     float ttl=0;                // Time remain
     float range=1000;           // Range
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
+
+    //Dynamic values
+    int hp=0;                   // Life remain
+    bool selected=false;
     int vel=0;                  // Velocity intensity
     Vector3 targetPos;          // Target position of the entity
     Vector3 gravity;            // 3D force applied to the movement of the entity
@@ -109,7 +112,7 @@ public:
     //methods overwriten by derived classes
     virtual EntityMesh* clone();
     virtual void render(Camera* camera);
-    virtual void updateGUI();
+    void unitGUI();
 };
 
 
@@ -148,7 +151,16 @@ public:
     void shoot();
     EntityFighter* clone();
     void update(float elapsed_time);
-    virtual void updateGUI();
+    void updateGUI();
+};
+
+class EntityStation : public EntityCollider{
+public:
+    EntityStation(bool dynamic = false);
+    virtual ~EntityStation();
+    virtual void update(float elapsed_time);
+    virtual EntityStation* clone();
+    void updateGUI();
 };
 
 class EntitySpawner : public Entity{ //ATENCION NO PONER PUNTEROS EN ESTA CLASE
@@ -164,7 +176,6 @@ public:
     void spawnEntity();
     //Inherit from entity
     Entity* clone();
-    void render(Camera* camera);
     void update(float elapsed_time);
 
 };

@@ -14,16 +14,6 @@ void Player::addControllableEntity(UID e_uid) {
     controllableEntities.push_back(e_uid);
 }
 
-void Player::updateControllableEntities() {
-    //Controllable of a player are selectable entities of the same team
-    controllableEntities.clear();
-    for(auto &entry : Entity::s_entities){
-        if(entry.second->stats.team.compare(team) == 0){
-            controllableEntities.push_back(entry.second->uid);
-        }
-    }
-}
-
 std::vector<Entity*> Player::getControllableEntities(){
     std::vector<Entity*> entities;
     std::vector< std::vector<UID>::iterator > removeEntities;
@@ -46,6 +36,7 @@ std::vector<Entity*> Player::getControllableEntities(){
 Human::Human() : Player(HUMAN_TEAM) {
     cameraController = new CameraController();
     entityController = new FighterController();
+    updateCenter = true;
 }
 
 Human::~Human() {
@@ -53,45 +44,21 @@ Human::~Human() {
 }
 
 void Human::update(double seconds_elapsed) {
-    updateControllableEntities();
-    cameraController->update(seconds_elapsed,12);//TODO Quit entity from camera controller
+    cameraController->update(seconds_elapsed,12); //TODO Quit entity from camera controller
 
-    //Entity position and existence can change in every frame, update controlling and center here
+    std::vector<Entity*> controlling = getControllingEntities();
     Vector3 center;
-    std::vector<Entity*> entities;
-    std::vector< std::vector<UID>::iterator > removeEntities;
-    for(std::vector<UID>::iterator it = controllingEntities.begin(); it != controllingEntities.end(); ++it) {
-        Entity* entity =Entity::getEntity((*it));
-        if (entity != NULL){
-            if(EntityMesh* em = dynamic_cast<EntityMesh*>(entity)) {    // Ignore not EntityMesh
-                entities.push_back(entity);
-                center += entity->getPosition();
-            }
-        }else{
-            removeEntities.push_back(it);
-        }
+    for(Entity* e : controlling){
+        center += e->getPosition();
     }
-    for(std::vector<UID>::iterator it : removeEntities)
-        controllingEntities.erase(it);
-    center /= entities.size();
-    centerControlling = center;
 
-    radiusControlling = 0;
-    Entity *farthest = NULL;
-    for (Entity *e: entities) {
-        float dist = e->getPosition().distance(centerControlling);
-        if (dist >= radiusControlling) {
-            radiusControlling = dist;
-            farthest = e;
-        }
+    if(updateCenter){
+        center /= controlling.size();
+        centerControlling = center;
+        if(controlling.size())
+            Game::instance->camera->center = centerControlling;
+        GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
     }
-    if(farthest != NULL)
-        radiusControlling += Mesh::Load(((EntityMesh *) farthest)->mesh)->info.radius;
-
-    //MOVE CAMERA TO ENTITIES SELECTED CENTER
-    if(controllingEntities.size())
-        Game::instance->camera->center = centerControlling;
-    GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
 }
 
 void Human::render(Camera *camera) {
@@ -109,6 +76,29 @@ void Human::centerCameraOnControlling(){
 
 void Human::selectEntities(std::vector<UID>& entities) {
     controllingEntities = entities;
+    std::vector<Entity *> controlEntities = getControllingEntities();
+
+    if(controlEntities.size()) {
+        Vector3 center;
+        for (Entity *e: controlEntities) {
+            center += e->getPosition();
+        }
+        center /= controlEntities.size();
+        centerControlling = center;
+
+        Entity *farthest = NULL;
+        radiusControlling = 0;
+        for (Entity *e: controlEntities) {
+            float dist = e->getPosition().distance(centerControlling);
+            if (dist >= radiusControlling) {
+                radiusControlling = dist;
+                farthest = e;
+            }
+        }
+
+        if(farthest != NULL)
+            radiusControlling += Mesh::Load(((EntityMesh *) farthest)->mesh)->info.radius;
+    }
 }
 
 void Human::organizeSquadCircle(Vector3 position){
@@ -247,7 +237,6 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(double seconds_elapsed) {
-    updateControllableEntities();
     for(Entity* e: getControllableEntities()){
         aiController->update(seconds_elapsed,e);
     }

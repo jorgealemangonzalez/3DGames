@@ -213,7 +213,7 @@ LSHIFT  Mantener presionado para girar al rededor de la nave seleccionada
 ---     Pintar el plano para mover todas las unidades seleccionadas -> ahora automático
 click D Mover a una posicion en el plano , arrastrar arriba o abajo para moverlas en 3D (in code is I when TAB is toggled!)
 click I Seleccionar unidades
-SPACE   Activar/desactivar pausa (default false)
+SPACE   Activar/desactivar pausa (default false): durante pausa GUI funciona correctamente
 (TODO) boton para seleccionar todas las tropas posibles
 
 ~ DEBUG ~
