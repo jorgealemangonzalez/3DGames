@@ -122,6 +122,7 @@ void Game::update(double seconds_elapsed) {
                 gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
             }else if(mouseRight){
                 gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,0.5), true);
+                gui->addCenteredCircles(human->getPositionSelectedMove(), human->getRadiusControlling());
             }
         }
     }

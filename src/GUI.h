@@ -28,6 +28,7 @@ public:
     void addPoint(Vector3 pos1, Vector4 color = Vector4(1,1,1,1), bool projected=false, bool debug = false);
     void addLine(Vector3 pos1, Vector3 pos2, Vector4 color = Vector4(1,1,1,1), bool projected=false, bool debug = false);
     void addPlane(Vector2 pos1, Vector2 pos2, Vector4 color = Vector4(1,1,1,0.3));
+    void addCenteredCircles(Vector3 center, float radius, Vector4 color = Vector4(0.6, 0, 1, 1));
     void showHideGrid();
     void setGrid(bool show = false, Vector3 center = Vector3(0,0,0));
 };

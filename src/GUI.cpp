@@ -69,8 +69,9 @@ void GUI::render() {
     }
     if(guiPointsMesh->vertices.size())
         guiPointsMesh->render(GL_POINTS);
-    if(guiLinesMesh->vertices.size())
+    if(guiLinesMesh->vertices.size()) {
         guiLinesMesh->render(GL_LINES);
+    }
     if(guiPlanesMesh->vertices.size()){
         glDisable(GL_CULL_FACE);
         guiPlanesMesh->render(GL_TRIANGLES);
@@ -164,6 +165,37 @@ void GUI::addPlane(Vector2 pos1, Vector2 pos2, Vector4 color) { //No debug, alwa
     guiPlanesMesh->colors.push_back(color);
     guiPlanesMesh->colors.push_back(color);
     guiPlanesMesh->colors.push_back(color);
+}
+
+void GUI::addCenteredCircles(Vector3 center, float radius, Vector4 color){
+
+    Vector3 point;
+
+    Game* game = Game::instance;
+    Camera* camera = game->camera;
+    Matrix44 m;
+    m.setRotation(PI/2.0,Vector3(1,0,0));
+    for(float rad = 0.1; rad < radius; rad+=radius/5) {
+        float samples = int(2.0*PI*radius);//Depende de la longitud de la circuferencia
+
+        float delta_angle = 2.0*PI/samples;
+        float total_angle = delta_angle;
+        for (int i = 0; i < samples; ++i) {
+            point.x = cos(total_angle) * rad;
+            point.y = sin(total_angle) * rad;
+            point.z = 0;
+            total_angle += delta_angle;
+
+            point = camera->project(center + m.rotateVector(point), game->window_width, game->window_height);
+            guiLinesMesh->vertices.push_back(point);
+            guiLinesMesh->colors.push_back(color);
+        }
+    }
+
+    if(guiLinesMesh->vertices.size() % 2 != 0)
+        guiLinesMesh->vertices.pop_back(), guiLinesMesh->colors.pop_back();
+    std::cout<<"SIZE:: "<<guiLinesMesh->vertices.size()<<"\n";
+
 }
 
 void GUI::setGrid(bool show, Vector3 center) {

@@ -456,7 +456,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             gravDir.normalize();
             if(distance < total_radius) {
                 entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
-                std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
+                //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
         }
@@ -477,7 +477,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             gravDir.normalize();
             if(distance < total_radius) {
                 entitySource->stats.gravity += gravDir * 100.0*(distance/((total_radius == 0 ? distance : total_radius)));
-                std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
+                //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
         }

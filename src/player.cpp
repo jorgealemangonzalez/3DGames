@@ -153,7 +153,7 @@ void Human::organizeSquadLine(Vector3 position){
     }
 }
 
-void Human::moveSelectedInPlane(){
+Vector3 Human::getPositionSelectedMove(){
     Vector3 move_position; //LO QUE QUEREMOS CALCULAR
     Game* g = Game::instance;
     Camera* camera = g->camera;
@@ -161,14 +161,14 @@ void Human::moveSelectedInPlane(){
 
     Vector3 initCameraToGoal= camera->eye;
     Vector3 cameraToGoal= camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y,0)
-                                         ,g->window_width, g->window_height)
-                                            - camera->eye;
+            ,g->window_width, g->window_height)
+                          - camera->eye;
     Vector3 initStartInPlaneToGoal;//Interseccion del rayo con la grid
     Vector3 auxDir = camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),
-                                                        g->window_width,g->window_height) - camera->eye;
+                                       g->window_width,g->window_height) - camera->eye;
     gui->grid->testRayCollision(camera->eye,auxDir,1000000000.0,initStartInPlaneToGoal);
     Vector3 startInPlaneToGoal = camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y,0),g->window_width,g->window_height)
-    -camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),g->window_width,g->window_height);
+                                 -camera->unproject(Vector3(g->mouse_when_press.x,g->mouse_when_press.y,0),g->window_width,g->window_height);
 
     if(startInPlaneToGoal == Vector3(0,0,0))
         move_position = initStartInPlaneToGoal;
@@ -186,8 +186,12 @@ void Human::moveSelectedInPlane(){
 
         move_position = PG*modulo + P;
     }
+    return move_position;
+}
 
-    organizeSquadCircle(move_position);
+void Human::moveSelectedInPlane(){
+
+    organizeSquadCircle(getPositionSelectedMove());
 }
 
 std::vector<Entity*> Human::getControllingEntities(){

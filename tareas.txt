@@ -23,7 +23,7 @@ Controles usuario interfaz:
 
 (DONE) Movimiento en 3a dimension (¿Como lo hacemos?, yo digo click derecho y arrastrar hacia arriba o abajo)
 
-(TODO) Poner circulo paralelo al plano de movimiento para marcar donde se van a mover en 3D la unidades
+(DONE) Poner circulo encima del plano de movimiento para marcar donde se van a mover en 3D la unidades
 
 (DONE) Scroll acercar y alejar
 
@@ -45,8 +45,8 @@ Controles usuario interfaz:
 
 (PROGRESS) Si tienes seleccionada una entidad que cuando gires la camara te gire con este siguiendo en el centro
 
-(TODO) (SAME SOL_)Que las tropas no se choquen contra los asteroides ( AI ) Fuerza gravitacional de los que estan cerca
-(TODO) (SAME SOL^)Movimiento de varias unidades que no se choquen las unas con las otras (Preguntar a javi como era lo de los movimientos conjuntos)
+(DONE) (SAME SOL_)Que las tropas no se choquen contra los asteroides ( AI ) Fuerza gravitacional de los que estan cerca
+(DONE) (SAME SOL^)Movimiento de varias unidades que no se choquen las unas con las otras (Preguntar a javi como era lo de los movimientos conjuntos)
 
 (TODO) Quit main music and create effects
 
@@ -54,7 +54,7 @@ Controles usuario interfaz:
 
 (TODO) Que se vea la traza de la entity mientras se mueve (si o no ?)
 
-(TODO) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
+(DONE) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
 --------------------------
 
 -> CONTROL

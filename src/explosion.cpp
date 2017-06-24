@@ -18,7 +18,6 @@ Explosion::~Explosion() {
 }
 
 void Explosion::generateExplosion(Vector3 exploding_point) {
-    std::cout<<"ADD EXPLOSION\n";
     Explosion* e = new Explosion();
     e->exploding_point = exploding_point;
     Explosion::explosions.push_back(e);

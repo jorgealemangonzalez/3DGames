@@ -104,13 +104,10 @@ void BulletManager::render() {
         m.render(GL_LINES);
     }
     long after = SDL_GetTicks();
-    //std::cout<<"Render time bullets: "<<after-before<<"\n";
 }
 
 void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity,
-                                 float ttl, float power, UID author, const std::string &type) {
-
-    std::cout<<"Create bullet on position: "<<position.toString()<<"\n";
+                                 float ttl, float power, UID author, const std::string &type) {HDB
 
     if(last_pos_pool >= MAX_BULLETS){
         unsigned int mini = -1;
