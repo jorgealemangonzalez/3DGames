@@ -60,8 +60,6 @@ public:
     Enemy();
     ~Enemy();
 
-    AIController* aiController;
-
     void update(double seconds_elapsed);
 };
 

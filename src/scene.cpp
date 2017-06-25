@@ -221,15 +221,6 @@ void Scene::loadScene(const char* filename) {
             EntityCollider::registerCollider(ec);
         }
 
-        //HACK
-        //TODO remove this
-        if (entity_name == "fighter") {
-            Game::instance->enemy->aiController->setEntityFollow(clone->uid);
-
-        }
-        if (entity_name == "hunter") {
-        }
-        //FIN_HACK
         std::cout << "Entity loaded: " << entity_name << "\n";
         std::cout << "\t" << clone->uid << ": " << clone->getPosition().x << " " << clone->getPosition().y << " "
                   << clone->getPosition().z << "\n";

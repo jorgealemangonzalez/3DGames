@@ -214,7 +214,6 @@ const Vector3 &Human::getCenterControlling() const {
 //========================================
 
 Enemy::Enemy() : Player(ENEMY_TEAM) {
-    aiController = new AIController();
 }
 
 Enemy::~Enemy() {
@@ -222,7 +221,10 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(double seconds_elapsed) {
-    for(Entity* e: getControllableEntities()){
-        aiController->update(seconds_elapsed,e);
+    for(Entity* driving: getControllableEntities()){
+        for(Entity* ec: Game::instance->human->getControllableEntities()){
+            driving->stats.followEntity = ec->uid;
+            break;
+        }
     }
 }

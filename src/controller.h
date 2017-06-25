@@ -24,18 +24,5 @@ public:
     void notifyEntity(UID e_uid);
     void update( double seconds_elapsed, UID e_uid);
 };
-
-class AIController{
-    UID entity_follow;
-public:
-
-    double min_dist; //Minimum distance to entity follow
-
-    AIController();
-    ~AIController();
-
-    void update( double seconds_elapsed, Entity* driving);
-    void setEntityFollow(UID entity_follow);
-};
 #endif //TJE_FRAMEWORK_2017_CONTROLLER_H
 

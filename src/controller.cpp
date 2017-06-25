@@ -127,27 +127,3 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
         }
     }
 }
-
-//================================================
-
-//================================================
-
-AIController::AIController() {
-    min_dist = MIN_DIST_AI;
-}
-
-AIController::~AIController() {
-
-}
-
-void AIController::update(double seconds_elapsed, Entity* driving) {
-    for(Entity* e: Game::instance->human->getControllableEntities()){
-        driving->stats.followEntity = e->uid;
-        break;
-    }
-}
-
-void AIController::setEntityFollow(UID entity_follow) {
-    this->entity_follow = entity_follow;
-
-}
