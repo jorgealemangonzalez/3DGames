@@ -255,3 +255,17 @@ void Game::setWindowSize(int width, int height) {
     GUI::getGUI()->camera2d->setOrthographic(0, window_width, 0, window_height, 0, 1);
 }
 
+Player* Game::getTeamPlayer(std::string team){
+    if(team == HUMAN_TEAM)
+        return this->human;
+    else
+        return this->enemy;
+}
+
+Player* Game::getEnemyTeamPlayer(std::string team){
+    if(team != HUMAN_TEAM)
+        return this->human;
+    else
+        return this->enemy;
+}
+

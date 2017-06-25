@@ -161,11 +161,11 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     to_target.normalize();
     float dotres = looking.dot(to_target);
 
-    if(dotres > 0.999)   //Parallel, same direction
+    if(dotres > 0.999999)   //Parallel, same direction
         return;
 
     Vector3 perpendicular;
-    if(dotres < -0.999){ //Parallel, oposite directions
+    if(dotres < -0.99999){ //Parallel, oposite directions
         perpendicular = to_target.cross(Vector3(looking.y, looking.z, looking.y)).normalize();
     }else{
         perpendicular = to_target.cross(looking).normalize();
@@ -176,7 +176,7 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     Matrix44 inv = getGlobalModel();
     inv.inverse();
     Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
-    float angleRotate = (angle > 0.03 ? angle * seconds_elapsed : angle);    //Angulo pequeño rota directamente
+    float angleRotate = (angle > 0.00001 ? angle * seconds_elapsed*3 : angle);    //Angulo pequeño rota directamente
     if(angleRotate > 0)
         model.rotateLocal(angleRotate,perpendicularRotate);
 
@@ -211,7 +211,7 @@ void Entity::render(Camera* camera){
     }
 }
 
-void Entity::updateStats(float elapsed_time) {
+void Entity::updateStatsAndEntityActions(float elapsed_time) {
     if(Game::instance->doLog){
         Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
         Game::instance->logger << sstats(this->stats);
@@ -219,14 +219,19 @@ void Entity::updateStats(float elapsed_time) {
     }
 
     if(stats.followEntity){
-        stats.targetPos = Entity::getEntity(stats.followEntity)->getPosition();
-        stats.vel = 100;
+        Entity* follow = Entity::getEntity(stats.followEntity);
+        if(follow != NULL && (follow->getPosition() - this->getPosition()).length() > 200 ) {
+            stats.targetPos = follow->getPosition();
+            stats.vel = 100;    //TODO poner en el fichero descriptor o de alguna manera que dependa del tipo de entity
+        }else{
+            stats.followEntity = 0;
+        }
     }
 
     if(stats.movable){
         //std::cout<<"UDATE ENTITY\n";
         // use elapsed_time, stats.vel and stats.front to move the entity
-        if(stats.vel && stats.targetPos){
+        if(stats.vel && stats.targetPos) {
             //std::cout<<"UDATE ENTITY--------\n";
 
             Vector3 to_target = stats.targetPos - getPosition();
@@ -240,29 +245,29 @@ void Entity::updateStats(float elapsed_time) {
             Matrix44 inv = getGlobalModel();
             inv.inverse();
             Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
-            float angleRotate = (angle > 0.03 ? angle * elapsed_time*3 : angle);    //Angulo pequeño rota directamente
-            if(angleRotate > 0) {
+            float angleRotate = (angle > 0.03 ? angle * elapsed_time * 3 : angle);    //Angulo pequeño rota directamente
+            if (angleRotate > 0) {
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
 
             float distance = (stats.targetPos - getPosition()).length();
 
-            if(distance < 10) { //TODO Cuidado con esto , si se empujan los unos a los otros y pasa cerca de su posición objetivo ya no intentará volver a ella
+            float velocity = stats.vel;
+            if (distance < 100) {         //parking velocity :')
+                velocity = velocity * distance / 100;
+            }
+            if (debugMode)
+                std::cout << "GRAVITY:: " << stats.gravity << std::endl;
+            stats.gravity *= elapsed_time;
+            Vector3 vel = model.rotateVector(Vector3(0, 0, -velocity * elapsed_time));
+            Vector3 added = vel + stats.gravity;
+            added.normalize();
+            added *= (velocity * elapsed_time);
+            model.traslate(added.x, added.y, added.z);
+
+            if (distance < 10 || stats.followEntity) {
                 stats.vel = Vector3();
                 stats.targetPos = Vector3();
-            }else{
-                float velocity = stats.vel;
-                if(distance < 100){         //parking velocity :')
-                    velocity = velocity* distance/100;
-                }
-                if(debugMode)
-                    std::cout<<"GRAVITY:: "<<stats.gravity<<std::endl;
-                stats.gravity *= elapsed_time;
-                Vector3 vel = model.rotateVector(Vector3(0,0,-velocity * elapsed_time));
-                Vector3 added = vel + stats.gravity;
-                added.normalize();
-                added*=(velocity*elapsed_time);
-                model.traslate(added.x, added.y, added.z);
             }
         }
     }
@@ -277,7 +282,7 @@ void Entity::updateStats(float elapsed_time) {
             destroy();
     }
 
-    if(stats.gravity && !(stats.vel && stats.targetPos)){
+    if(stats.gravity && !(stats.vel && stats.targetPos)){   //If we have already update the movent depending on gravity dont do it again
         stats.gravity *= elapsed_time;
         model.traslate(stats.gravity.x,stats.gravity.y,stats.gravity.z);
         stats.gravity = Vector3();
@@ -285,7 +290,7 @@ void Entity::updateStats(float elapsed_time) {
 }
 
 void Entity::update(float elapsed_time){
-    updateStats(elapsed_time);
+    updateStatsAndEntityActions(elapsed_time);
 
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);
@@ -332,7 +337,7 @@ Entity* EntitySpawner::clone() {
 }
 
 void EntitySpawner::update(float elapsed_time) {
-    updateStats(elapsed_time);
+    updateStatsAndEntityActions(elapsed_time);
     lastSpawn += elapsed_time;
     if(spawnTime < lastSpawn){
         lastSpawn = 0.0;
@@ -598,13 +603,19 @@ void EntityFighter::shoot() {
 }
 
 void EntityFighter::update(float elapsed_time){
-    updateStats(elapsed_time);
+    updateStatsAndEntityActions(elapsed_time);
     lastFireSec+=elapsed_time;
     Entity* enemy = NULL;
-
-    if(!stats.targetPos){
+    if(!stats.targetPos || stats.followEntity){
         double distance = INFINITY;
-        for(Entity* focus : Game::instance->enemy->getControllableEntities()){
+        if(stats.followEntity){
+            Entity* e = Entity::getEntity(stats.followEntity);
+            if(e->stats.team != this->stats.team)
+                enemy = e;
+        }
+
+        if(enemy == NULL)
+        for(Entity* focus : Game::instance->getEnemyTeamPlayer(this->stats.team)->getControllableEntities()){
             double d = (focus->getPosition() - getPosition()).length();
             if(d < distance){
                 distance = d;
@@ -613,7 +624,8 @@ void EntityFighter::update(float elapsed_time){
         }
 
         if(enemy != NULL){
-            lookPosition(elapsed_time,enemy->getPosition());
+            if(!stats.targetPos)
+                lookPosition(elapsed_time,enemy->getPosition());
             if( (enemy->getPosition() - getPosition()).length() < stats.range ){
                 if(lastFireSec > 1.0/fireRate) {
                     shoot();
@@ -655,7 +667,7 @@ EntityStation* EntityStation::clone() {
 }
 
 void EntityStation::update(float elapsed_time) {
-    updateStats(elapsed_time);
+    updateStatsAndEntityActions(elapsed_time);
     unitGUI();
 
     for(int i=0; i<children.size(); i++){

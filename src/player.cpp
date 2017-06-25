@@ -221,6 +221,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(double seconds_elapsed) {
+    std::vector<Entity*> controllable = getControllableEntities();
     for(Entity* driving: getControllableEntities()){
         for(Entity* ec: Game::instance->human->getControllableEntities()){
             driving->stats.followEntity = ec->uid;

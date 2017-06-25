@@ -19,6 +19,8 @@ public:
 
 	Human* human;
 	Enemy* enemy;
+	Player* getTeamPlayer(std::string team);
+	Player* getEnemyTeamPlayer(std::string team);
 
 	bool doLog = false;
 	std::fstream logger;

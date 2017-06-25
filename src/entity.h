@@ -78,7 +78,7 @@ public:
     virtual void render(Camera* camera);
     virtual void update(float elapsed_time);
     virtual void updateGUI();
-    void updateStats(float elapsed_time);
+    void updateStatsAndEntityActions(float elapsed_time);
     //debug
     virtual void print(int depth);
 };
