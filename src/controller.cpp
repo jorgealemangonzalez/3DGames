@@ -130,100 +130,6 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
 
 //================================================
 
-EntityController::EntityController() {}
-EntityController::~EntityController() {}
-
-void EntityController::update(double seconds_elapsed, UID e_uid) {
-    Entity* entity = Entity::getEntity(e_uid);
-    Game* game = Game::instance;
-    if(entity == NULL){
-        std::cout << "EntityController sin entidad asignada!\n";
-        return;
-    }
-
-    double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
-    Vector3 dPos(0,0,0);
-    if (game->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-    if (game->keystate[SDL_SCANCODE_W]) dPos = dPos + (Vector3(0.0f, 0.0f, -1.0f) * speed);
-    if (game->keystate[SDL_SCANCODE_S]) dPos = dPos + (Vector3(0.0f, 0.0f, 1.0f) * speed);
-    if (game->keystate[SDL_SCANCODE_A]) dPos = dPos + (Vector3(-1.0f, 0.0f, 0.0f) * speed);
-    if (game->keystate[SDL_SCANCODE_D]) dPos = dPos + (Vector3(1.0f, 0.0f, 0.0f) * speed);
-    if (game->keystate[SDL_SCANCODE_E]) dPos = dPos + (Vector3(0.0f, 1.0f, 0.0f) * speed);
-    if (game->keystate[SDL_SCANCODE_Q]) dPos = dPos + (Vector3(0.0f, -1.0f, 0.0f) * speed);
-
-    Vector3 prev_pos = entity->getPosition();  //TODO change with previus pos (CUIDADO , SI ESTA PARADA LA RESTA DARIA 0)
-    entity->model.traslate(dPos.x, dPos.y, dPos.z);
-    /*if (game->keystate[SDL_SCANCODE_SPACE]){
-        Vector3 actual_pos = entity->getPosition();
-        Vector3 dir =  actual_pos - prev_pos;
-        dir.normalize();
-        BulletManager::getManager()->createBullet(actual_pos+dir*10000,actual_pos+dir*13000,dir*100,100.0f,10.0f,entity->uid,"No type yet");
-    }*/
-
-    std::cout << entity->getPosition().toString() << "\n";
-
-}
-
-//================================================
-
-FighterController::FighterController() {
-    acc = 0;
-    vel = 0;
-    angX = 0;
-    angY = 0;
-}
-
-FighterController::~FighterController() {
-
-}
-
-void FighterController::update(double seconds_elapsed, UID e_uid) {
-    Entity* entity = Entity::getEntity(e_uid);
-    Game* game = Game::instance;
-    if(entity == NULL){
-        //std::cout << "FighterController sin entidad asignada!\n";
-        return;
-    }
-    //Controller mas realista
-    //    entity->model.traslate(velocity.x*seconds_elapsed,velocity.y*seconds_elapsed,velocity.z*seconds_elapsed);
-    //    velocity = velocity + entity->model.rotateVector(Vector3(0.0,0.0,speed*seconds_elapsed));
-    //    velocity = velocity * 0.99; //Friccion
-    //
-    float dTime = seconds_elapsed; //the dTime is defined by the seconds_elapsed so it goes constant
-
-    if (game->keystate[SDL_SCANCODE_W]) acc = acc + -1.0f;
-    if (game->keystate[SDL_SCANCODE_S]) acc = acc + +1.0f;
-    if (vel > 0.1) acc += -0.05f;
-    else if (vel < -0.1) acc += +0.05f;
-    else vel = 0.0f;
-
-    acc *= 0.5;
-    vel = vel + acc * dTime * 20;
-    //std::cout << "Vel: " << vel << "\tAcc: " << acc << "\n";
-
-    entity->model.traslateLocal(0, 0, vel * dTime);     //TODO change this translate to some velocity vector
-    if (game->keystate[SDL_SCANCODE_SPACE]){
-        printf("ho");
-        if(EntityFighter* ef = dynamic_cast<EntityFighter*>(entity)){
-            printf("tooto");
-            ef->shoot();
-        }
-    }
-
-    if (game->keystate[SDL_SCANCODE_A]) angX += -1.0f;
-    if (game->keystate[SDL_SCANCODE_D]) angX += +1.0f;
-    if (game->keystate[SDL_SCANCODE_E]) angY += -1.0f;
-    if (game->keystate[SDL_SCANCODE_Q]) angY += +1.0f;
-
-
-
-    angX = angX * dTime * 0.5;
-    angY = angY * dTime * 0.5;
-    //std::cout << "angX: " << angX << "\tangY: " << angY << "\n\n";
-    entity->model.rotateLocal(angX, Vector3(0,1,0));
-    entity->model.rotateLocal(angY, Vector3(1,0,0));
-}
-
 //================================================
 
 AIController::AIController() {
@@ -239,34 +145,9 @@ void AIController::update(double seconds_elapsed, Entity* driving) {
         driving->stats.followEntity = e->uid;
         break;
     }
-/*
-    Entity* follow = Entity::getEntity(entity_follow);
-    if(follow == NULL)
-        return;
-*/
-/*
-    if(follow == NULL){
-        //std::cout<<"Entity that AI follow is NULL\n";
-        return;
-    }
-
-    driving->lookPosition(seconds_elapsed,follow->getPosition());
-
-    Vector3 to_target = follow->getPosition() - driving->getPosition();
-
-    float distance = to_target.length();
-
-    if(distance > min_dist)
-        driving->model.traslateLocal(0, 0, -100 * seconds_elapsed);     //TODO change this translate to some velocity vector
-*/
 }
 
 void AIController::setEntityFollow(UID entity_follow) {
     this->entity_follow = entity_follow;
 
 }
-//================================================
-
-ClickController::ClickController() {}
-ClickController::~ClickController() {}
-void ClickController::update(double seconds_elapsed, UID e_uid) {}

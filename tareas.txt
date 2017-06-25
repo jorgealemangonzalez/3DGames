@@ -59,7 +59,10 @@ Controles usuario interfaz:
 
 (TODO) boton para seleccionar todas las tropas posibles
 
-(TODO) arreglar movimiento raro que le hace mayormente a miquel ( las tropas no van a la punta de la linea sino al circulo )
+(TODO) la posicion a donde moverse no funciona bien si seleccionas desde lejos
+
+(TODO) Que las balas propias no te hagan nada ni salga explosion
+
 
 --------------------------
 

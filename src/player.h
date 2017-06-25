@@ -33,7 +33,6 @@ public:
     Human();
     ~Human();
 
-    EntityController* entityController;
     CameraController* cameraController;
     bool updateCenter;
 
