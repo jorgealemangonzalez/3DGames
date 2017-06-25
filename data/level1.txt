@@ -10,7 +10,7 @@
     *mesh cubemaps/polar_map/sphere.ASE
     *texture cubemaps/polar_map/homewrld_background.tga
 
-*entities 11
+*entities 12
     fighter
         *entity fighter dynamic
         *mesh fighter/x3_fighter.ASE
@@ -37,39 +37,40 @@
         *entity collider static
         *mesh asteroides/asteroide1.ASE
         *texture asteroides/asteroide.tga
-        *munition no
 
     asteroide_med
         *entity collider static
         *mesh asteroides/asteroide2.ASE
         *texture asteroides/asteroide.tga
-        *munition no
 
     asteroide_peq
         *entity collider static
         *mesh asteroides/asteroide3.ASE
         *texture asteroides/asteroide.tga
-        *munition no
 
     asteroides
         *entity collider static
         *mesh asteroides/asteroides.ASE
         *texture asteroides/asteroide.tga
-        *munition no
 
     hunterSpawner
         *entity spawner
         *spawns hunter
-        *spawntime 100.1
-        *stats true true false false false 5000 0 1500 t1
+        *spawntime 10.1
+        *stats true true false false false 500000 0 1500 t2
+
+    fighterSpawner
+        *entity spawner
+        *spawns fighter
+        *spawntime 10.1
+        *stats true true false true false 5000 0 1000 t1
 
     station
         *entity station static
         *mesh station/eve_station.ASE
         *texture station/eve1.tga
-        *munition no
 
-*scene level1 11
+*scene level1 12
     *entity fighter
         *position 0 900 28
         *stats true true false true false 5000 0 1000 t1
@@ -96,7 +97,8 @@
         *stats true true false false false 500000 0 1500 t2
     *entity hunterSpawner
         *position 0 900 538
-        *stats false false false false false 0 0 0 t1
+    *entity fighterSpawner
+        *position 0 900 100
     *entity station
         *position 2000 2000 2000
         *stats false true false false true 10000 0 0 t1

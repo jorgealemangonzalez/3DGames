@@ -42,6 +42,7 @@ public:
     const float &getRadiusControlling() const;
     const Vector3 &getCenterControlling() const;
 
+    void selectAllEntities();
     void selectEntities(std::vector<UID>& entities);
     void centerCameraOnControlling();
     void moveSelectedInPlane();

@@ -46,6 +46,9 @@ void MusicManager::update() {
 
 
 void MusicManager::playPoolSound(sf::Sound* sound, Vector3 position){
+    if(sound_pool[pool_index] != NULL)
+        sound_pool[pool_index]->stop();
+        delete sound_pool[pool_index]; //Delete previus sound
     sound_pool[pool_index] = sound;
     sound->setPosition(position.toMusicVector());
     sound->setMinDistance(5.f);

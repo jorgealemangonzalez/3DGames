@@ -170,6 +170,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             human->selectEntities(uids);
             break;
         }
+        case SDLK_a: {
+            human->selectAllEntities();
+        }
         case SDLK_e:
             human->centerCameraOnControlling();
             break;

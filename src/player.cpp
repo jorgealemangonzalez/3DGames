@@ -72,7 +72,9 @@ void Human::centerCameraOnControlling(){
     camera->eye = dir * (radiusControlling+100) + centerControlling;
     camera->center = centerControlling;
 }
-
+void Human::selectAllEntities(){
+    this->selectEntities(this->controllableEntities);
+}
 void Human::selectEntities(std::vector<UID>& entities) {
     controllingEntities = entities;
     std::vector<Entity *> controlEntities = getControllingEntities();

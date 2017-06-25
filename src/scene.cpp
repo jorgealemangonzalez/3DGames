@@ -189,33 +189,36 @@ void Scene::loadScene(const char* filename) {
         y = t.getint();
         z = t.getint();
         clone->model.setTranslation(x, y, z);
+        if (!dynamic_cast<EntitySpawner *>(clone)) {
+            t.seek("*stats");
+            Stats stats;
+            stats.movable = (strcmp(t.getword(), "true") == 0);
+            stats.has_hp = (strcmp(t.getword(), "true") == 0);
+            stats.has_ttl = (strcmp(t.getword(), "true") == 0);
+            stats.selectable = (strcmp(t.getword(), "true") == 0);
+            bool winning = (strcmp(t.getword(), "true") == 0);
+            stats.maxhp = t.getint();
+            stats.hp = stats.maxhp;
+            stats.ttl = t.getfloat();
+            stats.range = t.getfloat();
+            stats.team = t.getword();
+            clone->stats = stats;
 
-        t.seek("*stats");
-        Stats stats;
-        stats.movable = (strcmp(t.getword(), "true") == 0);
-        stats.has_hp = (strcmp(t.getword(), "true") == 0);
-        stats.has_ttl = (strcmp(t.getword(), "true") == 0);
-        stats.selectable = (strcmp(t.getword(), "true") == 0);
-        bool winning = (strcmp(t.getword(), "true") == 0);
-        stats.maxhp = t.getint();
-        stats.hp = stats.maxhp;
-        stats.ttl = t.getfloat();
-        stats.range = t.getfloat();
-        stats.team = t.getword();
-        clone->stats = stats;
+            if(stats.team == HUMAN_TEAM){
+                Human* human = Game::instance->human;
+                human->addControllableEntity(clone->uid);
+                if(winning)
+                    human->maintainAliveEntities.push_back(clone->uid);
+            }else if(stats.team == ENEMY_TEAM){
+                Enemy* enemy = Game::instance->enemy;
+                enemy->addControllableEntity(clone->uid);
+                if(winning)
+                    enemy->maintainAliveEntities.push_back(clone->uid);
+            }
+        }
         this->addToRoot(clone);
 
-        if(stats.team == "t1"){
-            Human* human = Game::instance->human;
-            human->addControllableEntity(clone->uid);
-            if(winning)
-                human->maintainAliveEntities.push_back(clone->uid);
-        }else if(stats.team == "t2"){
-            Enemy* enemy = Game::instance->enemy;
-            enemy->addControllableEntity(clone->uid);
-            if(winning)
-                enemy->maintainAliveEntities.push_back(clone->uid);
-        }
+
 
         if (EntityCollider *ec = dynamic_cast<EntityCollider *>(clone)) {
             EntityCollider::registerCollider(ec);

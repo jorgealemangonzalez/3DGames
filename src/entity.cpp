@@ -323,9 +323,30 @@ EntitySpawner::~EntitySpawner(){
 void EntitySpawner::spawnEntity() {
     EntityCollider* newCollider = (EntityCollider*)Entity::getEntity(entitySpawned)->clone();
     Vector3 spawnPos = getGlobalModel().getTranslationOnly();
-    newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);
-    this->parent->addChild(newCollider);
-    EntityCollider::registerCollider(newCollider);
+
+    double min_distance = Mesh::Load(newCollider->mesh)->info.radius * 2;
+    bool near_entities = false;
+    for(UID id : EntityCollider::dynamic_colliders){    //No hacen falta los estaticos porque ya se da por supuesto que el spawner esta bien puesto
+        Entity* entity = Entity::getEntity(id);
+        if(entity != NULL) {
+            double d = (entity->getPosition() - spawnPos).length();
+            if (d < min_distance)
+                near_entities = true;
+        }
+    }
+
+    if(near_entities){
+        delete newCollider;
+        return;
+    }else{
+        newCollider->save();    //Add to s_entities
+        newCollider->stats = this->statsSpawned;
+        Game::instance->getTeamPlayer(newCollider->stats.team)->addControllableEntity(newCollider->uid);
+
+        newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);
+        this->parent->addChild(newCollider);
+        EntityCollider::registerCollider(newCollider);
+    }
 }
 
 Entity* EntitySpawner::clone() {
@@ -491,6 +512,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             double total_radius = source_radius + dest_radius;
             Vector3 gravDir = entitySource->getPosition() - entityDest->getPosition();
             double distance = gravDir.length();
+
             gravDir.normalize();
             if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
                 entitySource->stats.gravity += gravDir * 100.0*(((total_radius == 0 ? distance : total_radius))/distance);
