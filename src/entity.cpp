@@ -272,7 +272,7 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
 
             float velocity = stats.vel;
             if (distance < 100) {         //parking velocity :')
-                velocity = velocity * distance / 100;
+                velocity = velocity * distance / stats.maxvel;
             }
             if (debugMode)
                 std::cout << "GRAVITY:: " << stats.gravity << std::endl;
@@ -536,7 +536,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
 
             gravDir.normalize();
             if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
-                entitySource->stats.gravity += gravDir * 100.0*(((total_radius == 0 ? distance : total_radius))/distance);
+                entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
@@ -557,7 +557,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             double distance = gravDir.length();
             gravDir.normalize();
             if(distance < total_radius) {
-                entitySource->stats.gravity += gravDir * 100.0*(((total_radius == 0 ? distance : total_radius))/distance);
+                entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
             }
