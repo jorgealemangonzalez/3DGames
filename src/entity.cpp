@@ -80,6 +80,10 @@ void Entity::destroy_entities_to_destroy() {
 
             if(!p->maintainAliveEntities.size()){
                 g->gameState = GAME_OVER;
+                if(entity->stats.team == HUMAN_TEAM)
+                    g->humanWins = false;
+                else
+                    g->humanWins = true;
             }
 
         }

@@ -32,6 +32,7 @@ public:
 	Player* getEnemyTeamPlayer(std::string team);
 	int gameState;
     bool firstMenu;
+	bool humanWins;		//If true team human wins, else enemy wins
 
 	//window
 	SDL_Window* window;

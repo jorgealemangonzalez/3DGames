@@ -109,35 +109,25 @@ void Game::render(void) {
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    camera->set();
+
+    Scene::getScene()->render(camera);
+    Explosion::renderAll(camera);
+    human->render(camera);
+
+    GUI::getGUI()->render();
+    float y = window_height - mouse_position.y;
+
     if(this->gameState == PLAYING) {
-        //Put the camera matrices on the stack of OpenGL (only for fixed rendering)
-        camera->set();
-        //Draw out world
 
-        Scene::getScene()->render(camera);
-        Explosion::renderAll(camera);
-        human->render(camera);
-
-        //drawGrid(500); //background grid
-        //drawText(10.0, 10.0, "Camera position: " + camera->eye.toString(), Vector3(234, 26, 34));
-
-        GUI::getGUI()->render();
-        glDisable(GL_BLEND);
-
-        //example to render the FPS every 10 frames
-        //drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
     }
     else if(this->gameState == GAME_OVER) {
-        //std::cout<<"GAME_OVER\n";
+        drawText(20, 20, humanWins ? "GAME OVER! HAS GANADO!" : "GAME OVER! HAS PERDIDO...", Vector3(1,1,0), 4);
+        drawText(20, 60, (y > 60 && y < 100) ? ">MENU" : "MENU", Vector3(1,1,0), 4);
+        drawText(20, 100, (y > 100 && y < 140) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+
     }
     else if(this->gameState == MENU) {
-        camera->set();
-        Scene::getScene()->render(camera);
-        Explosion::renderAll(camera);
-        human->render(camera);
-        GUI::getGUI()->render();
-
-        float y = window_height - mouse_position.y;
         if(firstMenu){
             drawText(20, 20, (y > 20 && y < 60) ? ">INICIAR PARTIDA" : "INICIAR PARTIDA", Vector3(1,1,0), 4);
             drawText(20, 60, (y > 60 && y < 100) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
@@ -147,7 +137,7 @@ void Game::render(void) {
             drawText(20, 100, (y > 100 && y < 140) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
         }
     }
-
+    glDisable(GL_BLEND);
     //swap between front buffer and back buffer
     SDL_GL_SwapWindow(this->window);
 }
@@ -271,6 +261,11 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
                 human->updateCenter = true;
             }
         }
+    }
+    else if(this->gameState == GAME_OVER){
+        float y = event.y;
+        if(y > 60 && y < 100) gameState = RESET;
+        if(y > 100 && y < 140) exit(0);
     }
     else if(this->gameState == MENU){
         float y = event.y;
