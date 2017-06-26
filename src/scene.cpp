@@ -177,7 +177,7 @@ void Scene::loadScene(const char* filename) {
             std::cout << "Error reading entity class type for " << name << std::endl;
             exit(0);
         }
-
+        e->stats.isTemplate = true;
         templates[name] = e;
         e->name = name;
     }
@@ -246,9 +246,12 @@ void Scene::loadScene(const char* filename) {
     //GENERATE RANDOM ASTEROIDS
 
     //FIRST:: get full bounding box
-    Vector3 boxMin, boxMax;
+    Vector3 boxMin(2147483647,2147483647,2147483647), boxMax;
     auto entities = Entity::s_entities;
     for(auto it = entities.begin(); it != entities.end(); ++it ){
+        if(it->second->stats.isTemplate)
+            continue;
+
         Vector3 entityPos = it->second->getPosition();
         boxMax.x = MAX(boxMax.x, entityPos.x);
         boxMax.y = MAX(boxMax.y, entityPos.y);
@@ -260,13 +263,27 @@ void Scene::loadScene(const char* filename) {
     }
 
     //SECOND:: generate random asteroids
-    EntityAsteroid asteroid(false);
-    asteroid.setMesh("asteroides/asteroide3.ASE");
-    asteroid.setTexture("asteroides/asteroide.tga");
-    float asteroidRadius = Mesh::Load(asteroid.mesh)->info.radius;
+    EntityAsteroid asteroid_peq(false);
+    EntityAsteroid asteroid_med(false);
+    asteroid_peq.setMesh("asteroides/asteroide3.ASE");
+    asteroid_peq.setTexture("asteroides/asteroide.tga");;
+    asteroid_med.setMesh("asteroides/asteroide2.ASE");
+    asteroid_med.setTexture("asteroides/asteroide.tga");
+    float asteroidRadius_peq = Mesh::Load(asteroid_peq.mesh)->info.radius;
+    float asteroidRadius_med = Mesh::Load(asteroid_med.mesh)->info.radius;
 
 
     for(int try_ = 0 ; try_ < 200 ; ++try_){ //
+        float asteroidRadius;
+        EntityAsteroid* asteroid;
+        if(try_ % 2 == 0){
+            asteroid= &asteroid_peq;
+            asteroidRadius = asteroidRadius_peq;
+        }else{
+            asteroid= &asteroid_med;
+            asteroidRadius = asteroidRadius_med;
+        }
+
         Vector3 rpos;
         rpos.random(boxMin, boxMax);
         std::map<UID,Entity*>::iterator it;
@@ -277,7 +294,7 @@ void Scene::loadScene(const char* filename) {
 
         if(it == entities.end()){
             std::cout<<"ASTEROIDE RANDOM";
-            EntityAsteroid* as = asteroid.clone();
+            EntityAsteroid* as = asteroid->clone();
             as->model.traslate(rpos.x,rpos.y,rpos.z);
             this->addToRoot(as);
         }

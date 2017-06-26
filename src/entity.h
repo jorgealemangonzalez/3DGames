@@ -26,6 +26,8 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     float range=1000;           // Range
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
 
+    bool isTemplate = false;    // Cuando se crean las entidades se utilizan las templates para hacer el clone
+
     //Dynamic values
     int hp=0;                   // Life remain
     bool selected=false;
