@@ -14,7 +14,7 @@ public:
     static sf::SoundBuffer explosionBuffer;
     static sf::SoundBuffer enemyDownBuffer;
 
-    static void delete_pool();
+    static void stop_pool();
     static void init();
     static void update();
     static void playBullet(Vector3 position);

@@ -21,6 +21,8 @@ class Game
 public:
 	static Game* instance;
 
+	void resetGame();
+
 	~Game();
 
 	Human* human;

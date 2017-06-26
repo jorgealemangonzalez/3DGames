@@ -66,6 +66,26 @@ bool Texture::load(const std::string& filename, bool mipmaps)
 	return false;
 }
 
+Texture::~Texture() {
+	std::cout<<"DELETE TEXTURE "+this->filename<<"\n";
+	glDeleteTextures(1, &texture_id);
+}
+
+void Texture::deleteStaticTexturePointers(){
+	std::cout<<s_Textures.size()<<std::endl;
+	for (std::map<std::string, Texture *>::iterator it = s_Textures.begin(); it != s_Textures.end(); ++it) {
+		std::string n = it->first;
+	}
+	std::vector<Texture*> to_destroy;
+	for (std::map<std::string, Texture *>::iterator it = s_Textures.begin(); it != s_Textures.end(); ++it) {
+		to_destroy.push_back(it->second);
+	}
+
+	for(Texture* m : to_destroy){
+		delete m;
+	}
+}
+
 Texture* Texture::Load(const std::string& filename, bool mipmaps) {
 	std::string name = std::string(filename) +"_"+ (mipmaps ? "mip" : "nomip");
 	std::map<std::string,Texture*>::iterator it = s_Textures.find(name);
@@ -127,11 +147,14 @@ Texture::TGAInfo* Texture::loadTGA(const char* filename)
         memcmp(TGAheader, TGAcompare, sizeof(TGAheader)) != 0 ||
         fread(header, 1, sizeof(header), file) != sizeof(header))
     {
-        if (file == NULL)
-            return NULL;
-        else
+        if (file == NULL) {
+			delete file;
+			return NULL;
+
+		}else
         {
             fclose(file);
+			delete file;
             return NULL;
         }
     }

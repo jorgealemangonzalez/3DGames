@@ -135,11 +135,12 @@ void mainLoop()
 
 
 		if(game->gameState == RESET){
+			/*
 			auto window = game->window;
 			delete game;
-			/*game = new Game(window);
+			game = new Game(window);
 			game->init();*/
-			return;
+			game->resetGame();
 		}
 		//check errors in opengl only when working in debug
 		#ifdef _DEBUG

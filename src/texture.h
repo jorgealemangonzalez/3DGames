@@ -28,6 +28,7 @@ public:
 	std::string filename;
 
 	Texture();
+	~Texture();
 	void bind();
 	void unbind();
 	static void UnbindAll();
@@ -37,6 +38,7 @@ public:
 	//Texture manager
 	static Texture* Load(const std::string& filename, bool mipmaps = true);
 	static std::map<std::string, Texture*> s_Textures;
+	static void deleteStaticTexturePointers();
 
 protected:
 	TGAInfo* loadTGA(const char* filename);

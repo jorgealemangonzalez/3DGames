@@ -8,7 +8,11 @@ Player::Player(std::string t) : team(t){
 
 }
 
-Player::~Player() {}
+Player::~Player() {
+    for(Entity* e : getControllableEntities()){
+        delete e;
+    }
+}
 
 void Player::addControllableEntity(UID e_uid) {
     controllableEntities.push_back(e_uid);

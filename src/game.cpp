@@ -14,18 +14,34 @@ RenderToTexture *rt = NULL;
 Game *Game::instance = NULL;
 
 Game::~Game(){
-    Mesh::deleteStaticMeshesPointers();
+
+    /*
+    //Mesh::deleteStaticMeshesPointers();
+    //Texture::deleteStaticTexturePointers();
     delete camera;
     delete human;
     delete enemy;
-    delete Scene::getScene();
+    //delete Scene::getScene();
     delete GUI::getGUI();
     delete BulletManager::getManager();
-    MusicManager::delete_pool();
+    MusicManager::stop_pool();
+     */
+
+
+}
+
+void Game::resetGame(){
+    MusicManager::stop_pool();
+    BulletManager::getManager()->last_pos_pool = 0;
+    delete human;
+    delete enemy;
+    delete camera;
+
+    this->init();
+
 }
 
 Game::Game(SDL_Window *window) {
-    this->gameState = PLAYING;
     this->window = window;
     instance = this;
 
@@ -55,6 +71,7 @@ Game::Game(SDL_Window *window) {
 void Game::init(void) {
     std::cout << " * Path: " << getPath() << std::endl;
 
+    this->gameState = PLAYING;
     //music
     MusicManager::init();
 

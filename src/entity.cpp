@@ -35,6 +35,9 @@ Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
 
 Entity::~Entity() { //destructors are called automatically in the reverse order of construction. (Base classes last).
     //Remove from s_entities
+    if(this->parent)
+        this->parent->removeChild(this);
+
     auto it = s_entities.find(this->uid);
     if(it != s_entities.end()){
         s_entities.erase(it);
@@ -49,6 +52,8 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
         if(e != NULL)
             delete e;
     }
+
+
 }
 
 //Static methods

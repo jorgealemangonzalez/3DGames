@@ -14,7 +14,7 @@ protected:
 
 public:
     Player(std::string t);
-    ~Player();
+    virtual ~Player();
 
     std::vector<UID> maintainAliveEntities;     // List of entities that keep the player without losing
 
@@ -31,7 +31,7 @@ protected:
     Vector3 centerControlling;
 public:
     Human();
-    ~Human();
+    virtual ~Human();
 
     CameraController* cameraController;
     bool updateCenter;
@@ -59,7 +59,7 @@ public:
 class Enemy: public Player{
 public:
     Enemy();
-    ~Enemy();
+    virtual ~Enemy();
 
     void update(double seconds_elapsed);
 };

@@ -32,11 +32,10 @@ void MusicManager::init() {
 
 }
 
-void MusicManager::delete_pool(){
+void MusicManager::stop_pool(){
     for(sf::Sound* s: sound_pool){
         if(s != NULL){
             s->stop();
-            delete s;
         }
 
     }

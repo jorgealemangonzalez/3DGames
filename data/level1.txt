@@ -102,7 +102,7 @@
         *position 12 1050 135
         *stats false false false false false 0 0 0 neutral
     *entity hunter
-        *position 0 900 538
+        *position 0 2000 1538
         *stats true true false false false 500000 0 1500 t2
     *entity hunterSpawner
         *position 0 900 538
