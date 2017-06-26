@@ -63,6 +63,7 @@ Controles usuario interfaz:
 
 (TODO) Que las balas propias no te hagan nada ni salga explosion
 
+(TODO) Cambiar movimiento de camara para que gire al rededor de su centro con shift clickderecho ( y quitar el hsift click izquierdo de mirar a la entidad ( mismo resultado pero mejor ) )
 
 --------------------------
 

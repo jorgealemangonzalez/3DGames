@@ -146,16 +146,6 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             logger << "\nFINISH\n";
             logger.close();
             exit(0); //ESC key, kill the app
-
-        case SDLK_1:
-            human->cameraController->setMode(1);
-            break;
-        case SDLK_2:
-            human->cameraController->setMode(2);
-            break;
-        case SDLK_3:
-            human->cameraController->setMode(3);
-            break;
         //case SDLK_TAB:    automatic: if units selected, show grid
         //    GUI::getGUI()->showHideGrid();
         //    break;
@@ -235,8 +225,7 @@ void Game::onMouseWheel(SDL_MouseWheelEvent event) {
     //event.x: the amount scrolled horizontally, positive to the right and negative to the left
     //event.y: the amount scrolled vertically, positive away from the user and negative toward the user
 
-    if (event.y > 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f);
-    if (event.y < 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100.f);
+    human->cameraController->onMouseWheel(event);
 }
 
 void Game::setWindowSize(int width, int height) {

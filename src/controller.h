@@ -22,7 +22,8 @@ public:
 
     void setMode(int m);
     void notifyEntity(UID e_uid);
-    void update( double seconds_elapsed, UID e_uid);
+    void update( double seconds_elapsed);
+    void onMouseWheel(SDL_MouseWheelEvent event);
 };
 #endif //TJE_FRAMEWORK_2017_CONTROLLER_H
 

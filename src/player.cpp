@@ -43,7 +43,7 @@ Human::~Human() {
 }
 
 void Human::update(double seconds_elapsed) {
-    cameraController->update(seconds_elapsed,12); //TODO Quit entity from camera controller
+    cameraController->update(seconds_elapsed); //TODO Quit entity from camera controller
 
     std::vector<Entity*> controlling = getControllingEntities();
     Vector3 center;

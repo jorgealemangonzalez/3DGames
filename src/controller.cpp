@@ -17,59 +17,21 @@ void CameraController::notifyEntity(UID e_uid) {
         entityPreviusPos = e->getGlobalModel().getTranslationOnly();
 }
 
-void CameraController::update(double seconds_elapsed, UID e_uid) {
-    Entity* entity = Entity::getEntity(e_uid);
+void CameraController::update(double seconds_elapsed) {
     Game* game = Game::instance;
     Camera* camera = game->camera;
 
     switch(mode){
-        case 2:
-        {
-            if(entity == NULL)
-                break;
-
-            Vector3 pos = entity->getPosition();
-            Vector3 dir = (pos - entityPreviusPos).normalize()*0.5f + entity->getDirection()*0.5f;    //TODO Controll velocity
-            camera->lookAt(
-                    pos + Vector3(20*(-dir.x), 20*(-dir.y)+10, 20*(-dir.z)),
-                    pos,
-                    Vector3(0.f, 1.f, 0.f)
-            );
-            entityPreviusPos = pos*0.05f + entityPreviusPos*0.95f; //TODO hacer interpolación para que poco a poco se vaya poniendo detras
-
-            break;
-        }
-        case 3:
-        {
-            //Should only  look relative to entityMesh
-            EntityMesh* entityMesh = (EntityMesh*)entity;
-            if(entityMesh == NULL)
-                break;
-            Mesh* mesh = Mesh::Load(entityMesh->mesh);
-
-            Vector3 entityPos = entityMesh->getPosition();
-
-            float entity_radius = mesh->info.radius;
-
-            Vector3 eye = entityPos + Vector3(0,1,0)*entity_radius*10,  //TODO See if x10 distance is ok or should be relative to other thing
-                    center = entityPos,
-                    up(1,1,0);  //TODO ¿ perpendicular to center - eye ?
-
-            //Vector3 front = center - eye;
-            //up = Vector3(0,1, -front.y/front.z).normalize();
-            //-(x*v.x + y*v.y)/z = v.z
-
-            camera->lookAt(eye,center,up);
-        }
         default:
         {
             //FREE CAMERA
             double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
             //mouse input to rotate the cam
+            std::vector<Entity*> human_controlling = game->human->getControllingEntities();
             if ((game->keystate[SDL_SCANCODE_LSHIFT] && (game->mouseLeft)) || game->mouse_locked) //is left button pressed?
             {
-                std::vector<Entity*> human_controlling = game->human->getControllingEntities();
+
                 if(!human_controlling.size()) {
                     camera->rotate(game->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
                     camera->rotate(game->mouse_delta.y * 0.005f,
@@ -96,6 +58,16 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
                     camera->eye = rotateCenter + rotated_to_entity;
                 }
             }
+            //Arrastrar camara
+            if(game->mouseRight && !human_controlling.size()){
+                Vector3 right = (camera->center - camera->eye).normalize().cross(camera->up);
+                double delta_x = game->mouse_delta.x*2;
+                double delta_y = game->mouse_delta.y*2;
+                camera->eye = camera->eye + right*delta_x +camera->up.normalize()*delta_y;
+                camera->center = camera->center + right*delta_x +camera->up.normalize()*delta_y;
+
+            }
+
 
             //async input to move the camera around or if mouse in window edge
             bool pasiveMove = !(game->mouseLeft || game->mouseRight);
@@ -126,4 +98,9 @@ void CameraController::update(double seconds_elapsed, UID e_uid) {
             break;
         }
     }
+}
+
+void CameraController::onMouseWheel(SDL_MouseWheelEvent event){
+    if (event.y > 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f);
+    if (event.y < 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100.f);
 }
