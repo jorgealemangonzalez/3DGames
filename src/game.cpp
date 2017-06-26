@@ -37,13 +37,11 @@ void Game::resetGame(){
     delete enemy;
     delete camera;
 
-    firstMenu = true;
     this->init();
 
 }
 
 Game::Game(SDL_Window *window) {
-    this->firstMenu = true;
     this->window = window;
     instance = this;
 
@@ -64,13 +62,15 @@ Game::Game(SDL_Window *window) {
     mouse_locked = false;
     mouseLeft = false;
     mouseRight = false;
+
+    selectedLevel = LEVEL_TUTORIAL;
 }
 
 //Here we have already GL working, so we can create meshes and textures
 void Game::init(void) {
     std::cout << " * Path: " << getPath() << std::endl;
 
-    this->gameState = MENU;
+    this->gameState = MAIN_MENU;
 
     //music
     MusicManager::init();
@@ -93,11 +93,10 @@ void Game::init(void) {
     human = new Human();
     enemy = new Enemy();
 
-    std::cout<<"Load level1"<<std::endl;
+    std::cout<<"Load level: "<<selectedLevel<<std::endl;
     Scene* scene = Scene::getScene();
-    //scene->loadScene("../data/level1.txt");
-    scene->loadScene("../data/level.txt");
-    std::cout<<"Init finish";
+    scene->loadScene(selectedLevel.c_str());
+    std::cout<<"Init finish\n";
     GUI* gui = GUI::getGUI();
 }
 
@@ -122,20 +121,25 @@ void Game::render(void) {
 
     }
     else if(this->gameState == GAME_OVER) {
-        drawText(20, 20, humanWins ? "GAME OVER! HAS GANADO!" : "GAME OVER! HAS PERDIDO...", Vector3(1,1,0), 4);
-        drawText(20, 60, (y > 60 && y < 100) ? ">MENU" : "MENU", Vector3(1,1,0), 4);
-        drawText(20, 100, (y > 100 && y < 140) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+        drawText(100, 100, humanWins ? "GAME OVER! HAS GANADO!" : "GAME OVER! HAS PERDIDO...", Vector3(1,1,0), 4);
+        drawText(100, 140, (y > 140 && y < 180) ? ">MENU PRINCIPAL" : "MENU PRINCIPAL", Vector3(1,1,0), 4);
+        drawText(100, 180, (y > 180 && y < 220) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
 
     }
     else if(this->gameState == MENU) {
-        if(firstMenu){
-            drawText(20, 20, (y > 20 && y < 60) ? ">INICIAR PARTIDA" : "INICIAR PARTIDA", Vector3(1,1,0), 4);
-            drawText(20, 60, (y > 60 && y < 100) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
-        }else{
-            drawText(20, 20, (y > 20 && y < 60) ? ">REANUDAR PARTIDA" : "REANUDAR PARTIDA", Vector3(1,1,0), 4);
-            drawText(20, 60, (y > 60 && y < 100) ? ">REINICIAR PARTIDA" : "REINICIAR PARTIDA", Vector3(1,1,0), 4);
-            drawText(20, 100, (y > 100 && y < 140) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
-        }
+        drawText(100, 100, (y > 100 && y < 140) ? ">REANUDAR PARTIDA" : "REANUDAR PARTIDA", Vector3(1,1,0), 4);
+        drawText(100, 140, (y > 140 && y < 180) ? ">MENU PRINCIPAL" : "MENU PRINCIPAL", Vector3(1,1,0), 4);
+        drawText(100, 180, (y > 180 && y < 220) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+
+    }else if(this->gameState == MAIN_MENU) {
+        drawText(140, 100, "SPACE THINGS!", Vector3(1,1,0), 8);
+        drawText(100, 180, (y > 180 && y < 220) ? ">JUGAR" : "JUGAR", Vector3(1,1,0), 4);
+        drawText(100, 220, (y > 220 && y < 260) ? ">NIVELES" : "NIVELES", Vector3(1,1,0), 4);
+        drawText(100, 260, (y > 260 && y < 300) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+    }else if(this->gameState == LEVEL) {
+        drawText(100, 100, (selectedLevel == LEVEL_TUTORIAL ? "*TUTORIAL" : (y > 100 && y < 140) ? ">TUTORIAL" : "TUTORIAL"), Vector3(1,1,0), 4);
+        drawText(100, 140, (selectedLevel == LEVEL_NIVEL1 ? "*NIVEL 1" : (y > 140 && y < 180) ? ">NIVEL 1" : "NIVEL 1"), Vector3(1,1,0), 4);
+        drawText(100, 180, (y > 180 && y < 220) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
     }
     glDisable(GL_BLEND);
     //swap between front buffer and back buffer
@@ -221,7 +225,6 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
         switch (event.keysym.sym) {
             case SDLK_ESCAPE:
                 gameState = PLAYING;
-                firstMenu = false;
                 break;
         }
     }
@@ -264,19 +267,26 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
     }
     else if(this->gameState == GAME_OVER){
         float y = event.y;
-        if(y > 60 && y < 100) gameState = RESET;
-        if(y > 100 && y < 140) exit(0);
+        if(y > 140 && y < 180) gameState = RESET;
+        if(y > 180 && y < 220) exit(0);
     }
     else if(this->gameState == MENU){
         float y = event.y;
-        if(firstMenu){
-            if(y > 20 && y < 60) {gameState = PLAYING; firstMenu = false;}
-            if(y > 60 && y < 100) exit(0);
-        }else{
-            if(y > 20 && y < 60) gameState = PLAYING;
-            if(y > 60 && y < 100) gameState = RESET;
-            if(y > 100 && y < 140) exit(0);
-        }
+        if(y > 100 && y < 140) gameState = PLAYING;
+        if(y > 140 && y < 180) gameState = RESET;
+        if(y > 180 && y < 220) exit(0);
+    }
+    else if(this->gameState == MAIN_MENU){
+        float y = event.y;
+        if(y > 180 && y < 220) gameState = PLAYING;
+        if(y > 220 && y < 260) gameState = LEVEL;
+        if(y > 260 && y < 300) exit(0);
+    }
+    else if(this->gameState == LEVEL){
+        float y = event.y;
+        if(y > 100 && y < 140 && selectedLevel != LEVEL_TUTORIAL) {selectedLevel = LEVEL_TUTORIAL; gameState = RESET;}
+        if(y > 140 && y < 180 && selectedLevel != LEVEL_NIVEL1) {selectedLevel = LEVEL_NIVEL1; gameState = RESET;}
+        if(y > 180 && y < 220) gameState = MAIN_MENU;
     }
 
 }

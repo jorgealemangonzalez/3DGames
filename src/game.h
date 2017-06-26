@@ -16,6 +16,11 @@
 #define GAME_OVER 2
 #define RESET 3
 #define MENU 4      // Salir del juego, cambiar de partida (reiniciar), reanudar
+#define MAIN_MENU 5
+#define LEVEL 6
+
+#define LEVEL_TUTORIAL "../data/level_tutorial.txt"
+#define LEVEL_NIVEL1 "../data/level.txt"
 
 class Game
 {
@@ -31,8 +36,8 @@ public:
 	Player* getTeamPlayer(std::string team);
 	Player* getEnemyTeamPlayer(std::string team);
 	int gameState;
-    bool firstMenu;
 	bool humanWins;		//If true team human wins, else enemy wins
+	std::string selectedLevel;
 
 	//window
 	SDL_Window* window;
