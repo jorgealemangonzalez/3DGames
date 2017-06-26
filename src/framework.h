@@ -84,7 +84,7 @@ public:
 
 	Vector3& normalize();
 	void random(float range);
-	Vector3& random(Vector3 range);
+	Vector3& random(Vector3 rangeMax, Vector3 rangeMin);
 
 	float distance(const Vector3& v) const;
 

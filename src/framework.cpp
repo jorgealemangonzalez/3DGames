@@ -85,12 +85,12 @@ void Vector3::random(float range)
 	z = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
 }
 
-Vector3& Vector3::random(Vector3 range)
+Vector3& Vector3::random(Vector3 rangeMax, Vector3 rangeMin)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (float)RAND_MAX) * 2.0f * range.x - range.x; //value between -range and range
-	y = (rand() / (float)RAND_MAX) * 2.0f * range.y - range.y; //value between -range and range
-	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
+	x = (rand() / (float)RAND_MAX) * 2.0f * rangeMax.x - rangeMin.x; //value between -range and range
+	y = (rand() / (float)RAND_MAX) * 2.0f * rangeMax.y - rangeMin.y; //value between -range and range
+	z = (rand() / (float)RAND_MAX) * 2.0f * rangeMax.z - rangeMin.z; //value between -range and range
 	return *this;
 }
 

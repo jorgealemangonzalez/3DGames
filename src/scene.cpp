@@ -2,6 +2,7 @@
 #include "extra/textparser.h"
 #include "game.h"
 #include "entity.h"
+#include "mesh.h"
 
 #define MIPMAP_DISABLE false
 
@@ -241,6 +242,49 @@ void Scene::loadScene(const char* filename) {
         std::cout << "\t" << clone->uid << ": " << clone->getPosition().x << " " << clone->getPosition().y << " "
                   << clone->getPosition().z << "\n";
     }
+
+    //GENERATE RANDOM ASTEROIDS
+
+    //FIRST:: get full bounding box
+    Vector3 boxMin, boxMax;
+    auto entities = Entity::s_entities;
+    for(auto it = entities.begin(); it != entities.end(); ++it ){
+        Vector3 entityPos = it->second->getPosition();
+        boxMax.x = MAX(boxMax.x, entityPos.x);
+        boxMax.y = MAX(boxMax.y, entityPos.y);
+        boxMax.z = MAX(boxMax.z, entityPos.z);
+
+        boxMin.x = MIN(boxMin.x, entityPos.x);
+        boxMin.y = MIN(boxMin.y, entityPos.y);
+        boxMin.z = MIN(boxMin.z, entityPos.z);
+    }
+
+    //SECOND:: generate random asteroids
+    EntityAsteroid asteroid(false);
+    asteroid.setMesh("asteroides/asteroide3.ASE");
+    asteroid.setTexture("asteroides/asteroide.tga");
+    float asteroidRadius = Mesh::Load(asteroid.mesh)->info.radius;
+
+
+    for(int try_ = 0 ; try_ < 200 ; ++try_){ //
+        Vector3 rpos;
+        rpos.random(boxMin, boxMax);
+        std::map<UID,Entity*>::iterator it;
+        for( it = entities.begin(); it!= entities.end(); ++it){
+            if(rpos.distance(it->second->getPosition()) < asteroidRadius*3)
+                break;
+        }
+
+        if(it == entities.end()){
+            std::cout<<"ASTEROIDE RANDOM";
+            EntityAsteroid* as = asteroid.clone();
+            as->model.traslate(rpos.x,rpos.y,rpos.z);
+            this->addToRoot(as);
+        }
+
+    }
+
+
 }
 
 void Scene::update(float elapsed_time) {
