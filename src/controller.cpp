@@ -32,13 +32,9 @@ void CameraController::update(double seconds_elapsed) {
             if ((game->keystate[SDL_SCANCODE_LSHIFT] && (game->mouseLeft)) || game->mouse_locked) //is left button pressed?
             {
 
-                if(!human_controlling.size()) {
-                    camera->rotate(game->mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
-                    camera->rotate(game->mouse_delta.y * 0.005f,
-                                                   camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
-                }else if (game->mouse_delta.x || game->mouse_delta.y){
+                if (game->mouse_delta.x || game->mouse_delta.y){
                     
-                    Vector3 rotateCenter = game->human->getCenterControlling();
+                    Vector3 rotateCenter = camera->center;
                     Vector3 lastEye = camera->eye;
                     Vector3 to_entity = lastEye - rotateCenter;
                     bool changeRotation = false;
@@ -60,9 +56,21 @@ void CameraController::update(double seconds_elapsed) {
             }
             //Arrastrar camara
             if(game->mouseRight && !human_controlling.size()){
+                float maxDist = 0;
+                for(auto it = Entity::s_entities.begin() ; it != Entity::s_entities.end(); ++it){
+                    float dist = it->second->getPosition().distance(camera->eye);
+                    maxDist = MAX(maxDist,dist);
+
+                }
+                std::cout<<"MAX DIST: "<<maxDist<<"\n";
+                maxDist = MIN(10000.0,maxDist);
+                maxDist -= 3000.0;
+                maxDist = MAX(0,maxDist);
+
+
                 Vector3 right = (camera->center - camera->eye).normalize().cross(camera->up);
-                double delta_x = game->mouse_delta.x*2;
-                double delta_y = game->mouse_delta.y*2;
+                double delta_x = game->mouse_delta.x*(maxDist*maxDist/1000000.0);
+                double delta_y = game->mouse_delta.y*(maxDist*maxDist/1000000.0);
                 camera->eye = camera->eye + right*delta_x +camera->up.normalize()*delta_y;
                 camera->center = camera->center + right*delta_x +camera->up.normalize()*delta_y;
 
@@ -101,6 +109,18 @@ void CameraController::update(double seconds_elapsed) {
 }
 
 void CameraController::onMouseWheel(SDL_MouseWheelEvent event){
-    if (event.y > 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f);
-    if (event.y < 0) Game::instance->camera->move(Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100.f);
+    Camera* camera = Game::instance->camera;
+    Vector3 delta;
+    if (event.y > 0){
+        delta = Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f;
+    }
+    if (event.y < 0){
+        delta = Vector3(0.0f, 0.0f, -1.0f) * abs(event.y)*100.f;
+    }
+
+    if(delta){
+        Vector3 localDelta = camera->getLocalVector(delta);
+        camera->eye = camera->eye - localDelta;
+        camera->updateViewMatrix();
+    }
 }

@@ -58,8 +58,12 @@ void Human::update(double seconds_elapsed) {
     if(updateCenter){
         center /= controlling.size();
         centerControlling = center;
-        if(controlling.size())
-            Game::instance->camera->center = centerControlling;
+        if(controlling.size()) {
+            Camera* camera = Game::instance->camera;
+            Vector3 dif = centerControlling - camera->center;
+            camera->eye = camera->eye + dif;
+            camera->center = centerControlling;
+        }
         GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
     }
 }
