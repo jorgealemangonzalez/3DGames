@@ -32,10 +32,10 @@ public:
 
 class BulletManager {
     BulletManager();
-    ~BulletManager();
 
     static BulletManager* manager;  //Singleton class
 public:
+    ~BulletManager();
     Bullet bullets_pool[MAX_BULLETS];   // La pool se inicializa entera de colpe.
                                         // Luego no se crean ni destruyen bullets, para ello set.
     unsigned int last_pos_pool;

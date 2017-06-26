@@ -19,6 +19,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     bool has_hp=false;          // Puede destruirse a causa de hp <= 0
     bool has_ttl=false;         // Puede destruirse a cause de ttl <= 0
     bool selectable=false;      // Se puede seleccionar?
+    bool mantainAlive=false;    // Si muere puede causar GAME OVER
     int maxhp=0;                // Max life
     float ttl=0;                // Time remain
     float range=1000;           // Range

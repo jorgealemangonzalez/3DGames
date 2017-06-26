@@ -133,6 +133,14 @@ void mainLoop()
 			game->fps = 1.0 / elapsed_time;
 		game->update(elapsed_time); 
 
+
+		if(game->gameState == RESET){
+			auto window = game->window;
+			delete game;
+			/*game = new Game(window);
+			game->init();*/
+			return;
+		}
 		//check errors in opengl only when working in debug
 		#ifdef _DEBUG
 			checkGLErrors();

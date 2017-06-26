@@ -59,7 +59,7 @@ bool Texture::load(const std::string& filename, bool mipmaps)
 		width = (float)tgainfo->width;
 		height = (float)tgainfo->height;
 
-		delete tgainfo->data;
+		//delete tgainfo->data;	//SEGUN VALGRIND ESTO NO HACE FALTA
 		delete tgainfo;
 		return true;
 	}
@@ -76,6 +76,7 @@ Texture* Texture::Load(const std::string& filename, bool mipmaps) {
     std::string location = "../data/meshes/";
 	Texture* tx = new Texture();
 	if(!tx->load(location+filename,mipmaps)){
+		delete tx;
 		return NULL;
 	}
 	s_Textures[name] = tx;

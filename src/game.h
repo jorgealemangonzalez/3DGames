@@ -12,15 +12,22 @@
 
 #include <fstream>
 
+#define PLAYING 1
+#define GAME_OVER 2
+#define RESET 3
+
 class Game
 {
 public:
 	static Game* instance;
 
+	~Game();
+
 	Human* human;
 	Enemy* enemy;
 	Player* getTeamPlayer(std::string team);
 	Player* getEnemyTeamPlayer(std::string team);
+	int gameState;
 
 	bool doLog = false;
 	std::fstream logger;

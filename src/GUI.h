@@ -11,6 +11,7 @@ public:
     static GUI* gui;
     static GUI* getGUI();
     GUI();
+    ~GUI();
 
     Camera* camera2d;
     Mesh* guiPointsMesh;

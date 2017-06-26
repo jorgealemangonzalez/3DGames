@@ -28,6 +28,7 @@ public:
 	} sMeshInfo;
 	sMeshInfo info;
 
+	static void deleteStaticMeshesPointers();
 	std::vector< Vector3 > vertices; //here we store the vertices
 	std::vector< Vector3 > normals;	 //here we store the normals
 	std::vector< Vector2 > uvs;	 //here we store the texture coordinates

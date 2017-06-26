@@ -39,7 +39,7 @@ Human::Human() : Player(HUMAN_TEAM) {
 }
 
 Human::~Human() {
-
+    delete cameraController;
 }
 
 void Human::update(double seconds_elapsed) {

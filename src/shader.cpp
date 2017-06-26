@@ -100,8 +100,10 @@ Shader* Shader::Load(const std::string& vsf, const std::string& psf)
 
     std::string location ="../data/shaders/";
 	Shader* sh = new Shader();
-	if (!sh->load(location+vsf,location+psf))
+	if (!sh->load(location+vsf,location+psf)) {
+		delete sh;
 		return NULL;
+	}
 	s_Shaders[name] = sh;
 	return sh;
 }

@@ -30,7 +30,11 @@ Scene::Scene() {
     root_background->addChild(planet_background3);
 }
 Scene::~Scene(){
+    delete root;
+    delete background;
+    delete grid;
 
+    delete root_background;
 }
 
 Scene* Scene::getScene() {
@@ -196,7 +200,7 @@ void Scene::loadScene(const char* filename) {
             stats.has_hp = (strcmp(t.getword(), "true") == 0);
             stats.has_ttl = (strcmp(t.getword(), "true") == 0);
             stats.selectable = (strcmp(t.getword(), "true") == 0);
-            bool winning = (strcmp(t.getword(), "true") == 0);
+            stats.mantainAlive = (strcmp(t.getword(), "true") == 0);
             stats.maxhp = t.getint();
             stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
@@ -207,12 +211,12 @@ void Scene::loadScene(const char* filename) {
             if(stats.team == HUMAN_TEAM){
                 Human* human = Game::instance->human;
                 human->addControllableEntity(clone->uid);
-                if(winning)
+                if(stats.mantainAlive)
                     human->maintainAliveEntities.push_back(clone->uid);
             }else if(stats.team == ENEMY_TEAM){
                 Enemy* enemy = Game::instance->enemy;
                 enemy->addControllableEntity(clone->uid);
-                if(winning)
+                if(stats.mantainAlive)
                     enemy->maintainAliveEntities.push_back(clone->uid);
             }
         }

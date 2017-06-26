@@ -39,10 +39,15 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
     if(it != s_entities.end()){
         s_entities.erase(it);
     }
-
+    std::cout<<"DELETE ENTITY: "<<this->name<<"\n";
     //Play sound enemy down if enemy
-    if(stats.team == ENEMY_TEAM){
+    if(stats.team == ENEMY_TEAM && Game::instance->gameState == PLAYING){
         MusicManager::playEnemyDown(getPosition());
+    }
+
+    for(Entity* e : children){
+        if(e != NULL)
+            delete e;
     }
 }
 
@@ -57,8 +62,22 @@ Entity* Entity::getEntity(UID uid) {
 
 void Entity::destroy_entities_to_destroy() {
     // Destroy all entities in the list to_destroy (the destructor should destroy their children)
+    Game* g = Game::instance;
     for( UID uid : to_destroy){
         Entity* entity = s_entities[uid];
+        if(entity->stats.mantainAlive) {
+            Player* p = g->getTeamPlayer(entity->stats.team);
+            auto it = std::find(p->maintainAliveEntities.begin(),p->maintainAliveEntities.end(),entity->uid);
+            if(it != p->maintainAliveEntities.end()){
+                std::cout<<"MANTAIN ALIVE ENTITY DESTROYED !!!\n";
+                p->maintainAliveEntities.erase(it);
+            }
+
+            if(!p->maintainAliveEntities.size()){
+                g->gameState = GAME_OVER;
+            }
+
+        }
         if(entity != NULL)
             delete entity;
     }

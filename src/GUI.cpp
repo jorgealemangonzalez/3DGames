@@ -11,6 +11,16 @@ GUI* GUI::getGUI() {
     return gui;
 }
 
+GUI::~GUI() {
+    delete camera2d;
+    delete guiPointsMesh;
+    delete guiLinesMesh;
+    delete guiPlanesMesh;    //Used in selection at the moment
+    delete grid;
+    delete debugPointsMesh;
+    delete debugLinesMesh;
+}
+
 GUI::GUI() {
     Game* game = Game::instance;
     camera2d = new Camera();

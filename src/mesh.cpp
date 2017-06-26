@@ -23,14 +23,46 @@ Mesh::Mesh( const Mesh& m )
 	normals = m.normals;
 	uvs = m.uvs;
 	colors = m.colors;
+
+	vertices_vbo_id = 0;
+	normals_vbo_id = 0;
+	uvs_vbo_id = 0;
+	colors_vbo_id = 0;
+	collision_model = NULL;
 }
 
 Mesh::~Mesh()
 {
-	if(vertices_vbo_id) glDeleteBuffers(1, &vertices_vbo_id);
+	if(vertices_vbo_id)
+		glDeleteBuffers(1, &vertices_vbo_id);
 	if(normals_vbo_id) glDeleteBuffers(1, &normals_vbo_id);
 	if(uvs_vbo_id) glDeleteBuffers(1, &uvs_vbo_id);
 	if(colors_vbo_id) glDeleteBuffers(1, &colors_vbo_id);
+	if(collision_model != NULL) delete collision_model;
+	//std::cout<<"DELETE MESH\n";
+
+	for (std::map<std::string,Mesh*>::iterator it = s_Meshes.begin(); it != s_Meshes.end(); ++it )
+		if (it->second == this) {
+			std::cout<<"IN STATIC"<<std::endl;
+			s_Meshes.erase(it);
+			break;
+		}
+
+}
+
+void Mesh::deleteStaticMeshesPointers() {
+	std::cout<<s_Meshes.size()<<std::endl;
+	for (std::map<std::string, Mesh *>::iterator it = s_Meshes.begin(); it != s_Meshes.end(); ++it) {
+		std::string n = it->first;
+	}
+	std::vector<Mesh*> to_destroy;
+	for (std::map<std::string, Mesh *>::iterator it = s_Meshes.begin(); it != s_Meshes.end(); ++it) {
+		to_destroy.push_back(it->second);
+	}
+
+	for(Mesh* m : to_destroy){
+		delete m;
+	}
 }
 
 void Mesh::clear()
@@ -304,6 +336,7 @@ Mesh* Mesh::Load(const std::string& filename){
 	std::string location = "../data/meshes/";
 	Mesh* msh = new Mesh();
 	if(!msh->loadASE(location+filename)){
+		delete msh;
 		return NULL;
 	}
 	s_Meshes[name] = msh;
@@ -317,7 +350,8 @@ bool Mesh::loadASE( const std::string& filename){//CUALQUIER CAMBIO EN ESTA FUNC
 	struct stat buffer;
 	std::string binfilename = ".bin";
 	binfilename = filename + binfilename;
-	if(stat (binfilename.c_str(), &buffer) == 0){
+    bool s = stat (binfilename.c_str(), &buffer);
+	if(s == 0){
 		loadBIN(binfilename.c_str());
 	}else{
 		Vector3 max_v(0.f, 0.f, 0.f);

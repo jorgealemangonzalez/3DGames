@@ -7,8 +7,8 @@
 class Scene {
     static Scene* scene;
     Scene();
-    ~Scene();
 public:
+    ~Scene();
     //bool debugMode;
     Entity* root;
     Entity* background;

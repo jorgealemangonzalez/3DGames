@@ -13,7 +13,19 @@ RenderToTexture *rt = NULL;
 
 Game *Game::instance = NULL;
 
+Game::~Game(){
+    Mesh::deleteStaticMeshesPointers();
+    delete camera;
+    delete human;
+    delete enemy;
+    delete Scene::getScene();
+    delete GUI::getGUI();
+    delete BulletManager::getManager();
+    MusicManager::delete_pool();
+}
+
 Game::Game(SDL_Window *window) {
+    this->gameState = PLAYING;
     this->window = window;
     instance = this;
 
@@ -73,67 +85,75 @@ void Game::init(void) {
 
 //what to do when the image has to be draw
 void Game::render(void) {
+    if(this->gameState == PLAYING) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //set the clear color (the background color)
+        //set the clear color (the background color)
+        glClearColor(0.0, 0.0, 0.0, 1.0);
 
-    //set the clear color (the background color)
-    //set the clear color (the background color)
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+        // Clear the window and the depth buffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Clear the window and the depth buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //Put the camera matrices on the stack of OpenGL (only for fixed rendering)
+        camera->set();
+        //Draw out world
 
-    //Put the camera matrices on the stack of OpenGL (only for fixed rendering)
-    camera->set();
-    //Draw out world
+        Scene::getScene()->render(camera);
+        Explosion::renderAll(camera);
+        human->render(camera);
 
-    Scene::getScene()->render(camera);
-    Explosion::renderAll(camera);
-    human->render(camera);
+        //drawGrid(500); //background grid
+        drawText(10.0, 10.0, "Camera position: " + camera->eye.toString(), Vector3(234, 26, 34));
 
-    //drawGrid(500); //background grid
-    drawText(10.0,10.0,"Camera position: "+camera->eye.toString(),Vector3(234,26,34));
+        GUI::getGUI()->render();
+        glDisable(GL_BLEND);
 
-    GUI::getGUI()->render();
-    glDisable(GL_BLEND);
+        //example to render the FPS every 10 frames
+        //drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
 
-    //example to render the FPS every 10 frames
-    //drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
-
-    //swap between front buffer and back buffer
-    SDL_GL_SwapWindow(this->window);
+        //swap between front buffer and back buffer
+        SDL_GL_SwapWindow(this->window);
+    }
+    if(this->gameState == GAME_OVER) {
+        //std::cout<<"GAME_OVER\n";
+    }
 }
 
 void Game::update(double seconds_elapsed) {
-    if(!pause){
-        Explosion::updateAll(seconds_elapsed);
-        enemy->update(seconds_elapsed);
-        Scene::getScene()->update(seconds_elapsed);
+    if(this->gameState == PLAYING) {
+        if (!pause) {
+            Explosion::updateAll(seconds_elapsed);
+            enemy->update(seconds_elapsed);
+            Scene::getScene()->update(seconds_elapsed);
 
-        if (doLog) {
-            logger.close();
-            logger.open("log.txt", std::fstream::out | std::ios::app);
-            logger << "\nNext frame---------------------\n";
+            if (doLog) {
+                logger.close();
+                logger.open("log.txt", std::fstream::out | std::ios::app);
+                logger << "\nNext frame---------------------\n";
+            }
         }
-    }
-    Scene::getScene()->updateGUI();
-    MusicManager::update();
-    human->update(seconds_elapsed);
+        Scene::getScene()->updateGUI();
+        MusicManager::update();
+        human->update(seconds_elapsed);
 
-    if(!keystate[SDL_SCANCODE_LSHIFT]){
-        GUI* gui = GUI::getGUI();
-        if(mouseLeft){
-            gui->addPlane(mouse_when_press, mouse_position);
-            gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-            gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1,1,1,1), true);
-        }else if(mouseRight){
-            Vector3 selectedMove;
-            if(human->getPositionSelectedMove(selectedMove)){
-                Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
-                gui->addLine(mouse_when_press, selectedMoveP, Vector4(1,1,1,0.5), true);
-                gui->addCenteredCircles(selectedMove, human->getRadiusControlling());
+        if (!keystate[SDL_SCANCODE_LSHIFT]) {
+            GUI *gui = GUI::getGUI();
+            if (mouseLeft) {
+                gui->addPlane(mouse_when_press, mouse_position);
+                gui->addLine(mouse_when_press, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1, 1, 1, 1),
+                             true);
+                gui->addLine(mouse_position, Vector2(mouse_when_press.x, mouse_position.y), Vector4(1, 1, 1, 1), true);
+                gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1, 1, 1, 1),
+                             true);
+                gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1, 1, 1, 1), true);
+            } else if (mouseRight) {
+                Vector3 selectedMove;
+                if (human->getPositionSelectedMove(selectedMove)) {
+                    Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
+                    gui->addLine(mouse_when_press, selectedMoveP, Vector4(1, 1, 1, 0.5), true);
+                    gui->addCenteredCircles(selectedMove, human->getRadiusControlling());
+                }
             }
         }
     }
@@ -141,82 +161,98 @@ void Game::update(double seconds_elapsed) {
 
 //Keyboard event handler (sync input)
 void Game::onKeyPressed(SDL_KeyboardEvent event) {
-    switch (event.keysym.sym) {
-        case SDLK_ESCAPE:
-            logger << "\nFINISH\n";
-            logger.close();
-            exit(0); //ESC key, kill the app
-        //case SDLK_TAB:    automatic: if units selected, show grid
-        //    GUI::getGUI()->showHideGrid();
-        //    break;
-        case SDLK_c:
-            Scene::getScene()->root->print(0);
-            break;
-        case SDLK_p: {
-            UID uid;
-            std::cin >> uid;
-            std::vector<UID> uids;
-            uids.push_back(uid);
-            human->selectEntities(uids);
-            break;
-        }
-        case SDLK_a: {
-            human->selectAllEntities();
-        }
-        case SDLK_e:
-            human->centerCameraOnControlling();
-            break;
-        case SDLK_SPACE:
-            pause = !pause;
-            break;
-
-        case SDLK_o:
-            debugMode = !debugMode;
-            break;
-        case SDLK_l:
-            doLog = !doLog;
-            break;
-        case SDLK_i:
-            for(auto &entry : Entity::s_entities){
-                if(entry.second->stats.has_hp)
-                    entry.second->stats.hp -= random()%1000;
+    if(this->gameState == PLAYING) {
+        switch (event.keysym.sym) {
+            case SDLK_ESCAPE:
+                logger << "\nFINISH\n";
+                logger.close();
+                exit(0); //ESC key, kill the app
+                //case SDLK_TAB:    automatic: if units selected, show grid
+                //    GUI::getGUI()->showHideGrid();
+                //    break;
+            case SDLK_c:
+                Scene::getScene()->root->print(0);
+                break;
+            case SDLK_p: {
+                UID uid;
+                std::cin >> uid;
+                std::vector<UID> uids;
+                uids.push_back(uid);
+                human->selectEntities(uids);
+                break;
             }
-            break;
+            case SDLK_a: {
+                human->selectAllEntities();
+            }
+            case SDLK_e:
+                human->centerCameraOnControlling();
+                break;
+            case SDLK_SPACE:
+                pause = !pause;
+                break;
+
+            case SDLK_o:
+                debugMode = !debugMode;
+                break;
+            case SDLK_l:
+                doLog = !doLog;
+                break;
+            case SDLK_i:
+                for (auto &entry : Entity::s_entities) {
+                    if (entry.second->stats.has_hp)
+                        entry.second->stats.hp -= random() % 1000;
+                }
+                break;
+        }
+    }
+    if(this->gameState == GAME_OVER) {
+        switch (event.keysym.sym) {
+            case SDLK_ESCAPE:
+                std::cout<< "\nFINISH\n";
+                exit(0);
+            case SDLK_r:
+                this->gameState = RESET;
+        }
+
     }
 }
 
 
 void Game::onMouseButton(SDL_MouseButtonEvent event) {
-    mouse_when_press = Vector2(event.x, window_height - event.y);
-    if (event.button == SDL_BUTTON_MIDDLE){ //middle mouse
-        mouse_locked = !mouse_locked;
-        SDL_ShowCursor(!mouse_locked);
-    }else if (event.button == SDL_BUTTON_LEFT){
-        mouseLeft = true;
-    }else if (event.button == SDL_BUTTON_RIGHT){
-        mouseRight = true;
-        human->updateCenter = false;
+    if(this->gameState == PLAYING) {
+        mouse_when_press = Vector2(event.x, window_height - event.y);
+        if (event.button == SDL_BUTTON_MIDDLE) { //middle mouse
+            mouse_locked = !mouse_locked;
+            SDL_ShowCursor(!mouse_locked);
+        } else if (event.button == SDL_BUTTON_LEFT) {
+            mouseLeft = true;
+        } else if (event.button == SDL_BUTTON_RIGHT) {
+            mouseRight = true;
+            human->updateCenter = false;
+        }
     }
 }
 
 void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
-    mouseLeft = false;
-    mouseRight = false;
-    Vector2 mouse_when_up = Vector2(event.x, window_height - event.y);
+    if(this->gameState == PLAYING) {
+        mouseLeft = false;
+        mouseRight = false;
+        Vector2 mouse_when_up = Vector2(event.x, window_height - event.y);
 
-    if (!keystate[SDL_SCANCODE_LSHIFT]){
-        if (event.button == SDL_BUTTON_LEFT){
-            std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
+        if (!keystate[SDL_SCANCODE_LSHIFT]) {
+            if (event.button == SDL_BUTTON_LEFT) {
+                std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
                                                                  window_height, camera);
-            for (UID uid : pointed) {
-                std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";  //TODO QUIT
-            }
-            if (mouse_when_press != mouse_when_up || pointed.size())
-                human->selectEntities(pointed);
+                for (UID uid : pointed) {
+                    std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";  //TODO QUIT
+                }
+                if (mouse_when_press != mouse_when_up || pointed.size())
+                    human->selectEntities(pointed);
 
-        }else if(event.button == SDL_BUTTON_RIGHT){
-            human->moveSelectedInPlane();
-            human->updateCenter = true;
+            } else if (event.button == SDL_BUTTON_RIGHT) {
+                human->moveSelectedInPlane();
+                human->updateCenter = true;
+            }
         }
     }
 }
@@ -224,8 +260,9 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
 void Game::onMouseWheel(SDL_MouseWheelEvent event) {
     //event.x: the amount scrolled horizontally, positive to the right and negative to the left
     //event.y: the amount scrolled vertically, positive away from the user and negative toward the user
-
-    human->cameraController->onMouseWheel(event);
+    if(this->gameState == PLAYING) {
+        human->cameraController->onMouseWheel(event);
+    }
 }
 
 void Game::setWindowSize(int width, int height) {

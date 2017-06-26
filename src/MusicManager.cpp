@@ -32,6 +32,16 @@ void MusicManager::init() {
 
 }
 
+void MusicManager::delete_pool(){
+    for(sf::Sound* s: sound_pool){
+        if(s != NULL){
+            s->stop();
+            delete s;
+        }
+
+    }
+}
+
 void MusicManager::update() {
 
     Camera* c = Game::instance->camera;
@@ -46,9 +56,10 @@ void MusicManager::update() {
 
 
 void MusicManager::playPoolSound(sf::Sound* sound, Vector3 position){
-    if(sound_pool[pool_index] != NULL)
+    if(sound_pool[pool_index] != NULL) {
         sound_pool[pool_index]->stop();
         delete sound_pool[pool_index]; //Delete previus sound
+    }
     sound_pool[pool_index] = sound;
     sound->setPosition(position.toMusicVector());
     sound->setMinDistance(5.f);
