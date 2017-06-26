@@ -182,4 +182,16 @@ public:
 
 };
 
+class EntityAsteroid : public EntityCollider{
+public:
+    EntityAsteroid(bool dynamic);
+    virtual ~EntityAsteroid();
+
+    Vector3 rotationAxis;
+    float rotationVelocity;
+
+    virtual void update(float elapsed_time);
+    virtual EntityAsteroid* clone();
+};
+
 #endif //TJE_FRAMEWORK_2017_ENTITY_H

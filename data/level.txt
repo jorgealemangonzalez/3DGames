@@ -21,15 +21,15 @@
         *texture runner/x3_runner.tga
 
     asteroide_gran
-        *entity collider static
+        *entity asteroid
         *mesh asteroides/asteroide1.ASE
         *texture asteroides/asteroide.tga
     asteroide_med
-        *entity collider static
+        *entity asteroid
         *mesh asteroides/asteroide2.ASE
         *texture asteroides/asteroide.tga
     asteroide_peq
-        *entity collider static
+        *entity asteroid
         *mesh asteroides/asteroide3.ASE
         *texture asteroides/asteroide.tga
     asteroides

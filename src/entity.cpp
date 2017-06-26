@@ -729,3 +729,33 @@ void EntityStation::updateGUI() {
         children[i]->updateGUI();
     }
 }
+
+//=====================================
+
+float getRandomFloat(){
+    float r = float(random()%1000)/100.0;
+    return r;
+}
+
+EntityAsteroid::EntityAsteroid(bool dynamic):EntityCollider(dynamic) {
+
+    rotationAxis = Vector3(getRandomFloat(),getRandomFloat(),getRandomFloat()).normalize();
+    rotationVelocity = getRandomFloat()*3.0 + 3.0;
+}
+
+EntityAsteroid::~EntityAsteroid() {
+
+}
+
+void EntityAsteroid::update(float elapsed_time) {
+    Entity::update(elapsed_time);
+    model.rotateLocal(elapsed_time/rotationVelocity,rotationAxis);
+}
+
+EntityAsteroid* EntityAsteroid::clone() {
+    EntityAsteroid* clon = new EntityAsteroid(this->dynamic);
+    UID uid = clon->uid;
+    *clon = *this;
+    clon->uid = uid;
+    return clon;
+}

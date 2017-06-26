@@ -117,9 +117,13 @@ void Scene::loadScene(const char* filename) {
         Entity *e;
         std::cout << entityClass << "\n";
 
-        if (entityClass == "collider" || entityClass == "fighter" || entityClass == "station") {
+        if (entityClass == "collider" || entityClass == "fighter" || entityClass == "station" || entityClass == "asteroid") {
             EntityCollider *ec;
-            std::string colliderType = t.getword();
+            std::string colliderType;
+            if(entityClass == "asteroid")
+                colliderType = "static";
+            else
+                colliderType = t.getword();
             bool dynamic;
             if (colliderType == "static") {
                 dynamic = false;
@@ -133,6 +137,9 @@ void Scene::loadScene(const char* filename) {
                 ec = new EntityFighter(dynamic);
             else if (entityClass == "station")
                 ec = new EntityStation(dynamic);
+            else if(entityClass == "asteroid") {
+                ec = new EntityAsteroid(dynamic);
+            }
             else
                 ec = new EntityCollider(dynamic);
             t.seek("*mesh");
