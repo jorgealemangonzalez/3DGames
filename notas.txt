@@ -223,4 +223,4 @@ o       Activar/desactivar debugMode (usado en visualización e impresión por c
 i       Quita entre 0 y 1000 de vida a cada entidad con vida
 
 ------ FICHERO LEVEL ---------
-*STATS   movable    has_hp     has_ttl  selectable    winning   maxhp    ttl  range   team
+*STATS   movable    has_hp     has_ttl  selectable    winning   maxhp    ttl  range   maxvel  team

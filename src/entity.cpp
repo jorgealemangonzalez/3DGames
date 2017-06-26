@@ -240,7 +240,7 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
         Entity* follow = Entity::getEntity(stats.followEntity);
         if(follow != NULL && (follow->getPosition() - this->getPosition()).length() > 200 ) {
             stats.targetPos = follow->getPosition();
-            stats.vel = 100;    //TODO poner en el fichero descriptor o de alguna manera que dependa del tipo de entity
+            stats.vel = stats.maxvel;
         }else{
             stats.followEntity = 0;
         }
@@ -473,7 +473,9 @@ void EntityMesh::unitGUI() {
     }
 
     //TODO LINEAS
-    if(stats.followEntity){
+    if(stats.team == HUMAN_TEAM){
+
+    }if(stats.followEntity){
         if(Entity* e = Entity::getEntity(stats.followEntity))
             gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));
     }else if(stats.targetPos){

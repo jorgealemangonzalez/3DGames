@@ -21,6 +21,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     bool selectable=false;      // Se puede seleccionar?
     bool mantainAlive=false;    // Si muere puede causar GAME OVER
     int maxhp=0;                // Max life
+    int maxvel=0;
     float ttl=0;                // Time remain
     float range=1000;           // Range
     std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'

@@ -126,7 +126,7 @@ void Human::organizeSquadCircle(Vector3 position){
             Vector3 move = position +
                            Vector3(circ_r * cos((i * section) * DEG2RAD), 0, circ_r * sin((i * section) * DEG2RAD));
             controlling[i]->stats.targetPos = move;
-            controlling[i]->stats.vel = 100;
+            controlling[i]->stats.vel = controlling[i]->stats.maxvel;
         }
     }
 }

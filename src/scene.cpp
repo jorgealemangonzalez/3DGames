@@ -161,6 +161,7 @@ void Scene::loadScene(const char* filename) {
             stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
             stats.range = t.getfloat();
+            stats.maxvel = t.getint();
             stats.team = t.getword();
             es->statsSpawned = stats;
             e = es;
@@ -205,6 +206,7 @@ void Scene::loadScene(const char* filename) {
             stats.hp = stats.maxhp;
             stats.ttl = t.getfloat();
             stats.range = t.getfloat();
+            stats.maxvel = t.getint();
             stats.team = t.getword();
             clone->stats = stats;
 
