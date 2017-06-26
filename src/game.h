@@ -15,6 +15,7 @@
 #define PLAYING 1
 #define GAME_OVER 2
 #define RESET 3
+#define MENU 4      // Salir del juego, cambiar de partida (reiniciar), reanudar
 
 class Game
 {
@@ -30,9 +31,7 @@ public:
 	Player* getTeamPlayer(std::string team);
 	Player* getEnemyTeamPlayer(std::string team);
 	int gameState;
-
-	bool doLog = false;
-	std::fstream logger;
+    bool firstMenu;
 
 	//window
 	SDL_Window* window;
@@ -59,7 +58,7 @@ public:
 
 	bool mouseLeft, mouseRight;	// For some reason 'mouse_state & SDL_BUTTON_RIGHT' doesn't work, so we keep the boolean
 	
-	Camera* camera; //our global camera
+	Camera* camera; //our global game camera
 
 	Game(SDL_Window* window);
 	void init( void );

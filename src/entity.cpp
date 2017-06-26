@@ -236,12 +236,6 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::updateStatsAndEntityActions(float elapsed_time) {
-    if(Game::instance->doLog){
-        Game::instance->logger << "Entity_ " << this->uid << "-" << this->name << ":\n";
-        Game::instance->logger << sstats(this->stats);
-        Game::instance->logger << "Pos: " << getPosition().toString() << "\n\n";
-    }
-
     if(stats.followEntity){
         Entity* follow = Entity::getEntity(stats.followEntity);
         if(follow != NULL && (follow->getPosition() - this->getPosition()).length() > 200 ) {
@@ -478,6 +472,7 @@ void EntityMesh::unitGUI() {
         gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), Vector4(1,0,0,1), true);
     }
 
+    //TODO LINEAS
     if(stats.followEntity){
         if(Entity* e = Entity::getEntity(stats.followEntity))
             gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));

@@ -37,11 +37,13 @@ void Game::resetGame(){
     delete enemy;
     delete camera;
 
+    firstMenu = true;
     this->init();
 
 }
 
 Game::Game(SDL_Window *window) {
+    this->firstMenu = true;
     this->window = window;
     instance = this;
 
@@ -62,16 +64,14 @@ Game::Game(SDL_Window *window) {
     mouse_locked = false;
     mouseLeft = false;
     mouseRight = false;
-
-    logger.open("log.txt", std::fstream::out);
-    logger << "START\n";
 }
 
 //Here we have already GL working, so we can create meshes and textures
 void Game::init(void) {
     std::cout << " * Path: " << getPath() << std::endl;
 
-    this->gameState = PLAYING;
+    this->gameState = MENU;
+
     //music
     MusicManager::init();
 
@@ -95,23 +95,21 @@ void Game::init(void) {
 
     std::cout<<"Load level1"<<std::endl;
     Scene* scene = Scene::getScene();
-    scene->loadScene("../data/level1.txt");
+    //scene->loadScene("../data/level1.txt");
+    scene->loadScene("../data/level.txt");
     std::cout<<"Init finish";
     GUI* gui = GUI::getGUI();
 }
 
 //what to do when the image has to be draw
 void Game::render(void) {
+    //set the clear color (the background color)
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+
+    // Clear the window and the depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     if(this->gameState == PLAYING) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //set the clear color (the background color)
-        //set the clear color (the background color)
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-
-        // Clear the window and the depth buffer
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         //Put the camera matrices on the stack of OpenGL (only for fixed rendering)
         camera->set();
         //Draw out world
@@ -121,20 +119,37 @@ void Game::render(void) {
         human->render(camera);
 
         //drawGrid(500); //background grid
-        drawText(10.0, 10.0, "Camera position: " + camera->eye.toString(), Vector3(234, 26, 34));
+        //drawText(10.0, 10.0, "Camera position: " + camera->eye.toString(), Vector3(234, 26, 34));
 
         GUI::getGUI()->render();
         glDisable(GL_BLEND);
 
         //example to render the FPS every 10 frames
         //drawText(2,2, std::to_string(fps), Vector3(1,1,1), 2 );
-
-        //swap between front buffer and back buffer
-        SDL_GL_SwapWindow(this->window);
     }
-    if(this->gameState == GAME_OVER) {
+    else if(this->gameState == GAME_OVER) {
         //std::cout<<"GAME_OVER\n";
     }
+    else if(this->gameState == MENU) {
+        camera->set();
+        Scene::getScene()->render(camera);
+        Explosion::renderAll(camera);
+        human->render(camera);
+        GUI::getGUI()->render();
+
+        float y = window_height - mouse_position.y;
+        if(firstMenu){
+            drawText(20, 20, (y > 20 && y < 60) ? ">INICIAR PARTIDA" : "INICIAR PARTIDA", Vector3(1,1,0), 4);
+            drawText(20, 60, (y > 60 && y < 100) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+        }else{
+            drawText(20, 20, (y > 20 && y < 60) ? ">REANUDAR PARTIDA" : "REANUDAR PARTIDA", Vector3(1,1,0), 4);
+            drawText(20, 60, (y > 60 && y < 100) ? ">REINICIAR PARTIDA" : "REINICIAR PARTIDA", Vector3(1,1,0), 4);
+            drawText(20, 100, (y > 100 && y < 140) ? ">SALIR" : "SALIR", Vector3(1,1,0), 4);
+        }
+    }
+
+    //swap between front buffer and back buffer
+    SDL_GL_SwapWindow(this->window);
 }
 
 void Game::update(double seconds_elapsed) {
@@ -143,12 +158,6 @@ void Game::update(double seconds_elapsed) {
             Explosion::updateAll(seconds_elapsed);
             enemy->update(seconds_elapsed);
             Scene::getScene()->update(seconds_elapsed);
-
-            if (doLog) {
-                logger.close();
-                logger.open("log.txt", std::fstream::out | std::ios::app);
-                logger << "\nNext frame---------------------\n";
-            }
         }
         Scene::getScene()->updateGUI();
         MusicManager::update();
@@ -174,6 +183,9 @@ void Game::update(double seconds_elapsed) {
             }
         }
     }
+    else if(this->gameState == MENU){
+
+    }
 }
 
 //Keyboard event handler (sync input)
@@ -181,38 +193,22 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
     if(this->gameState == PLAYING) {
         switch (event.keysym.sym) {
             case SDLK_ESCAPE:
-                logger << "\nFINISH\n";
-                logger.close();
-                exit(0); //ESC key, kill the app
-                //case SDLK_TAB:    automatic: if units selected, show grid
-                //    GUI::getGUI()->showHideGrid();
-                //    break;
+                gameState = MENU;
+                break;
             case SDLK_c:
                 Scene::getScene()->root->print(0);
                 break;
-            case SDLK_p: {
-                UID uid;
-                std::cin >> uid;
-                std::vector<UID> uids;
-                uids.push_back(uid);
-                human->selectEntities(uids);
-                break;
-            }
-            case SDLK_a: {
+            case SDLK_a:
                 human->selectAllEntities();
-            }
+                break;
             case SDLK_e:
                 human->centerCameraOnControlling();
                 break;
             case SDLK_SPACE:
                 pause = !pause;
                 break;
-
             case SDLK_o:
                 debugMode = !debugMode;
-                break;
-            case SDLK_l:
-                doLog = !doLog;
                 break;
             case SDLK_i:
                 for (auto &entry : Entity::s_entities) {
@@ -222,7 +218,7 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
                 break;
         }
     }
-    if(this->gameState == GAME_OVER) {
+    else if(this->gameState == GAME_OVER) {
         switch (event.keysym.sym) {
             case SDLK_ESCAPE:
                 std::cout<< "\nFINISH\n";
@@ -230,7 +226,14 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             case SDLK_r:
                 this->gameState = RESET;
         }
-
+    }
+    else if(this->gameState == MENU) {
+        switch (event.keysym.sym) {
+            case SDLK_ESCAPE:
+                gameState = PLAYING;
+                firstMenu = false;
+                break;
+        }
     }
 }
 
@@ -260,9 +263,6 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
             if (event.button == SDL_BUTTON_LEFT) {
                 std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
                                                                  window_height, camera);
-                for (UID uid : pointed) {
-                    std::cout << "HAS APRETADO SOBRE LA ENTIDAD #" << uid << "\n";  //TODO QUIT
-                }
                 if (mouse_when_press != mouse_when_up || pointed.size())
                     human->selectEntities(pointed);
 
@@ -272,6 +272,18 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
             }
         }
     }
+    else if(this->gameState == MENU){
+        float y = event.y;
+        if(firstMenu){
+            if(y > 20 && y < 60) {gameState = PLAYING; firstMenu = false;}
+            if(y > 60 && y < 100) exit(0);
+        }else{
+            if(y > 20 && y < 60) gameState = PLAYING;
+            if(y > 60 && y < 100) gameState = RESET;
+            if(y > 100 && y < 140) exit(0);
+        }
+    }
+
 }
 
 void Game::onMouseWheel(SDL_MouseWheelEvent event) {

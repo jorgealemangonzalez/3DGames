@@ -216,10 +216,10 @@ click D Arrastrar sin entidad seleccionada para mover la camara y su centro
 click I Seleccionar unidades
 SPACE   Activar/desactivar pausa (default false): durante pausa GUI funciona correctamente
 a       seleccionar todas las tropas posibles
+ESC     Ir al menu (de momento no tiene nada)
 
 ~ DEBUG ~
 o       Activar/desactivar debugMode (usado en visualización e impresión por consola, default false)
-l       Activar/desactivar guardado de datos en fichero log.txt (default false)
 i       Quita entre 0 y 1000 de vida a cada entidad con vida
 
 ------ FICHERO LEVEL ---------
