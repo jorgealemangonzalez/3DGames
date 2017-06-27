@@ -31,11 +31,11 @@ Scene::Scene() {
     root_background->addChild(planet_background3);
 }
 Scene::~Scene(){
-    delete root;
-    delete background;
-    delete grid;
-
-    delete root_background;
+    //delete root;  destroy_all takes care of it
+    //delete background;
+    //delete grid;
+    //delete root_background;
+    Scene::scene = NULL;
 }
 
 Scene* Scene::getScene() {
@@ -283,7 +283,6 @@ void Scene::loadScene(const char* filename) {
             asteroid= &asteroid_med;
             asteroidRadius = asteroidRadius_med;
         }
-
         Vector3 rpos;
         rpos.random(boxMin, boxMax);
         std::map<UID,Entity*>::iterator it;

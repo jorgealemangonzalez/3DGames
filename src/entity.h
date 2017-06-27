@@ -61,6 +61,7 @@ public:
     //Static methods
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
+    static void destroy_all();
     static std::vector<UID> entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera);
 
     //Entity methods

@@ -35,8 +35,8 @@ Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
 
 Entity::~Entity() { //destructors are called automatically in the reverse order of construction. (Base classes last).
     //Remove from s_entities
-    if(this->parent)
-        this->parent->removeChild(this);
+    /*if(this->parent)
+        this->parent->removeChild(this);*/
 
     auto it = s_entities.find(this->uid);
     if(it != s_entities.end()){
@@ -48,10 +48,10 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
         MusicManager::playEnemyDown(getPosition());
     }
 
-    for(Entity* e : children){
+    /*for(Entity* e : children){
         if(e != NULL)
             delete e;
-    }
+    }*/
 
 
 }
@@ -70,6 +70,8 @@ void Entity::destroy_entities_to_destroy() {
     Game* g = Game::instance;
     for( UID uid : to_destroy){
         Entity* entity = s_entities[uid];
+        if(entity == NULL)
+            continue;
         if(entity->stats.mantainAlive) {
             Player* p = g->getTeamPlayer(entity->stats.team);
             auto it = std::find(p->maintainAliveEntities.begin(),p->maintainAliveEntities.end(),entity->uid);
@@ -91,6 +93,13 @@ void Entity::destroy_entities_to_destroy() {
             delete entity;
     }
     to_destroy = std::vector<UID>();
+}
+
+void Entity::destroy_all() {
+    while(s_entities.size() > 0){
+        Entity *e = (*s_entities.begin()).second;
+        delete e;
+    }
 }
 
 std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
@@ -156,7 +165,8 @@ void Entity::removeChild(Entity* entity){
 }
 
 void Entity::destroy() {
-    parent->removeChild(this);
+    if(parent)
+        parent->removeChild(this);
     for(Entity* child: children){
         child->destroy();
     }
@@ -164,7 +174,7 @@ void Entity::destroy() {
 }
 
 Matrix44 Entity::getGlobalModel() {
-    if(parent)
+    if(parent != NULL)
         return model * parent->getGlobalModel();
     else return model;
 }

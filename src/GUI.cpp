@@ -16,9 +16,9 @@ GUI::~GUI() {
     delete guiPointsMesh;
     delete guiLinesMesh;
     delete guiPlanesMesh;    //Used in selection at the moment
-    delete grid;
     delete debugPointsMesh;
     delete debugLinesMesh;
+    gui = NULL;
 }
 
 GUI::GUI() {

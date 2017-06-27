@@ -36,9 +36,11 @@ void Game::resetGame(){
     delete human;
     delete enemy;
     delete camera;
+    Entity::destroy_all();
+    delete Scene::getScene();
+    delete GUI::getGUI();
 
     this->init();
-
 }
 
 Game::Game(SDL_Window *window) {
