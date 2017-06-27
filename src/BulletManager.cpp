@@ -58,11 +58,12 @@ void BulletManager::update(float elapsed_time) {
         for(unsigned int i = 0 ; i < EntityCollider::dynamic_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
             Vector3 collision_point;
-            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
+            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
                 if(e->stats.team != b.team) {
                     e->onCollision(&b);
                     Explosion::generateExplosion(collision_point);
-                }
+                }else continue;
+
                 hit = true;
                 break;
             }
@@ -76,13 +77,11 @@ void BulletManager::update(float elapsed_time) {
         for(unsigned int i = 0 ; i < EntityCollider::static_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::static_colliders[i]);
             Vector3 collision_point;
-            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
+            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
                 if(e->stats.team != b.team) {
                     e->onCollision(&b);
                     Explosion::generateExplosion(collision_point);
-                }else{
-                    std::cout<<"NO HIT"<<std::endl;
-                }
+                }else continue;
                 hit = true;
                 break;
             }

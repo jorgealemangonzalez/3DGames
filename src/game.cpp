@@ -98,6 +98,7 @@ void Game::init(void) {
 
 //what to do when the image has to be draw
 void Game::render(void) {
+    double now = getTime();
     //set the clear color (the background color)
     glClearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -141,9 +142,14 @@ void Game::render(void) {
     glDisable(GL_BLEND);
     //swap between front buffer and back buffer
     SDL_GL_SwapWindow(this->window);
+
+    if(debugMode)
+        std::cout<<"RENDER: "<<getTime()-now<<"\n";
 }
 
 void Game::update(double seconds_elapsed) {
+    long now = getTime();
+
     if(this->gameState == PLAYING) {
         Scene::getScene()->updateGUI();
         if (!pause) {
@@ -174,6 +180,8 @@ void Game::update(double seconds_elapsed) {
             }
         }
     }
+    if(debugMode)
+        std::cout<<"UPDATE: "<<getTime()-now<<"\n";
 }
 
 //Keyboard event handler (sync input)

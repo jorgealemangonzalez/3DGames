@@ -53,6 +53,7 @@ GUI::GUI() {
 }
 
 void GUI::render() {
+
     if(show_grid){
         //glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);

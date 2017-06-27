@@ -273,19 +273,6 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
     if(stats.movable){
         Vector3 pos = getPosition();
 
-            //If is following an entity set the current position of that entity
-        if(stats.followEntity){
-            Entity* follow = Entity::getEntity(stats.followEntity);
-            if(follow != NULL){
-                Vector3 followPos = follow->getPosition();
-                if((followPos-pos).length() > stats.range*.6){
-                    stats.targetPos = follow->getPosition();
-                    stats.vel = stats.maxvel;
-                }
-            }
-            else stats.followEntity = 0;
-        }
-
             //If it has a velocity and a target position try to move to that point
         if(stats.vel && stats.targetPos) {
 
@@ -311,9 +298,9 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
             if (velocity && distance < 100) {         //parking velocity :')
                 velocity = (distance/100)* velocity;
             }
-            if (debugMode)
+            /*if (debugMode)
                 std::cout << "GRAVITY:: " << stats.gravity << std::endl;
-
+            */
             stats.gravity *= elapsed_time;
             Vector3 vel = model.rotateVector(Vector3(0, 0, -velocity * elapsed_time));
             Vector3 added = vel + stats.gravity;
@@ -579,7 +566,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             double distance = gravDir.length();
 
             gravDir.normalize();
-            if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
+            if(distance < total_radius) {
                 entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity, Vector4(1,1,1,1), false, true);
@@ -690,6 +677,40 @@ void EntityFighter::shoot() {
 }
 
 void EntityFighter::update(float elapsed_time){
+    //START-------Si estamos cerca de la entidad que seguimos patruyala o disparale
+    //If is following an entity set the current position of that entity
+    UID saveFollow = 0;
+    Vector3 pos = getPosition();
+    if(stats.followEntity){
+        Entity* follow = Entity::getEntity(stats.followEntity);
+        if(follow != NULL){
+            Vector3 followPos = follow->getPosition();
+            if((followPos-pos).length() > stats.range*.6){
+                stats.targetPos = follow->getPosition();
+                stats.vel = stats.maxvel;
+            }
+
+            //MISMA LOGICA QUE LA GRAVEDAD PARA QUEDARSE PATRUYANDO
+            float source_radius = Mesh::Load(this->mesh)->info.radius;
+            Entity* entitySource = this;
+            Entity* entityDest = follow;
+
+            double dest_radius = Mesh::Load(((EntityMesh*)entityDest)->mesh)->info.radius;
+            double total_radius = source_radius + dest_radius;
+            Vector3 gravDir = entitySource->getPosition() - entityDest->getPosition();
+            double distance = gravDir.length();
+
+            gravDir.normalize();
+            if(distance < total_radius+100) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
+                saveFollow = stats.followEntity;
+            }
+        }
+        else stats.followEntity = 0;
+    }
+    //END-------Si estamos cerca de la entidad que seguimos patruyala o disparale
+
+
+
     updateStatsAndEntityActions(elapsed_time);
     lastFireSec+=elapsed_time;
     Entity* enemy = NULL;
@@ -726,6 +747,10 @@ void EntityFighter::update(float elapsed_time){
             stats.vel = 0;
         }
     }
+
+    //RESTORE-------Si estamos cerca de la entidad que seguimos patruyala o disparale
+    if(saveFollow)
+        stats.followEntity = saveFollow;
 
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);
