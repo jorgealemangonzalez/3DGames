@@ -15,7 +15,7 @@ GUI::~GUI() {
     delete camera2d;
     delete guiPointsMesh;
     delete guiLinesMesh;
-    delete guiPlanesMesh;    //Used in selection at the moment
+    delete guiPlanesMesh;
     delete debugPointsMesh;
     delete debugLinesMesh;
     gui = NULL;
@@ -47,6 +47,7 @@ GUI::GUI() {
     grid = new EntityCollider();
     grid->setMesh("_grid");
     grid->setTexture(texture);
+    grid->stats.team = NO_TEAM;
     show_grid = false;
     gui = this;
 }
@@ -211,8 +212,4 @@ void GUI::setGrid(bool show, Vector3 center) {
     grid->model.setTranslation(center);
     Vector3 axis(1.0,0,0);
     grid->model.rotateLocal(DEG2RAD*90,axis);
-}
-
-void GUI::showHideGrid(){
-    show_grid = !show_grid;
 }

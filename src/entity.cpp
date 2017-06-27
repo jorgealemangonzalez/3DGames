@@ -105,6 +105,8 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
 
     for(auto &entry : Entity::s_entities){
         {
+            if(entry.second->stats.team == NO_TEAM || entry.second->stats.isTemplate) continue;
+
             entry.second->stats.selected = false;
             Vector3 pos = camera->project(entry.second->getPosition(), width, height);
             if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
@@ -113,14 +115,14 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
 
                 if(up > pos.y-radius && down < pos.y+radius &&
                         right > pos.x-radius && left < pos.x+radius){
-                    if(team == "" || team == entry.second->stats.team) {
+                    if(team == ANY_TEAM || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
                         if(entry.second->stats.selectable)
                             entry.second->stats.selected = true;
                     }
                 }else if(up < pos.y+radius && down > pos.y-radius &&
                         right < pos.x+radius && left > pos.x-radius){
-                    if(team == "" || team == entry.second->stats.team) {
+                    if(team == ANY_TEAM || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
                         if(entry.second->stats.selectable)
                             entry.second->stats.selected = true;
@@ -128,7 +130,7 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
                 }
             }else{
                 if(pos.x >= left && pos.x <= right && pos.y >= down && pos.y <= up){
-                    if(team == "" || team == entry.second->stats.team) {
+                    if(team == ANY_TEAM || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
                         if(entry.second->stats.selectable)
                             entry.second->stats.selected = true;
@@ -250,21 +252,24 @@ void Entity::render(Camera* camera){
 }
 
 void Entity::updateStatsAndEntityActions(float elapsed_time) {
-    if(stats.followEntity){
-        Entity* follow = Entity::getEntity(stats.followEntity);
-        if(follow != NULL && (follow->getPosition() - this->getPosition()).length() > 200 ) {
-            stats.targetPos = follow->getPosition();
-            stats.vel = stats.maxvel;
-        }
-    }
 
     if(stats.movable){
-        //std::cout<<"UDATE ENTITY\n";
-        // use elapsed_time, stats.vel and stats.front to move the entity
-        if(stats.vel && stats.targetPos) {
-            //std::cout<<"UDATE ENTITY--------\n";
+        Vector3 pos = getPosition();
+            //If is following an entity set the current position of that entity
+        if(stats.followEntity){
+            Entity* follow = Entity::getEntity(stats.followEntity);
+            if(follow != NULL && (follow->getPosition()-pos).length() > stats.range*.6) {
+                stats.targetPos = follow->getPosition();
+                stats.vel = stats.maxvel;
+            }else{
+                stats.followEntity = 0;
+            }
+        }
 
-            Vector3 to_target = stats.targetPos - getPosition();
+            //If it has a velocity and a target position try to move to that point
+        if(stats.vel && stats.targetPos) {
+
+            Vector3 to_target = stats.targetPos - pos;
             to_target.normalize();
             Vector3 looking = getDirection().normalize();
 
@@ -280,7 +285,7 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
 
-            float distance = (stats.targetPos - getPosition()).length();
+            float distance = (stats.targetPos - pos).length();
 
             float velocity = stats.vel;
             if (velocity && distance < 100) {         //parking velocity :')
@@ -288,6 +293,7 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
             }
             if (debugMode)
                 std::cout << "GRAVITY:: " << stats.gravity << std::endl;
+
             stats.gravity *= elapsed_time;
             Vector3 vel = model.rotateVector(Vector3(0, 0, -velocity * elapsed_time));
             Vector3 added = vel + stats.gravity;
@@ -295,8 +301,8 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
             added *= (velocity * elapsed_time);
             model.traslate(added.x, added.y, added.z);
 
-            if (distance < 10 || stats.followEntity) {
-                stats.vel = Vector3();
+            if (distance < 10 || (distance < stats.range*.4 && stats.followEntity)) {
+                stats.vel = 0;
                 stats.targetPos = Vector3();
             }
         }
@@ -485,11 +491,20 @@ void EntityMesh::unitGUI() {
     }
 
     //TODO LINEAS
-    if(stats.team == HUMAN_TEAM && stats.movable && stats.targetPos){
-        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
-    }else if(stats.team == ENEMY_TEAM && stats.followEntity){
-        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2), false, true);
+    if(stats.movable){
+        if(stats.followEntity){
+            Entity* follow = Entity::getEntity(stats.followEntity);
+            if(follow != NULL){
+                if(stats.team == HUMAN_TEAM)
+                    gui->addLine(pos, follow->getPosition(), Vector4(1,1,0,0.2));
+                else if(stats.team == ENEMY_TEAM)
+                    gui->addLine(pos, stats.targetPos, Vector4(1,0.5,0,0.2), false, true);
+            }
+        }else if(stats.team == HUMAN_TEAM && stats.targetPos){
+            gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
+        }
     }
+
 }
 
 //================================================

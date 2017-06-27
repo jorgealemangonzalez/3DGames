@@ -65,6 +65,8 @@
 #define HUMAN_TEAM "t1"
 #define ENEMY_TEAM "t2"
 #define NEUTRAL_TEAM "neutral"
+#define NO_TEAM "no_team"
+#define ANY_TEAM ""
 
 extern bool debugMode;  //Global declarada en main
 

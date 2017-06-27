@@ -10,31 +10,30 @@ Scene* Scene::scene = NULL;
 Scene::Scene() {
     root = new Entity();
     root->name = "root";
+    root->stats.team = NO_TEAM;
     background = NULL;
-    grid = NULL;
 
     root_background = new Entity();
     EntityMesh* planet_background = new EntityMesh();
     planet_background->mesh = "planet/sphere.ASE";
     planet_background->texture = "planet/planet_surface.tga";
     planet_background->model.setTranslation(400,-200,500);
+    planet_background->stats.team = NO_TEAM;
     root_background->addChild(planet_background);
     EntityMesh* planet_background2 = new EntityMesh();
     planet_background2->mesh = "planet/sphere.ASE";
     planet_background2->texture = "planet/purple_planet.tga";
     planet_background2->model.setTranslation(-200,20,200);
+    planet_background2->stats.team = NO_TEAM;
     root_background->addChild(planet_background2);
     EntityMesh* planet_background3 = new EntityMesh();
     planet_background3->mesh = "planet/sphere.ASE";
     planet_background3->texture = "planet/craters.tga";
     planet_background3->model.setTranslation(200,0,-300);
     root_background->addChild(planet_background3);
+    planet_background3->stats.team = NO_TEAM;
 }
 Scene::~Scene(){
-    //delete root;  destroy_all takes care of it
-    //delete background;
-    //delete grid;
-    //delete root_background;
     Scene::scene = NULL;
 }
 
@@ -46,32 +45,21 @@ Scene* Scene::getScene() {
 }
 
 void Scene::addToRoot(Entity *e) {
-    Scene::getScene()->root->addChild(e);
+    root->addChild(e);
 }
 
 void Scene::addBackground(Entity *e) {
-    Scene::getScene()->background = e;
-}
-
-void Scene::addGrid(Entity * e) {
-    Scene::getScene()->grid = e;
+    background = e;
+    background->stats.team = NO_TEAM;
 }
 
 void Scene::render(Camera* camera) {
-    if(background != NULL || grid != NULL){
+    if(background != NULL){
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        if(background != NULL){
-            Vector3 cubemapcenter = camera->eye;
-            background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
-            background->render(camera);
-        }
-        if(grid != NULL){
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            grid->render(camera);
-            glDisable(GL_BLEND);
-        }
+        Vector3 cubemapcenter = camera->eye;
+        background->model.setIdentity().setTranslation(cubemapcenter.x, cubemapcenter.y, cubemapcenter.z);
+        background->render(camera);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
@@ -171,6 +159,7 @@ void Scene::loadScene(const char* filename) {
             stats.range = t.getfloat();
             stats.maxvel = t.getint();
             stats.team = t.getword();
+            stats.isTemplate = false;
             es->statsSpawned = stats;
             e = es;
         } else {
@@ -178,6 +167,7 @@ void Scene::loadScene(const char* filename) {
             exit(0);
         }
         e->stats.isTemplate = true;
+        e->stats.team = NO_TEAM;
         templates[name] = e;
         e->name = name;
     }
@@ -216,6 +206,7 @@ void Scene::loadScene(const char* filename) {
             stats.range = t.getfloat();
             stats.maxvel = t.getint();
             stats.team = t.getword();
+            stats.isTemplate = false;
             clone->stats = stats;
 
             if(stats.team == HUMAN_TEAM){
@@ -244,7 +235,6 @@ void Scene::loadScene(const char* filename) {
     }
 
     //GENERATE RANDOM ASTEROIDS
-
     //FIRST:: get full bounding box
     Vector3 boxMin(INFINITY,INFINITY,INFINITY), boxMax(-INFINITY,-INFINITY,-INFINITY);
     auto entities = Entity::s_entities;
@@ -273,7 +263,6 @@ void Scene::loadScene(const char* filename) {
     asteroid_med.setTexture("asteroides/asteroide.tga");
     float asteroidRadius_peq = Mesh::Load(asteroid_peq.mesh)->info.radius;
     float asteroidRadius_med = Mesh::Load(asteroid_med.mesh)->info.radius;
-
 
     for(int try_ = 0 ; try_ < 200 ; ++try_){ //
         float asteroidRadius;

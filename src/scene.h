@@ -9,10 +9,8 @@ class Scene {
     Scene();
 public:
     ~Scene();
-    //bool debugMode;
     Entity* root;
     Entity* background;
-    Entity* grid;
 
     Entity* root_background;
 
@@ -21,7 +19,6 @@ public:
     static Scene* getScene();
     void addToRoot(Entity* e);
     void addBackground(Entity* e);
-    void addGrid(Entity* e);
     void render(Camera* camera);
     void loadScene(const char* filename);
     void update(float elapsed_time);
