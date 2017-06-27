@@ -12,9 +12,10 @@
 class Player {
 protected:
     std::vector<UID> controllableEntities;      // Pool of controllable (friendly) entities
-    std::string team;
+
 
 public:
+    std::string team;
     Player(std::string t);
     virtual ~Player();
 

@@ -701,7 +701,7 @@ void EntityFighter::update(float elapsed_time){
             double distance = gravDir.length();
 
             gravDir.normalize();
-            if(distance < total_radius+100) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
+            if(distance < total_radius+100 && Game::instance->getEnemyTeamPlayer(this->stats.team)->team != entityDest->stats.team) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
                 saveFollow = stats.followEntity;
                 stats.followEntity = 0;
             }
