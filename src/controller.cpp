@@ -78,13 +78,13 @@ void CameraController::update(double seconds_elapsed) {
             //async input to move the camera around or if mouse in window edge
             bool pasiveMove = !(game->mouseLeft || game->mouseRight);
             if (game->keystate[SDL_SCANCODE_LSHIFT]) speed *= 10; //move faster with left shift
-            if (game->keystate[SDL_SCANCODE_UP] || (pasiveMove && game->mouse_position.y > game->window_height-game->window_height))
+            if (game->keystate[SDL_SCANCODE_UP] || (pasiveMove && game->mouse_position.y > game->window_height-game->window_height*0.1))
                 camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-            if (game->keystate[SDL_SCANCODE_DOWN] || (pasiveMove && game->mouse_position.y < game->window_height))
+            if (game->keystate[SDL_SCANCODE_DOWN] || (pasiveMove && game->mouse_position.y < game->window_height*0.1))
                 camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
-            if (game->keystate[SDL_SCANCODE_LEFT] || (pasiveMove && game->mouse_position.x < game->window_width))
+            if (game->keystate[SDL_SCANCODE_LEFT] || (pasiveMove && game->mouse_position.x < game->window_width*0.1))
                 camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-            if (game->keystate[SDL_SCANCODE_RIGHT] || (pasiveMove && game->mouse_position.x > game->window_width-game->window_width))
+            if (game->keystate[SDL_SCANCODE_RIGHT] || (pasiveMove && game->mouse_position.x > game->window_width-game->window_width*0.1))
                 camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
 
             //to navigate with the mouse fixed in the middle
