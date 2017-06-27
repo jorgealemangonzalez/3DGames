@@ -141,7 +141,8 @@ void Game::render(void) {
     }else if(this->gameState == LEVEL) {
         drawText(100, 100, (selectedLevel == LEVEL_TUTORIAL ? "*TUTORIAL" : (y > 100 && y < 140) ? ">TUTORIAL" : "TUTORIAL"), Vector3(1,1,0), 4);
         drawText(100, 140, (selectedLevel == LEVEL_NIVEL1 ? "*NIVEL 1" : (y > 140 && y < 180) ? ">NIVEL 1" : "NIVEL 1"), Vector3(1,1,0), 4);
-        drawText(100, 180, (y > 180 && y < 220) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
+        drawText(100, 180, (selectedLevel == LEVEL_DEBUG ? "*NIVEL DEBUG" : (y > 180 && y < 220) ? ">NIVEL DEBUG" : "NIVEL DEBUG"), Vector3(1,1,0), 4);
+        drawText(100, 220, (y > 220 && y < 260) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
     }
     glDisable(GL_BLEND);
     //swap between front buffer and back buffer
@@ -288,7 +289,8 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
         float y = event.y;
         if(y > 100 && y < 140 && selectedLevel != LEVEL_TUTORIAL) {selectedLevel = LEVEL_TUTORIAL; gameState = RESET;}
         if(y > 140 && y < 180 && selectedLevel != LEVEL_NIVEL1) {selectedLevel = LEVEL_NIVEL1; gameState = RESET;}
-        if(y > 180 && y < 220) gameState = MAIN_MENU;
+        if(y > 180 && y < 220 && selectedLevel != LEVEL_DEBUG) {selectedLevel = LEVEL_DEBUG; gameState = RESET;}
+        if(y > 220 && y < 260) gameState = MAIN_MENU;
     }
 
 }

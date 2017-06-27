@@ -292,7 +292,6 @@ void Scene::loadScene(const char* filename) {
         }
 
         if(it == entities.end()){
-            std::cout<<"ASTEROIDE RANDOM";
             EntityAsteroid* as = asteroid->clone();
             as->model.traslate(rpos.x,rpos.y,rpos.z);
             this->addToRoot(as);
