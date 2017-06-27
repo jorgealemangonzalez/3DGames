@@ -24,7 +24,7 @@ typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     int maxvel=0;
     float ttl=0;                // Time remain
     float range=1000;           // Range
-    std::string team="neutral"; // Ingame team: 't1', 't2', 'neutral'
+    std::string team=NEUTRAL_TEAM; // Ingame team: 't1', 't2', 'neutral'
 
     bool isTemplate = false;    // Cuando se crean las entidades se utilizan las templates para hacer el clone
 
@@ -62,7 +62,8 @@ public:
     static Entity* getEntity(UID uid);
     static void destroy_entities_to_destroy();
     static void destroy_all();
-    static std::vector<UID> entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera);
+    static std::vector<UID> entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera,
+                                        std::string team="");
 
     //Entity methods
     void save();

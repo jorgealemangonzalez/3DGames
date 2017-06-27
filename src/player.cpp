@@ -55,7 +55,7 @@ void Human::update(double seconds_elapsed) {
         center += e->getPosition();
     }
 
-    if(updateCenter){
+    if(updateCenter && controlling.size()){
         center /= controlling.size();
         centerControlling = center;
         if(controlling.size()) {
@@ -83,6 +83,13 @@ void Human::centerCameraOnControlling(){
 void Human::selectAllEntities(){
     this->selectEntities(this->controllableEntities);
 }
+
+void Human::followEntitie(UID follow) {
+    for(Entity* control : getControllingEntities()){
+        control->stats.followEntity = follow;
+    }
+}
+
 void Human::selectEntities(std::vector<UID>& entities) {
     controllingEntities = entities;
     std::vector<Entity *> controlEntities = getControllingEntities();
@@ -180,7 +187,13 @@ bool Human::getPositionSelectedMove(Vector3 &selectedMove) {
     return true;
 }
 
+
+
 void Human::moveSelectedInPlane(){
+    for(Entity* en : getControllingEntities()){
+        en->stats.followEntity = 0;
+    }
+
     Vector3 selectedMove;
     if(getPositionSelectedMove(selectedMove))
         organizeSquadCircle(selectedMove);

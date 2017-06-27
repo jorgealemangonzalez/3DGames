@@ -11,7 +11,7 @@
 #include <sstream>
 #include <iostream>
 
-#define MAX_BULLETS 10000
+#define MAX_BULLETS 100
 class Bullet{
 public:
     Vector3 position;       // Posición: V3
@@ -19,13 +19,14 @@ public:
     Vector3 velocity;       // Velocidad: V3 (contiene tambien la dirección)
     float ttl;              // time to live, tiempo de vida que le queda
     float power;            // daño que hace la bala al colisionar
-    UID author;             // quien ha disparado la bala
     std::string type;       // por si hay diferentes tipos de bala //TODO crear valas que llegan mas lejos o cerca
+    std::string team;       //Equipo quien la dispara
+
 
     Bullet();
     ~Bullet();
     void set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
-             UID author, const std::string &type);
+             std::string team, const std::string &type);
 
 
 };

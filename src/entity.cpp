@@ -93,7 +93,7 @@ void Entity::destroy_all() {
     s_created = 0;
 }
 
-std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
+std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera, std::string team){
     //Project all selectable entities into screen space and check if if are inside the region
 
     float up = (mouseDown.y > mouseUp.y ? mouseDown.y : mouseUp.y) + 5;
@@ -113,17 +113,23 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
 
                 if(up > pos.y-radius && down < pos.y+radius &&
                         right > pos.x-radius && left < pos.x+radius){
-                    inside.push_back(entry.second->uid);
-                    entry.second->stats.selected = true;
+                    if(team == "" || team == entry.second->stats.team) {
+                        inside.push_back(entry.second->uid);
+                        entry.second->stats.selected = true;
+                    }
                 }else if(up < pos.y+radius && down > pos.y-radius &&
                         right < pos.x+radius && left > pos.x-radius){
-                    inside.push_back(entry.second->uid);
-                    entry.second->stats.selected = true;
+                    if(team == "" || team == entry.second->stats.team) {
+                        inside.push_back(entry.second->uid);
+                        entry.second->stats.selected = true;
+                    }
                 }
             }else{
                 if(pos.x >= left && pos.x <= right && pos.y >= down && pos.y <= up){
-                    inside.push_back(entry.second->uid);
-                    entry.second->stats.selected = true;
+                    if(team == "" || team == entry.second->stats.team) {
+                        inside.push_back(entry.second->uid);
+                        entry.second->stats.selected = true;
+                    }
                 }
             }
         }
@@ -246,8 +252,6 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
         if(follow != NULL && (follow->getPosition() - this->getPosition()).length() > 200 ) {
             stats.targetPos = follow->getPosition();
             stats.vel = stats.maxvel;
-        }else{
-            stats.followEntity = 0;
         }
     }
 
@@ -655,6 +659,9 @@ void EntityFighter::update(float elapsed_time){
         double distance = INFINITY;
         if(stats.followEntity){
             Entity* e = Entity::getEntity(stats.followEntity);
+            if(e == NULL) {
+                stats.followEntity = 0;
+            }else
             if(e->stats.team != this->stats.team)
                 enemy = e;
         }

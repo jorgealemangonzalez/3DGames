@@ -43,6 +43,7 @@ public:
     const Vector3 &getCenterControlling() const;
 
     void selectAllEntities();
+    void followEntitie(UID follow);
     void selectEntities(std::vector<UID>& entities);
     void centerCameraOnControlling();
     void moveSelectedInPlane();

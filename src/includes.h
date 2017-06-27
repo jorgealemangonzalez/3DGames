@@ -64,6 +64,7 @@
 #define PI 3.14159
 #define HUMAN_TEAM "t1"
 #define ENEMY_TEAM "t2"
+#define NEUTRAL_TEAM "neutral"
 
 extern bool debugMode;  //Global declarada en main
 

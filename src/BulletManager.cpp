@@ -13,13 +13,13 @@ Bullet::Bullet() {}
 Bullet::~Bullet() {}
 
 void Bullet::set(const Vector3 &position, const Vector3 &last_position, const Vector3 &velocity, float ttl, float power,
-                 UID author, const std::string &type) {
+                 std::string team, const std::string &type) {
     this->position = position;
     this->last_position = last_position;
     this->velocity = velocity;
     this->ttl = ttl;
     this->power = power;
-    this->author = author;
+    this->team = team;
     this->type = type;
 }
 
@@ -59,8 +59,10 @@ void BulletManager::update(float elapsed_time) {
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
             Vector3 collision_point;
             if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
-                e->onCollision(&b);
-                Explosion::generateExplosion(collision_point);
+                if(e->stats.team != b.team) {
+                    e->onCollision(&b);
+                    Explosion::generateExplosion(collision_point);
+                }
                 hit = true;
                 break;
             }
@@ -75,8 +77,12 @@ void BulletManager::update(float elapsed_time) {
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::static_colliders[i]);
             Vector3 collision_point;
             if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 7.0f, collision_point)){
-                e->onCollision(&b);
-                Explosion::generateExplosion(collision_point);
+                if(e->stats.team != b.team) {
+                    e->onCollision(&b);
+                    Explosion::generateExplosion(collision_point);
+                }else{
+                    std::cout<<"NO HIT"<<std::endl;
+                }
                 hit = true;
                 break;
             }
@@ -121,7 +127,7 @@ void BulletManager::createBullet(const Vector3 &position, const Vector3 &last_po
         removePosFromPool(mini);
     }
 
-    bullets_pool[last_pos_pool++].set(position,last_position,velocity,ttl,power,author,type);
+    bullets_pool[last_pos_pool++].set(position,last_position,velocity,ttl,power,Entity::getEntity(author)->stats.team,type);
 }
 
 BulletManager* BulletManager::getManager() {

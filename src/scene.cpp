@@ -295,6 +295,7 @@ void Scene::loadScene(const char* filename) {
 
         if(it == entities.end()){
             EntityAsteroid* as = asteroid->clone();
+            EntityCollider::registerCollider(as);
             as->model.traslate(rpos.x,rpos.y,rpos.z);
             this->addToRoot(as);
         }

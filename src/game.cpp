@@ -252,13 +252,22 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
         if (!keystate[SDL_SCANCODE_LSHIFT]) {
             if (event.button == SDL_BUTTON_LEFT) {
                 std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
-                                                                 window_height, camera);
-                if (mouse_when_press != mouse_when_up || pointed.size())
+                                                                 window_height, camera,HUMAN_TEAM);
+                if (pointed.size()) {
+
                     human->selectEntities(pointed);
+                }
 
             } else if (event.button == SDL_BUTTON_RIGHT) {
-                human->moveSelectedInPlane();
-                human->updateCenter = true;
+                std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
+                                                                 window_height, camera);
+                if(pointed.size()){
+                    human->followEntitie(pointed[0]);
+                    human->updateCenter = true;
+                }else {
+                    human->moveSelectedInPlane();
+                    human->updateCenter = true;
+                }
             }
         }
     }
