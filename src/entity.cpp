@@ -104,7 +104,7 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
     std::vector<UID> inside;
 
     for(auto &entry : Entity::s_entities){
-        if(entry.second->stats.selectable){
+        {
             entry.second->stats.selected = false;
             Vector3 pos = camera->project(entry.second->getPosition(), width, height);
             if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
@@ -115,20 +115,23 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
                         right > pos.x-radius && left < pos.x+radius){
                     if(team == "" || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
-                        entry.second->stats.selected = true;
+                        if(entry.second->stats.selectable)
+                            entry.second->stats.selected = true;
                     }
                 }else if(up < pos.y+radius && down > pos.y-radius &&
                         right < pos.x+radius && left > pos.x-radius){
                     if(team == "" || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
-                        entry.second->stats.selected = true;
+                        if(entry.second->stats.selectable)
+                            entry.second->stats.selected = true;
                     }
                 }
             }else{
                 if(pos.x >= left && pos.x <= right && pos.y >= down && pos.y <= up){
                     if(team == "" || team == entry.second->stats.team) {
                         inside.push_back(entry.second->uid);
-                        entry.second->stats.selected = true;
+                        if(entry.second->stats.selectable)
+                            entry.second->stats.selected = true;
                     }
                 }
             }

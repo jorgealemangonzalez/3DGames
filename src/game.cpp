@@ -145,12 +145,12 @@ void Game::render(void) {
 
 void Game::update(double seconds_elapsed) {
     if(this->gameState == PLAYING) {
+        Scene::getScene()->updateGUI();
         if (!pause) {
             Explosion::updateAll(seconds_elapsed);
             enemy->update(seconds_elapsed);
             Scene::getScene()->update(seconds_elapsed);
         }
-        Scene::getScene()->updateGUI();
         MusicManager::update();
         human->update(seconds_elapsed);
 
@@ -173,9 +173,6 @@ void Game::update(double seconds_elapsed) {
                 }
             }
         }
-    }
-    else if(this->gameState == MENU){
-
     }
 }
 

@@ -35,7 +35,7 @@ Controles usuario interfaz:
 
 (DONE) Añadir el camera que ha modificado javi al framework para poder hacer la GUI bien ( Puede que no haga falta )
 
-(PROGRESS) Comprobar destrucción de entities (empezado en entity: to_destroy, destroy, destroy_entities_to_destroy)
+(DONE) Comprobar destrucción de entities (empezado en entity: to_destroy, destroy, destroy_entities_to_destroy)
 
 (PROGRESS) Si tienes seleccionada una entidad que cuando gires la camara te gire con este siguiendo en el centro
 

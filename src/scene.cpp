@@ -299,10 +299,7 @@ void Scene::loadScene(const char* filename) {
             as->model.traslate(rpos.x,rpos.y,rpos.z);
             this->addToRoot(as);
         }
-
     }
-
-
 }
 
 void Scene::update(float elapsed_time) {
