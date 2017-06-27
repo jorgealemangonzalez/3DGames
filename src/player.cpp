@@ -88,7 +88,14 @@ void Human::selectAllEntities(){
     this->selectEntities(to_select);
 }
 
-void Human::followEntitie(UID follow) {
+void Human::followEntitie(std::vector<UID>& entities) {
+    //It prefers to follow enemy entities rather than others (miquel: haré algún cambio más al tema de seleccionar objetivos para human)
+    UID follow = 0;
+    for(Entity* e : Entity::getAndCleanEntityVector(entities)){
+        follow = e->uid;
+        if(e->stats.team == ENEMY_TEAM)
+            break;
+    }
     for(Entity* control : getControllingEntities()){
         control->stats.followEntity = follow;
     }
@@ -286,11 +293,10 @@ void Enemy::equilibrateSquads() {
     }else if(aniquile_squad.size() < attack_squad.size()){    //2º prioriza aniquilacion
         aniquile_squad.push_back(attack_squad[0]);
         attack_squad.erase(attack_squad.begin());
-    }else if(aniquile_squad.size() > attack_squad.size()){
+    }else if(aniquile_squad.size() > attack_squad.size()+1){
         attack_squad.push_back(aniquile_squad[0]);
         aniquile_squad.erase(aniquile_squad.begin());
     }
-
 }
 
 void Enemy::update(double seconds_elapsed) {

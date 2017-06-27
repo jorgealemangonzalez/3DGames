@@ -48,7 +48,7 @@ public:
 
     void addControllableEntity(UID e_uid);
     void selectAllEntities();
-    void followEntitie(UID follow);
+    void followEntitie(std::vector<UID>& entities);
     void selectEntities(std::vector<UID>& entities);
     void centerCameraOnControlling();
     void moveSelectedInPlane();

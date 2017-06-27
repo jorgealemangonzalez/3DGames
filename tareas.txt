@@ -68,6 +68,8 @@ Controles usuario interfaz:
 
 (TODO) Si hay colisión con los asteroides , que explote
 
+(TODO) Entity vs static collider gravity is bad
+
 --------------------------
 
 -> CONTROL

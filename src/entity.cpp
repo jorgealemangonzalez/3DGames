@@ -110,7 +110,7 @@ void Entity::destroy_all() {
     s_created = 0;
 }
 
-std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera, std::string team){
+std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera, std::string team, bool onlySelectable){
     //Project all selectable entities into screen space and check if if are inside the region
 
     float up = (mouseDown.y > mouseUp.y ? mouseDown.y : mouseUp.y) + 5;
@@ -122,35 +122,37 @@ std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int w
 
     for(auto &entry : Entity::s_entities){
         {
-            if(entry.second->stats.team == NO_TEAM || entry.second->stats.isTemplate) continue;
+            Entity* e = entry.second;
 
-            entry.second->stats.selected = false;
-            Vector3 pos = camera->project(entry.second->getPosition(), width, height);
-            if(EntityMesh* em = dynamic_cast<EntityMesh*>(entry.second)) {
+            if(e->stats.team == NO_TEAM || e->stats.isTemplate || (onlySelectable&&!e->stats.selectable)) continue;
+            if(onlySelectable) e->stats.selected = false;
+
+            Vector3 pos = camera->project(e->getPosition(), width, height);
+            if(EntityMesh* em = dynamic_cast<EntityMesh*>(e)) {
                 double meshRadius = Mesh::Load(em->mesh)->info.radius;
-                double radius = camera->getProjectScale(entry.second->getPosition(), meshRadius)*2;
+                double radius = camera->getProjectScale(e->getPosition(), meshRadius)*2;
 
                 if(up > pos.y-radius && down < pos.y+radius &&
                         right > pos.x-radius && left < pos.x+radius){
-                    if(team == ANY_TEAM || team == entry.second->stats.team) {
-                        inside.push_back(entry.second->uid);
-                        if(entry.second->stats.selectable)
-                            entry.second->stats.selected = true;
+                    if(team == ANY_TEAM || team == e->stats.team) {
+                        inside.push_back(e->uid);
+                        if(onlySelectable && e->stats.selectable)
+                            e->stats.selected = true;
                     }
                 }else if(up < pos.y+radius && down > pos.y-radius &&
                         right < pos.x+radius && left > pos.x-radius){
-                    if(team == ANY_TEAM || team == entry.second->stats.team) {
-                        inside.push_back(entry.second->uid);
-                        if(entry.second->stats.selectable)
-                            entry.second->stats.selected = true;
+                    if(team == ANY_TEAM || team == e->stats.team) {
+                        inside.push_back(e->uid);
+                        if(onlySelectable && e->stats.selectable)
+                            e->stats.selected = true;
                     }
                 }
             }else{
                 if(pos.x >= left && pos.x <= right && pos.y >= down && pos.y <= up){
-                    if(team == ANY_TEAM || team == entry.second->stats.team) {
-                        inside.push_back(entry.second->uid);
-                        if(entry.second->stats.selectable)
-                            entry.second->stats.selected = true;
+                    if(team == ANY_TEAM || team == e->stats.team) {
+                        inside.push_back(e->uid);
+                        if(onlySelectable && e->stats.selectable)
+                            e->stats.selected = true;
                     }
                 }
             }
@@ -667,12 +669,16 @@ EntityFighter* EntityFighter::clone() {
     return clon;
 }
 
-void EntityFighter::shoot() {
+void EntityFighter::shoot(Entity* target) {
     Vector3 actual_pos = getPosition();
-    Vector3 dir= getDirection();
-    dir.normalize();
+    Vector3 dir;
+    if(target != NULL)
+        dir = (target->getPosition() - getPosition()).normalize();
+    else
+        dir = getDirection().normalize();
+
     float radius = Mesh::Load(mesh)->info.radius + 4.0f;
-    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*300,100.0f,10.0f,uid,"No type yet");
+    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*500,100.0f,10.0f,uid,"No type yet");
     lastFireSec = 0;
 }
 
@@ -740,8 +746,10 @@ void EntityFighter::update(float elapsed_time){
                 lookPosition(elapsed_time,enemy->getPosition());
             if( (enemy->getPosition() - getPosition()).length() < stats.range ){
                 if(lastFireSec > 1.0/fireRate) {
-                    shoot();
-                    lastFireSec = 0;
+                    if(getDirection().dot(enemy->getPosition()-getPosition()) > 0.9){
+                        shoot(enemy);
+                        lastFireSec = 0;
+                    }
                 }
             }
         }else{
@@ -784,7 +792,6 @@ EntityStation* EntityStation::clone() {
 
 void EntityStation::update(float elapsed_time) {
     updateStatsAndEntityActions(elapsed_time);
-    unitGUI();
 
     for(int i=0; i<children.size(); i++){
         children[i]->update(elapsed_time);

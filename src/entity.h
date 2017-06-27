@@ -12,6 +12,7 @@
 #include "extra/coldet/src/coldet.h"
 #include "BulletManager.h"
 #include "GUI.h"
+#include "includes.h"
 
 typedef struct{//NO PONER PUNTEROS EN ESTA ESTRUCTURA
     //Level.txt values
@@ -65,7 +66,7 @@ public:
     static void destroy_entities_to_destroy();
     static void destroy_all();
     static std::vector<UID> entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera,
-                                        std::string team="");
+                                        std::string team=ANY_TEAM, bool onlySelectable=false);
 
     //Entity methods
     void save();
@@ -156,7 +157,7 @@ public:
     EntityFighter(bool dynamic = false);
     virtual ~EntityFighter();
 
-    void shoot();
+    void shoot(Entity* target=NULL);
     EntityFighter* clone();
     void update(float elapsed_time);
     void updateGUI();
