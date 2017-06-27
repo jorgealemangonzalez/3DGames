@@ -44,6 +44,8 @@ public:
     static std::map<UID,Entity*> s_entities;
     static std::vector<UID> to_destroy;
 
+    static std::vector<Entity*> getAndCleanEntityVector(std::vector<UID> &uids);
+
     Entity();
     virtual ~Entity();
 

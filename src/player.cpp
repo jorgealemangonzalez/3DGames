@@ -19,20 +19,7 @@ void Player::addControllableEntity(UID e_uid) {
 }
 
 std::vector<Entity*> Player::getControllableEntities(){
-    std::vector<Entity*> entities;
-    std::vector< std::vector<UID>::iterator > removeEntities;
-    for(std::vector<UID>::iterator it = controllableEntities.begin(); it != controllableEntities.end(); ++it) {
-        Entity* entity =Entity::getEntity((*it));
-        if (entity != NULL)
-            entities.push_back(entity);
-        else{
-            removeEntities.push_back(it);
-        }
-    }
-    for(std::vector<UID>::iterator it : removeEntities)
-        controllableEntities.erase(it);
-
-    return entities;
+    return Entity::getAndCleanEntityVector(controllableEntities);
 }
 
 //========================================
@@ -263,9 +250,21 @@ Enemy::~Enemy() {
 
 }
 
+void Enemy::addControllableEntity(UID e_uid) {
+    controllableEntities.push_back(e_uid);
+    if(defend.size() < 10)
+        defend.insert(e_uid);
+    else
+        attack.insert(e_uid);
+}
+
 void Enemy::update(double seconds_elapsed) {
     std::vector<Entity*> controllable = getControllableEntities();
-    for(Entity* driving: getControllableEntities()){
+
+
+
+    for(Entity* driving: controllable){
+
         for(Entity* ec: Game::instance->human->getControllableEntities()){
             driving->stats.followEntity = ec->uid;
             break;

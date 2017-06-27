@@ -29,6 +29,23 @@ std::vector<UID> Entity::to_destroy;
 std::vector<UID> EntityCollider::static_colliders;
 std::vector<UID> EntityCollider::dynamic_colliders;
 
+std::vector<Entity*> Entity::getAndCleanEntityVector(std::vector<UID> &uids) {
+    std::vector<Entity*> entities;
+    std::vector< std::vector<UID>::iterator > removeEntities;
+    for(std::vector<UID>::iterator it = uids.begin(); it != uids.end(); ++it) {
+        Entity* entity =Entity::getEntity((*it));
+        if (entity != NULL)
+            entities.push_back(entity);
+        else{
+            removeEntities.push_back(it);
+        }
+    }
+    for(std::vector<UID>::iterator it : removeEntities)
+        uids.erase(it);
+
+    return entities;
+}
+
 Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
     save();
 }

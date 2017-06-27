@@ -3,6 +3,7 @@
 #define TJE_FRAMEWORK_2017_PLAYER_H
 
 #include <vector>
+#include <set>
 #include "constants.h"
 #include "entity.h"
 #include "controller.h"
@@ -20,7 +21,7 @@ public:
 
     std::vector<Entity*> getControllableEntities();
 
-    void addControllableEntity(UID e_uid);
+    virtual void addControllableEntity(UID e_uid);
     virtual void update(double seconds_elapsed)= 0;
 };
 
@@ -60,9 +61,11 @@ public:
 
 class Enemy: public Player{
 public:
+    std::set<UID> defend;
+    std::set<UID> attack;
     Enemy();
     virtual ~Enemy();
-
+    void addControllableEntity(UID e_uid);
     void update(double seconds_elapsed);
 };
 
