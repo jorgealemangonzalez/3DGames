@@ -103,7 +103,7 @@ void Game::render(void) {
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    glColor3d(1,1,1);
     camera->set();
 
     Scene::getScene()->render(camera);
@@ -138,7 +138,6 @@ void Game::render(void) {
         drawText(100, 180, (selectedLevel == LEVEL_DEBUG ? "*NIVEL DEBUG" : (y > 180 && y < 220) ? ">NIVEL DEBUG" : "NIVEL DEBUG"), Vector3(1,1,0), 4);
         drawText(100, 220, (y > 220 && y < 260) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
     }
-    glColor3b(1,1,1);
     glDisable(GL_BLEND);
     //swap between front buffer and back buffer
     SDL_GL_SwapWindow(this->window);
@@ -168,7 +167,6 @@ void Game::update(double seconds_elapsed) {
             } else if (mouseRight) {
                 Vector3 selectedMove;
                 if (human->getPositionSelectedMove(selectedMove)) {
-                    std::cout << selectedMove << "\n";
                     Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
                     gui->addLine(mouse_when_press, selectedMoveP, Vector4(1, 1, 1, 0.5), true);
                     gui->addCenteredCircles(selectedMove, human->getRadiusControlling());

@@ -158,26 +158,26 @@ bool Human::getPositionSelectedMove(Vector3 &selectedMove) {
     GUI *gui = GUI::getGUI();
 
     Vector3 O = camera->eye;
-    Vector3 A = camera->unproject(Vector2(g->mouse_when_press.x, g->mouse_position.y), g->window_width, g->window_height);
-    Vector3 B = camera->unproject(Vector2(g->mouse_when_press), g->window_width, g->window_height);
+    Vector3 A = camera->unproject(Vector3(g->mouse_when_press.x, g->mouse_position.y, 0.5), g->window_width, g->window_height);
+    Vector3 B = camera->unproject(Vector3(g->mouse_when_press, 0.5), g->window_width, g->window_height);
 
     Vector3 Bp;
-    Vector3 dir = B-O;
+    Vector3 dir = (B-O).normalize();
     if(!gui->grid->testRayCollision(camera->eye,dir,INFINITY,Bp))
         return false;
 
-    double dist = ( (O-A).length() * (O-Bp).length() ) / (O-B).length();
+    /*double dist = ( (O-A).length() * (O-Bp).length() ) / (O-B).length();
     Vector3 Ap = B + (A-O).normalize()*dist;
     selectedMove = Ap;
-    return true;
+    return true;*/
 
-    /*Mesh* mesh_grid = Mesh::Load(gui->grid->mesh);
+    Mesh* mesh_grid = Mesh::Load(gui->grid->mesh);
     Vector3 N = gui->grid->getGlobalModel().rotateVector(mesh_grid->normals[0]).normalize();
 
     double dist = ( (B-A).length() * (O-Bp).length() ) / (O-B).length();
-    Vector3 Ap = B + N*dist;
+    Vector3 Ap = Bp + N*dist*(g->mouse_when_press.y < g->mouse_position.y ? 1 : -1);
     selectedMove = Ap;
-    return true;*/
+    return true;
 }
 
 void Human::moveSelectedInPlane(){
