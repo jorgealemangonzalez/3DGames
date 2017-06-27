@@ -40,6 +40,7 @@ std::vector<Entity*> Player::getControllableEntities(){
 Human::Human() : Player(HUMAN_TEAM) {
     cameraController = new CameraController();
     updateCenter = true;
+    organizeCircle = true;
 }
 
 Human::~Human() {
@@ -64,8 +65,8 @@ void Human::update(double seconds_elapsed) {
             camera->eye = camera->eye + dif;
             camera->center = centerControlling;
         }
-        GUI::getGUI()->setGrid((bool)controllingEntities.size(), centerControlling);
     }
+    GUI::getGUI()->setGrid((bool)controlling.size(), centerControlling);
 }
 
 void Human::render(Camera *camera) {
@@ -148,13 +149,12 @@ void Human::organizeSquadLine(Vector3 position){
             Vector3 move;
             if(i%2)
                 move = position +
-                               Vector3( (jump+1)*50 + radius, 0, 0);
+                               Vector3(0, 0, (jump+1)*50 + radius);
             else
                 move = position -
-                               Vector3( (jump+1)*50 + radius, 0, 0);
+                               Vector3(0, 0, (jump+1)*50 + radius);
             controlling[i]->stats.targetPos = move;
-            controlling[i]->stats.targetPos = move;
-            controlling[i]->stats.vel = 100;
+            controlling[i]->stats.vel = controlling[i]->stats.maxvel;
         }
     }
 }
@@ -195,8 +195,12 @@ void Human::moveSelectedInPlane(){
     }
 
     Vector3 selectedMove;
-    if(getPositionSelectedMove(selectedMove))
-        organizeSquadCircle(selectedMove);
+    if(getPositionSelectedMove(selectedMove)){
+        if(organizeCircle)
+            organizeSquadCircle(selectedMove);
+        else
+            organizeSquadLine(selectedMove);
+    }
 }
 
 std::vector<Entity*> Human::getControllingEntities(){

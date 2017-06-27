@@ -26,7 +26,7 @@
         *mesh station/eve_station.ASE
         *texture station/eve1.tga
 
-*scene level 66
+*scene level 70
     // ENVIRONMENT 63
     *entity asteroide_peq
             *position 0 1000 0
@@ -220,12 +220,24 @@
             *position -1000 -1000 -10000
             *stats false false false false false 0 0 0 0 neutral
 
-    // TEAM 1
+    // TEAM 5
     *entity station
             *position -10000 -1000 0
             *stats false true false false true 10000 0 0 0 t1
     *entity fighter
             *position -7000 -1000 0
+            *stats true true false true false 5000 0 1000 1000 t1
+    *entity fighter
+            *position -7500 -1000 500
+            *stats true true false true false 5000 0 1000 1000 t1
+    *entity fighter
+            *position -7500 -1000 -500
+            *stats true true false true false 5000 0 1000 1000 t1
+    *entity fighter
+            *position -8000 -1000 1000
+            *stats true true false true false 5000 0 1000 1000 t1
+    *entity fighter
+            *position -8000 -1000 -1000
             *stats true true false true false 5000 0 1000 1000 t1
 
     // TEAM 2

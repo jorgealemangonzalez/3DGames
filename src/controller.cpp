@@ -62,7 +62,6 @@ void CameraController::update(double seconds_elapsed) {
                     maxDist = MAX(maxDist,dist);
 
                 }
-                std::cout<<"MAX DIST: "<<maxDist<<"\n";
                 maxDist = MIN(10000.0,maxDist);
                 maxDist -= 3000.0;
                 maxDist = MAX(0,maxDist);

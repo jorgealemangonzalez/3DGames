@@ -35,6 +35,7 @@ public:
 
     CameraController* cameraController;
     bool updateCenter;
+    bool organizeCircle;
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
     std::vector<Entity*> getControllableEntities();

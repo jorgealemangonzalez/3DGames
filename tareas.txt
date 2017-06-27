@@ -57,11 +57,11 @@ Controles usuario interfaz:
 
 (DONE) Guardar el vector de gravedad y luego hacer el movimiento teniendolo en cuenta en cualquier entity ( intuicion: QUe no gire la entidad para ir recto si no puede)
 
-(TODO) boton para seleccionar todas las tropas posibles
+(DONE) boton para seleccionar todas las tropas posibles
 
 (TODO) la posicion a donde moverse no funciona bien si seleccionas desde lejos
 
-(TODO) Que las balas propias no te hagan nada ni salga explosion
+(DONE) Que las balas propias no te hagan nada ni salga explosion
 
 (TODO) Cambiar movimiento de camara para que gire al rededor de su centro con shift clickderecho ( y quitar el hsift click izquierdo de mirar a la entidad ( mismo resultado pero mejor ) )
 

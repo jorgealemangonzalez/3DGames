@@ -164,7 +164,7 @@ void Game::update(double seconds_elapsed) {
                 gui->addLine(mouse_when_press, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1, 1, 1, 1),
                              true);
                 gui->addLine(mouse_position, Vector2(mouse_position.x, mouse_when_press.y), Vector4(1, 1, 1, 1), true);
-            } else if (mouseRight) {
+            } else if (mouseRight && human->getControllingEntities().size()) {
                 Vector3 selectedMove;
                 if (human->getPositionSelectedMove(selectedMove)) {
                     Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
@@ -191,6 +191,9 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
                 break;
             case SDLK_a:
                 human->selectAllEntities();
+                break;
+            case SDLK_s:
+                human->organizeCircle = !human->organizeCircle;
                 break;
             case SDLK_e:
                 human->centerCameraOnControlling();
@@ -252,11 +255,8 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
         if (!keystate[SDL_SCANCODE_LSHIFT]) {
             if (event.button == SDL_BUTTON_LEFT) {
                 std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
-                                                                 window_height, camera,HUMAN_TEAM);
-                if (pointed.size()) {
-
-                    human->selectEntities(pointed);
-                }
+                                                                 window_height, camera, HUMAN_TEAM);
+                human->selectEntities(pointed);
 
             } else if (event.button == SDL_BUTTON_RIGHT) {
                 std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,

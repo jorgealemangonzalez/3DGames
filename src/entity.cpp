@@ -482,7 +482,7 @@ void EntityMesh::unitGUI() {
     }
 
     //TODO LINEAS
-    if(stats.team == HUMAN_TEAM && stats.targetPos){
+    if(stats.team == HUMAN_TEAM && stats.movable && stats.targetPos){
         gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
     }else if(stats.team == ENEMY_TEAM && stats.followEntity){
         gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2), false, true);
@@ -544,7 +544,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
                 entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
-                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
+                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity, Vector4(1,1,1,1), false, true);
             }
         }
 
@@ -565,7 +565,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             if(distance < total_radius) {
                 entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
-                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity);
+                GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity, Vector4(1,1,1,1), false, true);
             }
         }
     }
