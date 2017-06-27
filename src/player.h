@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "entity.h"
 #include "controller.h"
+#define DEFEND_SIZE 5
 
 class Player {
 protected:
@@ -21,7 +22,7 @@ public:
 
     std::vector<Entity*> getControllableEntities();
 
-    virtual void addControllableEntity(UID e_uid);
+    virtual void addControllableEntity(UID e_uid) = 0;
     virtual void update(double seconds_elapsed)= 0;
 };
 
@@ -44,6 +45,7 @@ public:
     const float &getRadiusControlling() const;
     const Vector3 &getCenterControlling() const;
 
+    void addControllableEntity(UID e_uid);
     void selectAllEntities();
     void followEntitie(UID follow);
     void selectEntities(std::vector<UID>& entities);
@@ -61,11 +63,17 @@ public:
 
 class Enemy: public Player{
 public:
-    std::set<UID> defend;
-    std::set<UID> attack;
+    std::vector<UID> defend_squad;      //Defiende la base
+    std::vector<UID> attack_squad;      //Ataca a las unidades del humano
+    std::vector<UID> aniquile_squad;    //Ataca a las unidades mantainAlive del humano
+    std::vector<UID> to_defend;
+    std::vector<UID> to_attack_human;
+    std::vector<UID> to_aniquile_human;
+
     Enemy();
     virtual ~Enemy();
     void addControllableEntity(UID e_uid);
+    void equilibrateSquads();
     void update(double seconds_elapsed);
 };
 

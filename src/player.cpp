@@ -14,10 +14,6 @@ Player::~Player() {
     }
 }
 
-void Player::addControllableEntity(UID e_uid) {
-    controllableEntities.push_back(e_uid);
-}
-
 std::vector<Entity*> Player::getControllableEntities(){
     return Entity::getAndCleanEntityVector(controllableEntities);
 }
@@ -32,6 +28,17 @@ Human::Human() : Player(HUMAN_TEAM) {
 
 Human::~Human() {
     delete cameraController;
+}
+
+void Human::addControllableEntity(UID e_uid) {
+    controllableEntities.push_back(e_uid);
+
+    Entity* e = Entity::getEntity(e_uid);
+    if(e->stats.mantainAlive)
+        Game::instance->enemy->to_aniquile_human.push_back(e_uid);
+    else
+        Game::instance->enemy->to_attack_human.push_back(e_uid);
+
 }
 
 void Human::update(double seconds_elapsed) {
@@ -251,23 +258,69 @@ Enemy::~Enemy() {
 }
 
 void Enemy::addControllableEntity(UID e_uid) {
+    if(Entity::getEntity(e_uid)->stats.mantainAlive)
+        to_defend.push_back(e_uid);
     controllableEntities.push_back(e_uid);
-    if(defend.size() < 10)
-        defend.insert(e_uid);
-    else
-        attack.insert(e_uid);
+    if(defend_squad.size() < DEFEND_SIZE)
+        defend_squad.push_back(e_uid);
+    else{
+
+        if(attack_squad.size() == aniquile_squad.size())
+            attack_squad.push_back(e_uid);
+        else if(attack_squad.size() < aniquile_squad.size())
+            attack_squad.push_back(e_uid);
+        else
+            aniquile_squad.push_back(e_uid);
+    }
+}
+
+void Enemy::equilibrateSquads() {
+    if(defend_squad.size() < DEFEND_SIZE){                           //Prioriza la defensa
+        if(attack_squad.size()) {                           //2º prioriza aniquilacion (Le quita al ataque de unidades)
+            defend_squad.push_back(attack_squad[0]);
+            attack_squad.erase(attack_squad.begin());
+        }else if(aniquile_squad.size()){
+            defend_squad.push_back(aniquile_squad[0]);
+            aniquile_squad.erase(aniquile_squad.begin());
+        }
+    }else if(aniquile_squad.size() < attack_squad.size()){    //2º prioriza aniquilacion
+        aniquile_squad.push_back(attack_squad[0]);
+        attack_squad.erase(attack_squad.begin());
+    }else if(aniquile_squad.size() > attack_squad.size()){
+        attack_squad.push_back(aniquile_squad[0]);
+        aniquile_squad.erase(aniquile_squad.begin());
+    }
+
 }
 
 void Enemy::update(double seconds_elapsed) {
-    std::vector<Entity*> controllable = getControllableEntities();
+    equilibrateSquads();
 
+    int i = 0;//TODO HACER QUE GIRE EL VECTOR CONTRARIO
 
+    if(defend_squad.size() && to_defend.size()) {//TO DEFEND SHOULD ALLWAYS HAVE SOMETHING
+        std::vector<Entity*> defend = Entity::getAndCleanEntityVector(defend_squad);
+        for (Entity* defender : defend) {
+            defender->stats.followEntity = to_defend[i];
+            i = (i+1)%to_defend.size();
+        }
+    }
 
-    for(Entity* driving: controllable){
+    i=0;
+    if(attack_squad.size() && to_attack_human.size()) {
+        std::vector<Entity*> attack = Entity::getAndCleanEntityVector(attack_squad);
+            for (Entity* attacker : attack) {
+                attacker->stats.followEntity = to_attack_human[i];
+                i = (i+1)%to_attack_human.size();
+            }
+    }
 
-        for(Entity* ec: Game::instance->human->getControllableEntities()){
-            driving->stats.followEntity = ec->uid;
-            break;
+    i = 0;
+    if(aniquile_squad.size() && to_aniquile_human.size()) {
+        std::vector<Entity*> aniquile =Entity::getAndCleanEntityVector(aniquile_squad);
+        for (Entity* aniquiler : aniquile) {
+            aniquiler->stats.followEntity = to_aniquile_human[i];
+            i = (i+1)%to_aniquile_human.size();
         }
     }
 }
