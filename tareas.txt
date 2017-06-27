@@ -62,7 +62,7 @@ Controles usuario interfaz:
 
 (DONE) Dejar como antes el movimiento
 
-(TODO) Montar bien la escena ( 2 niveles ) -> con spawners
+(PROGRESS) Montar bien la escena ( 2 niveles ) -> con spawners
 
 (TODO) Follow por un lado y atacar a entidad enemiga mas cercana
 

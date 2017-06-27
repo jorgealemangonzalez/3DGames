@@ -255,15 +255,18 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
 
     if(stats.movable){
         Vector3 pos = getPosition();
+
             //If is following an entity set the current position of that entity
         if(stats.followEntity){
             Entity* follow = Entity::getEntity(stats.followEntity);
-            if(follow != NULL && (follow->getPosition()-pos).length() > stats.range*.6) {
-                stats.targetPos = follow->getPosition();
-                stats.vel = stats.maxvel;
-            }else{
-                stats.followEntity = 0;
+            if(follow != NULL){
+                Vector3 followPos = follow->getPosition();
+                if((followPos-pos).length() > stats.range*.6){
+                    stats.targetPos = follow->getPosition();
+                    stats.vel = stats.maxvel;
+                }
             }
+            else stats.followEntity = 0;
         }
 
             //If it has a velocity and a target position try to move to that point
