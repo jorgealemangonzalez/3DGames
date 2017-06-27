@@ -82,7 +82,16 @@ void Human::centerCameraOnControlling(){
     camera->center = centerControlling;
 }
 void Human::selectAllEntities(){
-    this->selectEntities(this->controllableEntities);
+    std::vector<UID> to_select;
+    for(UID eu: this->controllableEntities){
+        Entity* e = Entity::getEntity(eu);
+        if(e == NULL)
+            continue;
+        if(e->stats.movable)
+            to_select.push_back(e->uid);
+    }
+    std::cout<<to_select.size();
+    this->selectEntities(to_select);
 }
 
 void Human::followEntitie(UID follow) {
