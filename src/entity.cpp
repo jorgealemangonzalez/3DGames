@@ -703,6 +703,7 @@ void EntityFighter::update(float elapsed_time){
             gravDir.normalize();
             if(distance < total_radius+100) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
                 saveFollow = stats.followEntity;
+                stats.followEntity = 0;
             }
         }
         else stats.followEntity = 0;
