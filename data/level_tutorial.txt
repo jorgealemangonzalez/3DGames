@@ -226,19 +226,19 @@
             *stats false true false false true 10000 0 0 0 t1
     *entity fighter
             *position -7000 -1000 0
-            *stats true true false true false 5000 0 1000 1000 t1
+            *stats true true false true false 5000 0 1000 200 t1
     *entity fighter
             *position -7500 -1000 500
-            *stats true true false true false 5000 0 1000 1000 t1
+            *stats true true false true false 5000 0 1000 200 t1
     *entity fighter
             *position -7500 -1000 -500
-            *stats true true false true false 5000 0 1000 1000 t1
+            *stats true true false true false 5000 0 1000 200 t1
     *entity fighter
             *position -8000 -1000 1000
-            *stats true true false true false 5000 0 1000 1000 t1
+            *stats true true false true false 5000 0 1000 200 t1
     *entity fighter
             *position -8000 -1000 -1000
-            *stats true true false true false 5000 0 1000 1000 t1
+            *stats true true false true false 5000 0 1000 200 t1
 
     // TEAM 2
     *entity station

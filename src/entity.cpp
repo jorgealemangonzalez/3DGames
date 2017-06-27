@@ -272,7 +272,7 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
             Matrix44 inv = getGlobalModel();
             inv.inverse();
             Vector3 perpendicularRotate = inv.rotateVector(perpendicular);
-            float angleRotate = (angle > 0.03 ? angle * elapsed_time * 3 : angle);    //Angulo pequeño rota directamente
+            float angleRotate = (angle > 0.03 ? angle * elapsed_time * (stats.vel/100) : angle);    //Angulo pequeño rota directamente
             if (angleRotate > 0) {
                 model.rotateLocal(angleRotate, perpendicularRotate);
             }
@@ -280,8 +280,8 @@ void Entity::updateStatsAndEntityActions(float elapsed_time) {
             float distance = (stats.targetPos - getPosition()).length();
 
             float velocity = stats.vel;
-            if (distance < 100) {         //parking velocity :')
-                velocity = velocity * distance / stats.maxvel;
+            if (velocity && distance < 100) {         //parking velocity :')
+                velocity = (distance/100)* velocity;
             }
             if (debugMode)
                 std::cout << "GRAVITY:: " << stats.gravity << std::endl;

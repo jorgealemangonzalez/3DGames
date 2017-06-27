@@ -60,8 +60,6 @@ Controles usuario interfaz:
 
 (TODO) Mejorar AI para que intente ganar ( Tener unos cuantos enemigos al rededor de la nave nodriza para defenderla )
 
-(TODO) Que no se queden dando vueltas en circulos , independientemente de la velocidad
-
 (TODO) Dejar como antes el movimiento
 
 (TODO) Montar bien la escena ( 2 niveles ) -> con spawners
