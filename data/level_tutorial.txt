@@ -111,7 +111,7 @@
             *position 0 -1000 10000
             *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
-            *position 0 0 40000
+            *position 0 0 4000
             *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_med
             *position 1000 500 7000

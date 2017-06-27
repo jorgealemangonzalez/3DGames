@@ -262,44 +262,44 @@
 
     *entity fighter
         *position 0 900 28
-        *stats true true false true false 5000 0 1000 t2
+        *stats true true false true false 5000 0 1000 0 t2
     *entity fighter
         *position 0 900 50
-        *stats true true false true false 5000 0 1000 t2
+        *stats true true false true false 5000 0 1000 0 t2
     *entity fighter
         *position 0 900 80
-        *stats true true false true false 5000 0 1000 t2
+        *stats true true false true false 5000 0 1000 0 t2
     *entity fighter
         *position 0 900 100
-        *stats true true false true false 5000 0 1000 t2
+        *stats true true false true false 5000 0 1000 0 t2
     *entity asteroide_peq
         *position 0 1900 448
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
         *position 0 1010 328
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
         *position 0 910 2008
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
         *position 0 2000 2800
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
         *position 800 2200 1500
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_peq
         *position 12 1050 135
-        *stats false false false false false 0 0 0 neutral
+        *stats false false false false false 0 0 0 0 neutral
     *entity hunter
         *position 0 900 538
-        *stats true true false false false 500000 0 1500 t2
+        *stats true true false false false 500000 0 1500 0 t2
     *entity hunterSpawner
         *position 0 900 538
     *entity fighterSpawner
         *position 0 900 100
     *entity station
         *position 2000 2000 2000
-        *stats false true false false true 10000 0 0 t1
+        *stats false true false false true 10000 0 0 0 t1
     *entity station
         *position -2000 -2000 -2000
-        *stats false true false false true 10000 0 0 t2
+        *stats false true false false true 10000 0 0 0 t2

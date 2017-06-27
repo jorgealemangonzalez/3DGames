@@ -35,9 +35,6 @@ Entity::Entity() : uid(Entity::s_created++), parent(NULL) {
 
 Entity::~Entity() { //destructors are called automatically in the reverse order of construction. (Base classes last).
     //Remove from s_entities
-    /*if(this->parent)
-        this->parent->removeChild(this);*/
-
     auto it = s_entities.find(this->uid);
     if(it != s_entities.end()){
         s_entities.erase(it);
@@ -47,13 +44,6 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
     if(stats.team == ENEMY_TEAM && Game::instance->gameState == PLAYING){
         MusicManager::playEnemyDown(getPosition());
     }
-
-    /*for(Entity* e : children){
-        if(e != NULL)
-            delete e;
-    }*/
-
-
 }
 
 //Static methods
@@ -100,6 +90,7 @@ void Entity::destroy_all() {
         Entity *e = (*s_entities.begin()).second;
         delete e;
     }
+    s_created = 0;
 }
 
 std::vector<UID> Entity::entityPointed(Vector2 mouseDown, Vector2 mouseUp, int width, int height, Camera* camera){
@@ -487,13 +478,10 @@ void EntityMesh::unitGUI() {
     }
 
     //TODO LINEAS
-    if(stats.team == HUMAN_TEAM){
-
-    }if(stats.followEntity){
-        if(Entity* e = Entity::getEntity(stats.followEntity))
-            gui->addLine(pos, e->getPosition(), Vector4(1,1,1,0.2));
-    }else if(stats.targetPos){
+    if(stats.team == HUMAN_TEAM && stats.targetPos){
         gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
+    }else if(stats.team == ENEMY_TEAM && stats.followEntity){
+        gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2), false, true);
     }
 }
 
@@ -751,6 +739,7 @@ EntityAsteroid::EntityAsteroid(bool dynamic):EntityCollider(dynamic) {
 
     rotationAxis = Vector3(getRandomFloat(),getRandomFloat(),getRandomFloat()).normalize();
     rotationVelocity = getRandomFloat()*3.0 + 3.0;
+    model.rotateLocal(random()/rotationVelocity,rotationAxis);
 }
 
 EntityAsteroid::~EntityAsteroid() {
@@ -767,5 +756,8 @@ EntityAsteroid* EntityAsteroid::clone() {
     UID uid = clon->uid;
     *clon = *this;
     clon->uid = uid;
+    clon->rotationAxis = Vector3(getRandomFloat(),getRandomFloat(),getRandomFloat()).normalize();
+    clon->rotationVelocity = getRandomFloat()*3.0 + 3.0;
+    clon->model.rotateLocal(random()/rotationVelocity,rotationAxis);
     return clon;
 }

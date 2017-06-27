@@ -246,7 +246,7 @@ void Scene::loadScene(const char* filename) {
     //GENERATE RANDOM ASTEROIDS
 
     //FIRST:: get full bounding box
-    Vector3 boxMin(2147483647,2147483647,2147483647), boxMax;
+    Vector3 boxMin(INFINITY,INFINITY,INFINITY), boxMax(-INFINITY,-INFINITY,-INFINITY);
     auto entities = Entity::s_entities;
     for(auto it = entities.begin(); it != entities.end(); ++it ){
         if(it->second->stats.isTemplate)
@@ -261,6 +261,8 @@ void Scene::loadScene(const char* filename) {
         boxMin.y = MIN(boxMin.y, entityPos.y);
         boxMin.z = MIN(boxMin.z, entityPos.z);
     }
+    boxMax *= 2;
+    boxMin *= 2;
 
     //SECOND:: generate random asteroids
     EntityAsteroid asteroid_peq(false);

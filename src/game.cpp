@@ -14,20 +14,14 @@ RenderToTexture *rt = NULL;
 Game *Game::instance = NULL;
 
 Game::~Game(){
-
-    /*
-    //Mesh::deleteStaticMeshesPointers();
-    //Texture::deleteStaticTexturePointers();
-    delete camera;
+    MusicManager::stop_pool();
+    BulletManager::getManager()->last_pos_pool = 0;
     delete human;
     delete enemy;
-    //delete Scene::getScene();
+    delete camera;
+    Entity::destroy_all();
+    delete Scene::getScene();
     delete GUI::getGUI();
-    delete BulletManager::getManager();
-    MusicManager::stop_pool();
-     */
-
-
 }
 
 void Game::resetGame(){
@@ -144,6 +138,7 @@ void Game::render(void) {
         drawText(100, 180, (selectedLevel == LEVEL_DEBUG ? "*NIVEL DEBUG" : (y > 180 && y < 220) ? ">NIVEL DEBUG" : "NIVEL DEBUG"), Vector3(1,1,0), 4);
         drawText(100, 220, (y > 220 && y < 260) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
     }
+    glColor3b(1,1,1);
     glDisable(GL_BLEND);
     //swap between front buffer and back buffer
     SDL_GL_SwapWindow(this->window);
@@ -173,6 +168,7 @@ void Game::update(double seconds_elapsed) {
             } else if (mouseRight) {
                 Vector3 selectedMove;
                 if (human->getPositionSelectedMove(selectedMove)) {
+                    std::cout << selectedMove << "\n";
                     Vector3 selectedMoveP = camera->project(selectedMove, window_width, window_height);
                     gui->addLine(mouse_when_press, selectedMoveP, Vector4(1, 1, 1, 0.5), true);
                     gui->addCenteredCircles(selectedMove, human->getRadiusControlling());

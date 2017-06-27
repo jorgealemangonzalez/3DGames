@@ -167,10 +167,17 @@ bool Human::getPositionSelectedMove(Vector3 &selectedMove) {
         return false;
 
     double dist = ( (O-A).length() * (O-Bp).length() ) / (O-B).length();
-    Vector3 Ap = O + (A-O).normalize()*dist;
+    Vector3 Ap = B + (A-O).normalize()*dist;
     selectedMove = Ap;
     return true;
 
+    /*Mesh* mesh_grid = Mesh::Load(gui->grid->mesh);
+    Vector3 N = gui->grid->getGlobalModel().rotateVector(mesh_grid->normals[0]).normalize();
+
+    double dist = ( (B-A).length() * (O-Bp).length() ) / (O-B).length();
+    Vector3 Ap = B + N*dist;
+    selectedMove = Ap;
+    return true;*/
 }
 
 void Human::moveSelectedInPlane(){
