@@ -744,7 +744,7 @@ void EntityFighter::update(float elapsed_time){
         if(enemy != NULL){
             if(!stats.targetPos)
                 lookPosition(elapsed_time,enemy->getPosition());
-            if( (enemy->getPosition() - getPosition()).length() < stats.range ){
+            if(enemy->stats.team != NEUTRAL_TEAM && Game::instance->getEnemyTeamPlayer(enemy->stats.team)->team == this->stats.team && (enemy->getPosition() - getPosition()).length() < stats.range ){
                 if(lastFireSec > 1.0/fireRate) {
                     if(getDirection().dot(enemy->getPosition()-getPosition()) > 0.9){
                         shoot(enemy);
