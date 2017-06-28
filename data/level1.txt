@@ -116,7 +116,7 @@
             *stats true true false true false 10000 0 3000 300 t2
 
     *entity hunterSpawnerEnemy
-            *position 8000 1000 -1000
+            *position 7000 1500 0
 
 
 
