@@ -37,16 +37,16 @@
         *mesh asteroides/asteroides.ASE
         *texture asteroides/asteroide.tga
 
-    hunterSpawner
+    hunterSpawnerEnemy
         *entity spawner
         *spawns hunter
-        *spawntime 10.1
-        *stats true true false false false 500000 0 1500 0 t2
-    fighterSpawner
+        *spawntime 1.1
+        *stats true true false false false 15000 0 1500 300 t2
+    hunterSpawnerHuman
         *entity spawner
-        *spawns fighter
-        *spawntime 10.1
-        *stats true true false true false 5000 0 1000 0 t1
+        *spawns hunter
+        *spawntime 1.1
+        *stats true true false true false 5000 0 1000 300 t1
 
     station
         *entity station static
@@ -55,9 +55,91 @@
 
 *scene level1 79
     // ENVIRONMENT 63
+
+    // TEAM 1 HUMAN
+    *entity station
+            *position -10000 -1000 0
+            *stats false true false false true 100000 0 0 0 t1
+    *entity hunter
+            *position -7000 -1000 0
+            *stats true true false true false 5000 0 2000 300 t1
+    *entity hunter
+            *position -7500 -1000 500
+            *stats true true false true false 5000 0 2000 300 t1
+    *entity hunter
+            *position -7500 -1000 -500
+            *stats true true false true false 5000 0 2000 300 t1
+    *entity hunter
+            *position -8000 -1000 1000
+            *stats true true false true false 5000 0 2000 300 t1
+    *entity hunter
+            *position -8000 -1000 -1000
+            *stats true true false true false 5000 0 2000 300 t1
+    *entity hunter
+            *position -8000 -1000 500
+            *stats true true false true false 10000 0 3000 300 t1
+    *entity hunter
+            *position -8000 -1000 -500
+            *stats true true false true false 10000 0 3000 300 t1
+
+    *entity hunterSpawnerHuman
+            *position -7000 -1000 0
+    *entity hunterSpawnerHuman
+            *position -7500 -1000 500
+    *entity hunterSpawnerHuman
+            *position -8000 -1000 -1000
+
+    // TEAM 2 ENEMY
+    *entity station
+            *position 10000 1000 0
+            *stats false true false false true 100000 0 0 0 t2
+    *entity hunter
+            *position 7000 1000 0
+            *stats true true false true false 5000 0 2000 300 t2
+    *entity hunter
+            *position 7500 1000 500
+            *stats true true false true false 5000 0 2000 300 t2
+    *entity hunter
+            *position 7500 1000 -500
+            *stats true true false true false 5000 0 2000 300 t2
+    *entity hunter
+            *position 8000 1000 1000
+            *stats true true false true false 5000 0 2000 300 t2
+    *entity hunter
+            *position 8000 1000 -1000
+            *stats true true false true false 5000 0 2000 300 t2
+    *entity hunter
+            *position 8000 1000 500
+            *stats true true false true false 10000 0 3000 300 t2
+    *entity hunter
+            *position 8000 1000 -500
+            *stats true true false true false 10000 0 3000 300 t2
+
+    *entity hunterSpawnerEnemy
+            *position 8000 -1000 -1000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     *entity asteroide_peq
-            *position 0 1000 0
-            *stats false false false false false 0 0 0 0 neutral
+                *position 0 1000 0
+                *stats false false false false false 0 0 0 0 neutral
     *entity asteroide_med
             *position 0 -500 1000
             *stats false false false false false 0 0 0 0 neutral
@@ -246,99 +328,3 @@
     *entity asteroide_med
             *position -1000 -1000 -10000
             *stats false false false false false 0 0 0 0 neutral
-
-    // TEAM 1
-    *entity station
-            *position -10000 -1000 0
-            *stats false true false false true 100000 0 0 0 t1
-    *entity fighter
-            *position -7000 -1000 0
-            *stats true true false true false 5000 0 2000 300 t1
-    *entity fighter
-            *position -7500 -1000 500
-            *stats true true false true false 5000 0 2000 300 t1
-    *entity fighter
-            *position -7500 -1000 -500
-            *stats true true false true false 5000 0 2000 300 t1
-    *entity fighter
-            *position -8000 -1000 1000
-            *stats true true false true false 5000 0 2000 300 t1
-    *entity fighter
-            *position -8000 -1000 -1000
-            *stats true true false true false 5000 0 2000 300 t1
-    *entity hunter
-            *position -8000 -1000 500
-            *stats true true false true false 10000 0 3000 200 t1
-    *entity hunter
-            *position -8000 -1000 -500
-            *stats true true false true false 10000 0 3000 200 t1
-
-    // TEAM 2
-    *entity station
-            *position 10000 1000 0
-            *stats false true false false true 100000 0 0 0 t2
-    *entity fighter
-            *position 7000 1000 0
-            *stats true true false true false 5000 0 2000 300 t2
-    *entity fighter
-            *position 7500 1000 500
-            *stats true true false true false 5000 0 2000 300 t2
-    *entity fighter
-            *position 7500 1000 -500
-            *stats true true false true false 5000 0 2000 300 t2
-    *entity fighter
-            *position 8000 1000 1000
-            *stats true true false true false 5000 0 2000 300 t2
-    *entity fighter
-            *position 8000 1000 -1000
-            *stats true true false true false 5000 0 2000 300 t2
-    *entity hunter
-            *position 8000 1000 500
-            *stats true true false true false 10000 0 3000 200 t2
-    *entity hunter
-            *position 8000 1000 -500
-            *stats true true false true false 10000 0 3000 200 t2
-
-    *entity fighter
-        *position 0 900 28
-        *stats true true false true false 5000 0 1000 0 t2
-    *entity fighter
-        *position 0 900 50
-        *stats true true false true false 5000 0 1000 0 t2
-    *entity fighter
-        *position 0 900 80
-        *stats true true false true false 5000 0 1000 0 t2
-    *entity fighter
-        *position 0 900 100
-        *stats true true false true false 5000 0 1000 0 t2
-    *entity asteroide_peq
-        *position 0 1900 448
-        *stats false false false false false 0 0 0 0 neutral
-    *entity asteroide_peq
-        *position 0 1010 328
-        *stats false false false false false 0 0 0 0 neutral
-    *entity asteroide_peq
-        *position 0 910 2008
-        *stats false false false false false 0 0 0 0 neutral
-    *entity asteroide_peq
-        *position 0 2000 2800
-        *stats false false false false false 0 0 0 0 neutral
-    *entity asteroide_peq
-        *position 800 2200 1500
-        *stats false false false false false 0 0 0 0 neutral
-    *entity asteroide_peq
-        *position 12 1050 135
-        *stats false false false false false 0 0 0 0 neutral
-    *entity hunter
-        *position 0 900 538
-        *stats true true false false false 500000 0 1500 0 t2
-    *entity hunterSpawner
-        *position 0 900 538
-    *entity fighterSpawner
-        *position 0 900 100
-    *entity station
-        *position 2000 2000 2000
-        *stats false true false false true 10000 0 0 0 t1
-    *entity station
-        *position -2000 -2000 -2000
-        *stats false true false false true 10000 0 0 0 t2

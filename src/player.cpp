@@ -164,10 +164,10 @@ void Human::organizeSquadLine(Vector3 position){
             Vector3 move;
             if(i%2)
                 move = position +
-                               Vector3(0, 0, (jump+1)*50 + radius);
+                               Vector3(0, 0, (jump+1)*radius*2);
             else
                 move = position -
-                               Vector3(0, 0, (jump+1)*50 + radius);
+                               Vector3(0, 0, (jump+1)*radius*2);
             controlling[i]->stats.targetPos = move;
             controlling[i]->stats.vel = controlling[i]->stats.maxvel;
         }

@@ -7,7 +7,7 @@
 #include "game.h"
 #include "scene.h"
 #include "MusicManager.h"
-
+#define MAX_TROOPS_PER_TEAM 15
 std::string sstats(Stats s){
     std::stringstream ss;
 
@@ -56,7 +56,7 @@ Entity::~Entity() { //destructors are called automatically in the reverse order 
     if(it != s_entities.end()){
         s_entities.erase(it);
     }
-    std::cout<<"DELETE ENTITY: "<<this->name<<"\n";
+    //std::cout<<"DELETE ENTITY: "<<this->name<<"\n";
     //Play sound enemy down if enemy
     if(stats.team == ENEMY_TEAM && Game::instance->gameState == PLAYING){
         MusicManager::playEnemyDown(getPosition());
@@ -366,10 +366,10 @@ EntitySpawner::~EntitySpawner(){
 }
 
 void EntitySpawner::spawnEntity() {
-    EntityCollider* newCollider = (EntityCollider*)Entity::getEntity(entitySpawned)->clone();
+
     Vector3 spawnPos = getGlobalModel().getTranslationOnly();
 
-    double min_distance = Mesh::Load(newCollider->mesh)->info.radius * 2;
+    double min_distance = Mesh::Load(((EntityMesh*)Entity::getEntity(entitySpawned))->mesh)->info.radius * 2;
     bool near_entities = false;
     for(UID id : EntityCollider::dynamic_colliders){    //No hacen falta los estaticos porque ya se da por supuesto que el spawner esta bien puesto
         Entity* entity = Entity::getEntity(id);
@@ -380,18 +380,18 @@ void EntitySpawner::spawnEntity() {
         }
     }
 
-    if(near_entities){
-        delete newCollider;
-        return;
-    }else{
-        newCollider->save();    //Add to s_entities
-        newCollider->stats = this->statsSpawned;
-        Game::instance->getTeamPlayer(newCollider->stats.team)->addControllableEntity(newCollider->uid);
 
-        newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);
-        this->parent->addChild(newCollider);
-        EntityCollider::registerCollider(newCollider);
-    }
+    if(near_entities || Game::instance->getTeamPlayer(this->statsSpawned.team)->controllableEntities.size() >= MAX_TROOPS_PER_TEAM)
+        return;
+
+    EntityCollider* newCollider = (EntityCollider*)Entity::getEntity(entitySpawned)->clone();
+    newCollider->save();    //Add to s_entities
+    newCollider->stats = this->statsSpawned;
+    Game::instance->getTeamPlayer(newCollider->stats.team)->addControllableEntity(newCollider->uid);
+
+    newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);
+    this->parent->addChild(newCollider);
+    EntityCollider::registerCollider(newCollider);
 }
 
 Entity* EntitySpawner::clone() {
@@ -677,7 +677,7 @@ void EntityFighter::shoot(Entity* target) {
         dir = getDirection().normalize();
 
     float radius = Mesh::Load(mesh)->info.radius + 4.0f;
-    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*500,100.0f,10.0f,uid,"No type yet");
+    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*500,15.0f,10.0f,uid,"No type yet");
     lastFireSec = 0;
 }
 

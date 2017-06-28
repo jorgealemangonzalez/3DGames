@@ -6,6 +6,8 @@
 #include "entity.h"
 #include "explosion.h"
 #include "MusicManager.h"
+#include "utils.h"
+#include "mesh.h"
 
 BulletManager* BulletManager::manager;
 
@@ -44,21 +46,23 @@ void BulletManager::removePosFromPool(unsigned int pos){
 
 
 void BulletManager::update(float elapsed_time) {
-    long before = SDL_GetTicks();
+    float now = getTime();
+
     for(unsigned int i = 0 ; i < last_pos_pool; ++i){
         Bullet &b = bullets_pool[i];
         b.ttl -=elapsed_time;
         if(b.ttl < 0.0 ){
             removePosFromPool(i);
-            return;
+            continue;
         }
         b.last_position = b.position;
         b.position = b.position + b.velocity*elapsed_time;
         bool hit = false;
         for(unsigned int i = 0 ; i < EntityCollider::dynamic_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::dynamic_colliders[i]);
+            float radius = Mesh::Load(e->mesh)->info.radius;
             Vector3 collision_point;
-            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
+            if(e->getPosition().distance(b.position) < radius && e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
                 if(e->stats.team != b.team) {
                     e->onCollision(&b);
                     Explosion::generateExplosion(collision_point);
@@ -76,8 +80,9 @@ void BulletManager::update(float elapsed_time) {
 
         for(unsigned int i = 0 ; i < EntityCollider::static_colliders.size(); ++i){
             EntityCollider* e = (EntityCollider*)EntityCollider::getEntity(EntityCollider::static_colliders[i]);
+            float radius = Mesh::Load(e->mesh)->info.radius;
             Vector3 collision_point;
-            if(e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
+            if(e->getPosition().distance(b.position) < radius && e->testRayCollision(b.position, (b.last_position - b.position).normalize(), 50.0f, collision_point)){
                 if(e->stats.team != b.team) {
                     e->onCollision(&b);
                     Explosion::generateExplosion(collision_point);
@@ -93,8 +98,9 @@ void BulletManager::update(float elapsed_time) {
             continue;
         }
     }
-    long after = SDL_GetTicks();
-    //std::cout<<"Update time bullets: "<<after-before<<"\n";
+
+    if(debugMode)
+        std::cout<<"BULLET TIME "<<getTime() - now<<"\n";
 }
 
 void BulletManager::render() {

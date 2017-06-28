@@ -11,7 +11,7 @@
 #include <sstream>
 #include <iostream>
 
-#define MAX_BULLETS 200
+#define MAX_BULLETS 100
 class Bullet{
 public:
     Vector3 position;       // Posición: V3
