@@ -41,12 +41,12 @@
         *entity spawner
         *spawns hunter
         *spawntime 1.1
-        *stats true true false false false 15000 0 1500 300 t2
+        *stats true true false false false 3000 0 2000 300 t2
     hunterSpawnerHuman
         *entity spawner
         *spawns hunter
         *spawntime 1.1
-        *stats true true false true false 5000 0 1000 300 t1
+        *stats true true false true false 5000 0 2000 300 t1
 
     station
         *entity station static
@@ -116,7 +116,7 @@
             *stats true true false true false 10000 0 3000 300 t2
 
     *entity hunterSpawnerEnemy
-            *position 8000 -1000 -1000
+            *position 8000 1000 -1000
 
 
 

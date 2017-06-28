@@ -123,6 +123,7 @@ void GUI::addPoint(Vector3 pos1, Vector4 color, bool projected, bool debug) {
         pos1 = camera->project(pos1, game->window_width, game->window_height);
     }
     if(debug){
+		return;//RELEASE
         debugPointsMesh->vertices.push_back(pos1);
         debugPointsMesh->colors.push_back(color);
     }else{
@@ -139,6 +140,7 @@ void GUI::addLine(Vector3 pos1, Vector3 pos2, Vector4 color, bool projected, boo
         pos2 = camera->project(pos2, game->window_width, game->window_height);
     }
     if(debug){
+		return;//RELEASE
         debugLinesMesh->vertices.push_back(pos1);
         debugLinesMesh->vertices.push_back(pos2);
         debugLinesMesh->colors.push_back(color);

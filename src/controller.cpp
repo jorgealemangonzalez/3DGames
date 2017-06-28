@@ -108,8 +108,9 @@ void CameraController::update(double seconds_elapsed) {
 
 void CameraController::onMouseWheel(SDL_MouseWheelEvent event){
     Camera* camera = Game::instance->camera;
+
     Vector3 delta;
-    if (event.y > 0){
+    if (event.y > 0 && (camera->eye.distance(camera->center) > 200)){
         delta = Vector3(0.0f, 0.0f, 1.0f) * event.y*100.f;
     }
     if (event.y < 0){

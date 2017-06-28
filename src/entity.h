@@ -157,7 +157,7 @@ public:
     EntityFighter(bool dynamic = false);
     virtual ~EntityFighter();
 
-    void shoot(Entity* target=NULL);
+    void shoot();
     EntityFighter* clone();
     void update(float elapsed_time);
     void updateGUI();

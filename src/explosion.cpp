@@ -33,7 +33,7 @@ void Explosion::renderAll(Camera *camera) {
     for(Explosion* e : explosions){
         //m.createQuad(e->exploding_point.x,e->exploding_point.y,10,10,flip_uvs);
         //m.uvs.clear();
-        float w = 10, h = 10;
+        float w = 100, h = 100;
         Vector3 ep = e->exploding_point;
         Vector3 up = camera->up,
                 side = (camera->center - camera->eye).cross(camera->up);

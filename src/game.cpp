@@ -59,7 +59,7 @@ Game::Game(SDL_Window *window) {
     mouseLeft = false;
     mouseRight = false;
 
-    selectedLevel = LEVEL_TUTORIAL;
+    selectedLevel = LEVEL_NIVEL1;
 }
 
 //Here we have already GL working, so we can create meshes and textures
@@ -80,9 +80,8 @@ void Game::init(void) {
 
     //create our camera
     camera = new Camera();
-    camera->lookAt(Vector3(0.f, 900.f, 25.f), Vector3(250.f, 900.f, 0.f),
+    camera->lookAt(Vector3(0.f, 12000.f, 12000.f), Vector3(0.f, 0.f, 0.f),
                    Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
-    camera->eye = Vector3(12.f,1050.f,135.f);
     camera->setPerspective(70.f, window_width / (float) window_height, 0.1f,
                            100000000.f); //set the projection, we want to be perspectives
 
@@ -136,8 +135,8 @@ void Game::render(void) {
                 maxhealthWinEnemy= e->stats.maxhp;
             }
         if(healthWinEnemy > 0 && healthWinHuman >0) {
-            std::string healthHuman(int(10 * healthWinHuman / maxhealthWinHuman), '='),
-                    healthEnemy(int(10 * healthWinEnemy / maxhealthWinEnemy), '=');
+            std::string healthHuman(int(1 + 10 * (healthWinHuman-1) / maxhealthWinHuman), '='),
+                    healthEnemy(int(1 + 10 * (healthWinEnemy-1) / maxhealthWinEnemy), '=');
             drawText(30, 30, "Ally health: " + healthHuman, Vector3(0, 1, 0), 3);
             drawText(30, 60, "Enemy health: " + healthEnemy, Vector3(1, 0, 0), 3);
         }
@@ -161,7 +160,7 @@ void Game::render(void) {
     }else if(this->gameState == LEVEL) {
         drawText(100, 100, (selectedLevel == LEVEL_TUTORIAL ? "*TUTORIAL" : (y > 100 && y < 140) ? ">TUTORIAL" : "TUTORIAL"), Vector3(1,1,0), 4);
         drawText(100, 140, (selectedLevel == LEVEL_NIVEL1 ? "*NIVEL 1" : (y > 140 && y < 180) ? ">NIVEL 1" : "NIVEL 1"), Vector3(1,1,0), 4);
-        drawText(100, 180, (selectedLevel == LEVEL_DEBUG ? "*NIVEL DEBUG" : (y > 180 && y < 220) ? ">NIVEL DEBUG" : "NIVEL DEBUG"), Vector3(1,1,0), 4);
+        drawText(100, 180, (selectedLevel == LEVEL_DEBUG ? "*NIVEL EXTREMO" : (y > 180 && y < 220) ? ">NIVEL EXTREMO" : "NIVEL EXTREMO"), Vector3(1,1,0), 4);
         drawText(100, 220, (y > 220 && y < 260) ? ">VOLVER" : "VOLVER", Vector3(1,1,0), 4);
     }
     glDisable(GL_BLEND);
@@ -216,9 +215,6 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             case SDLK_ESCAPE:
                 gameState = MENU;
                 break;
-            case SDLK_c:
-                Scene::getScene()->root->print(0);
-                break;
             case SDLK_a:
                 human->selectAllEntities();
                 break;
@@ -231,7 +227,7 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             case SDLK_SPACE:
                 pause = !pause;
                 break;
-            case SDLK_o:
+            /*case SDLK_o:
                 debugMode = !debugMode;
                 break;
             case SDLK_i:
@@ -239,7 +235,7 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
                     if (entry.second->stats.has_hp)
                         entry.second->stats.hp -= rand() % 1000;
                 }
-                break;
+                break;*/
         }
     }
     else if(this->gameState == GAME_OVER) {

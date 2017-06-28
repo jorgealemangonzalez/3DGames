@@ -99,6 +99,15 @@ void Entity::destroy_entities_to_destroy() {
         if(entity != NULL)
             delete entity;
     }
+	if(to_destroy.size() > 0){
+		Enemy* en = Game::instance->enemy;
+		Entity::getAndCleanEntityVector(en->to_aniquile_human);
+		Entity::getAndCleanEntityVector(en->to_attack_human);
+		Entity::getAndCleanEntityVector(en->aniquile_squad);
+		Entity::getAndCleanEntityVector(en->attack_squad);
+		Entity::getAndCleanEntityVector(en->defend_squad);
+	}
+	
     to_destroy = std::vector<UID>();
 }
 
@@ -191,6 +200,8 @@ void Entity::destroy() {
     for(Entity* child: children){
         child->destroy();
     }
+	
+
     to_destroy.push_back(uid);
 }
 
@@ -238,7 +249,6 @@ void Entity::lookPosition(float seconds_elapsed, Vector3 toLook) {
     float angleRotate = (angle > 0.00001 ? angle * seconds_elapsed*3 : angle);    //Angulo pequeño rota directamente
     if(angleRotate > 0)
         model.rotateLocal(angleRotate,perpendicularRotate);
-
 
     //TODO quit this: Debug lines
     if(debugMode){
@@ -469,7 +479,6 @@ void EntityMesh::render(Camera* camera){
         shader->disable();
     }
 
-    //TODO Entity::render(camera); //Se podra hacer asi?
     for(int i=0; i<children.size(); i++){
         children[i]->render(camera);
     }
@@ -504,12 +513,12 @@ void EntityMesh::unitGUI() {
             Entity* follow = Entity::getEntity(stats.followEntity);
             if(follow != NULL){
                 if(stats.team == HUMAN_TEAM)
-                    gui->addLine(pos, follow->getPosition(), Vector4(1,1,0,0.5));
+                    gui->addLine(pos, follow->getPosition(), Vector4(1,1,0,0.2));
                 else if(stats.team == ENEMY_TEAM)
-                    gui->addLine(pos, stats.targetPos, Vector4(1,0.5,0,0.5), false, true);
+                    gui->addLine(pos, stats.targetPos, Vector4(1,0.5,0,0.2), false, true);
             }
         }else if(stats.team == HUMAN_TEAM && stats.targetPos){
-            gui->addLine(pos, stats.targetPos, Vector4(1,1,1,1));
+            gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.5));
         }
     }
 
@@ -668,13 +677,9 @@ EntityFighter* EntityFighter::clone() {
     return clon;
 }
 
-void EntityFighter::shoot(Entity* target) {
+void EntityFighter::shoot() {
     Vector3 actual_pos = getPosition();
-    Vector3 dir;
-    if(target != NULL)
-        dir = (target->getPosition() - getPosition()).normalize();
-    else
-        dir = getDirection().normalize();
+    Vector3 dir = getDirection().normalize();
 
     float radius = Mesh::Load(mesh)->info.radius + 4.0f;
     BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*500,15.0f,10.0f,uid,"No type yet");
@@ -750,7 +755,7 @@ void EntityFighter::update(float elapsed_time){
             if(enemy->stats.team != NEUTRAL_TEAM && Game::instance->getEnemyTeamPlayer(enemy->stats.team)->team == this->stats.team && (enemy->getPosition() - getPosition()).length() < stats.range ){
                 if(lastFireSec > 1.0/fireRate) {
                     if(getDirection().dot(enemy->getPosition()-getPosition()) > 0.9){
-                        shoot(enemy);
+                        shoot();
                         lastFireSec = 0;
                     }
                 }

@@ -72,7 +72,7 @@ void Human::centerCameraOnControlling(){
     Vector3 dir = Game::instance->camera->eye - centerControlling;
     dir.normalize();
     Camera* camera = Game::instance->camera;
-    camera->eye = dir * (radiusControlling+100) + centerControlling;
+    camera->eye = dir * (radiusControlling+500) + centerControlling;
     camera->center = centerControlling;
 }
 void Human::selectAllEntities(){
