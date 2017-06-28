@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000-2013   Amir Geva
+ *   Copyright (C) 2000   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,15 +17,15 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   amirgeva@gmail.com
+ *   photon@photoneffect.com
  *
- * Or visit the home page: http://sourceforge.net/projects/coldet/
+ * Or visit the home page: http://photoneffect.com/coldet/
  */
 #ifndef H_BOX
 #define H_BOX
 
 #include <vector>
-#include "cdmath3d.h"
+#include "math3d.h"
 #include "sysdep.h"
 
 __CD__BEGIN

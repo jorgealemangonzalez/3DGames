@@ -333,7 +333,7 @@ Mesh* Mesh::Load(const std::string& filename){
 	if(it != s_Meshes.end()){
 		return it->second;
 	}
-	std::string location = "../data/meshes/";
+	std::string location = "data/meshes/";
 	Mesh* msh = new Mesh();
 	if(!msh->loadASE(location+filename)){
 		delete msh;
@@ -378,15 +378,15 @@ bool Mesh::loadASE( const std::string& filename){//CUALQUIER CAMBIO EN ESTA FUNC
             Vector3 v( x, z, y );
             all_vertex[i] = v;
 
-            min_v.x = std::min(v.x,min_v.x);
-            max_v.x = std::max(v.x,max_v.x);
+            min_v.x = MIN(v.x,min_v.x);
+            max_v.x = MAX(v.x,max_v.x);
 
-            min_v.y = std::min(v.y,min_v.y);
-            max_v.y = std::max(v.y,max_v.y);
+            min_v.y = MIN(v.y,min_v.y);
+            max_v.y = MAX(v.y,max_v.y);
 
 
-            min_v.z = std::min(v.z,min_v.z);
-            max_v.z = std::max(v.z,max_v.z);
+            min_v.z = MIN(v.z,min_v.z);
+            max_v.z = MAX(v.z,max_v.z);
         }
 
         vertices.resize(num_faces*3);

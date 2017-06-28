@@ -17,18 +17,18 @@ sf::Sound* sound_pool[SOUND_POOL_SIZE];
 unsigned pool_index = 0;
 
 void MusicManager::init() {
-    if(!ambientTense.openFromFile("../data/sounds/space.wav"))
-        std::cout<<"ERROR OPENING ../data/sounds/space.wav\n";
+    if(!ambientTense.openFromFile("data/sounds/space.wav"))
+        std::cout<<"ERROR OPENING data/sounds/space.wav\n";
     ambientTense.setLoop(true);
 
-    if(!bulletBuffer.loadFromFile("../data/sounds/laser_weapon_short.wav"))
-        std::cout<<"ERROR OPENING ../data/sounds/laser_weapon_short.wav\n";
+    if(!bulletBuffer.loadFromFile("data/sounds/laser_weapon_short.wav"))
+        std::cout<<"ERROR OPENING data/sounds/laser_weapon_short.wav\n";
 
-    if(!explosionBuffer.loadFromFile("../data/sounds/explosion_short.wav"))
-        std::cout<<"ERROR OPENING ../data/sounds/explosion_short.wav\n";
+    if(!explosionBuffer.loadFromFile("data/sounds/explosion_short.wav"))
+        std::cout<<"ERROR OPENING data/sounds/explosion_short.wav\n";
 
-    if(!enemyDownBuffer.loadFromFile("../data/sounds/enemy_down.ogg"))
-        std::cout<<"ERROR OPENING ../data/sounds/enemy_down.wav\n";
+    if(!enemyDownBuffer.loadFromFile("data/sounds/enemy_down.ogg"))
+        std::cout<<"ERROR OPENING data/sounds/enemy_down.wav\n";
 
 }
 
@@ -62,8 +62,8 @@ void MusicManager::playPoolSound(sf::Sound* sound, Vector3 position){
     sound_pool[pool_index] = sound;
     sound->setPosition(position.toMusicVector());
     sound->setMinDistance(5.f);
-    float rand = (random() % 100000) / 100000.0f;
-    sound->setPitch(rand/2.0+1.0);
+    float random = (rand() % 100000) / 100000.0f;
+    sound->setPitch(random/2.0+1.0);
     sound->play();
 
     pool_index = (pool_index+1)%SOUND_POOL_SIZE;

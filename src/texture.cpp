@@ -93,7 +93,7 @@ Texture* Texture::Load(const std::string& filename, bool mipmaps) {
 	if(it != s_Textures.end()){
 		return it->second;
 	}
-    std::string location = "../data/meshes/";
+    std::string location = "data/meshes/";
 	Texture* tx = new Texture();
 	if(!tx->load(location+filename,mipmaps)){
 		delete tx;

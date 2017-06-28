@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000-2013   Amir Geva
+ *   Copyright (C) 2000   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,14 +17,12 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   amirgeva@gmail.com
+ *   photon@photoneffect.com
  *
- * Or visit the home page: http://sourceforge.net/projects/coldet/
+ * Or visit the home page: http://photoneffect.com/coldet/
  */
 #include "sysdep.h"
 #include "mytritri.h"
-
-__CD__BEGIN
 
 Vector3D my_tri_tri_intersect(const Triangle& t1, const Triangle& t2)
 {
@@ -73,5 +71,3 @@ Vector3D my_tri_tri_intersect(const Triangle& t1, const Triangle& t2)
   if (td2.pointInTri(P12)) return P12;
   return Vector3D::Zero;
 }
-
-__CD__END

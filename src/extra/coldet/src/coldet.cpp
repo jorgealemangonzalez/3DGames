@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000-2013   Amir Geva
+ *   Copyright (C) 2000   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,9 +17,9 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   amirgeva@gmail.com
+ *   photon@photoneffect.com
  *
- * Or visit the home page: http://sourceforge.net/projects/coldet/
+ * Or visit the home page: http://photoneffect.com/coldet/
  */
 #include "sysdep.h"
 #include "coldetimpl.h"
@@ -56,7 +56,7 @@ bool CollisionModel3DImpl::collision(CollisionModel3D* other,
   if (AccuracyDepth<0) AccuracyDepth=0xFFFFFF;
   if (MaxProcessingTime==0) MaxProcessingTime=0xFFFFFF;
   
-  unsigned EndTime,BeginTime = unsigned(get_tick_count());
+  DWORD EndTime,BeginTime = GetTickCount();
   int num=Max(m_Triangles.size(),o->m_Triangles.size());
   int Allocated=Max(64,(num>>4));
   std::vector<Check> checks(Allocated);
@@ -74,7 +74,7 @@ bool CollisionModel3DImpl::collision(CollisionModel3D* other,
       checks.insert(checks.end(),Allocated,c);
       Allocated*=2;
     }
-    EndTime=unsigned(get_tick_count());
+    EndTime=GetTickCount();
     if (EndTime >= (BeginTime+MaxProcessingTime)) throw TimeoutExpired();
 
     // @@@ add depth check
@@ -182,8 +182,8 @@ bool CollisionModel3DImpl::collision(CollisionModel3D* other,
   return false;
 }
 
-bool CollisionModel3DImpl::rayCollision(const float origin[3], 
-                                        const float direction[3],
+bool CollisionModel3DImpl::rayCollision(float origin[3], 
+                                        float direction[3],
                                         bool closest,
                                         float segmin, 
                                         float segmax)
@@ -261,7 +261,7 @@ bool CollisionModel3DImpl::rayCollision(const float origin[3],
   return false;
 }
 
-bool CollisionModel3DImpl::sphereCollision(const float origin[3], float radius)
+bool CollisionModel3DImpl::sphereCollision(float origin[3], float radius)
 {
   m_ColType=Sphere;
   Vector3D O;
@@ -359,17 +359,13 @@ bool CollisionModel3DImpl::getCollisionPoint(float p[3], bool ModelSpace)
   return true;
 }
 
-
-__CD__END
-
-
-bool SphereRayCollision(const float* center, float radius,
-  const float* origin, const float* direction,
-  float* point)
+bool SphereRayCollision(float center[3], float radius,
+                        float origin[3], float direction[3],
+                        float point[3])
 {
-  const Vector3D& C=*((const Vector3D*)center);
-  const Vector3D& O=*((const Vector3D*)origin);
-  const Vector3D  D=((const Vector3D*)direction)->Normalized();
+  Vector3D& C=*((Vector3D*)center);
+  Vector3D& O=*((Vector3D*)origin);
+  Vector3D  D=((Vector3D*)direction)->Normalized();
   Vector3D& P=*((Vector3D*)point);
   Vector3D EO=C-O;
   float v=EO*D;
@@ -390,13 +386,15 @@ bool SphereSphereCollision(float c1[3], float r1,
   float sum=r1+r2;
   if (dist < sum*sum)
   {
-    Vector3D& P =*((Vector3D*)point);
+      Vector3D& P =*((Vector3D*)point);
 
-    P = C1 - C2;
-    P.Normalized();
-    P*=r1;
-    P += C1;
-    return true;
+      P = C1 - C2;
+      P.Normalized();
+      P*=r1;
+      P += C1;
+      return true;
   }
   return false;
 }
+
+__CD__END

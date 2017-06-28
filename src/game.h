@@ -19,9 +19,9 @@
 #define MAIN_MENU 5
 #define LEVEL 6
 
-#define LEVEL_TUTORIAL "../data/level_tutorial.txt"
-#define LEVEL_NIVEL1 "../data/level1.txt"
-#define LEVEL_DEBUG "../data/level_debug.txt"
+#define LEVEL_TUTORIAL "data/level_tutorial.txt"
+#define LEVEL_NIVEL1 "data/level1.txt"
+#define LEVEL_DEBUG "data/level_debug.txt"
 
 
 class Game

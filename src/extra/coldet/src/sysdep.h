@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000-2013   Amir Geva
+ *   Copyright (C) 2000   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,22 +17,23 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   amirgeva@gmail.com
+ *   photon@photoneffect.com
  *
- * Or visit the home page: http://sourceforge.net/projects/coldet/
+ * Or visit the home page: http://photoneffect.com/coldet/
  */
 #ifndef H_SYSDEP
 #define H_SYSDEP
-#define GCC
-#define __CD__BEGIN namespace COLDET {
-#define __CD__END }
+
 
 ///////////////////////////////////////////////////
 // g++ compiler on most systems
 ///////////////////////////////////////////////////
 #ifdef GCC
 
-unsigned get_tick_count();
+typedef unsigned long DWORD;
+DWORD GetTickCount();
+#define __CD__BEGIN
+#define __CD__END
 
 ///////////////////////////////////////////////////
 // Windows compilers
@@ -41,26 +42,15 @@ unsigned get_tick_count();
 
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
-
-#ifdef _WDLL
-
+  #define __CD__BEGIN
+  #define __CD__END
   #ifndef EXPORT
     #ifdef COLDET_EXPORTS
-      #define EXPORT __declspec(dllexport)
+      #define EXPORT /*__declspec(dllexport)*/
     #else
-      #define EXPORT __declspec(dllimport)
+      #define EXPORT /*__declspec(dllimport)*/
     #endif
   #endif
-
-#else
-
-  #ifndef EXPORT
-  #define EXPORT
-  #endif
-
-#endif
-
-  inline unsigned get_tick_count() { return GetTickCount(); }
 
 ///////////////////////////////////////////////////
 // MacOS 9.0.4/MacOS X.  CodeWarrior Pro 6
@@ -68,12 +58,11 @@ unsigned get_tick_count();
 ///////////////////////////////////////////////////
 #elif defined(macintosh)
    typedef unsigned long DWORD;
+   #define __CD__BEGIN
+   #define __CD__END
    #include <Events.h>
-   #define get_tick_count() ::TickCount()
+   #define GetTickCount() ::TickCount()
 
-#elif defined(CUSTOM)
-//typedef unsigned DWORD;
-double get_tick_count();
 #else
 
 #error No system specified (WIN32 GCC macintosh)

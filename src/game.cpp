@@ -237,7 +237,7 @@ void Game::onKeyPressed(SDL_KeyboardEvent event) {
             case SDLK_i:
                 for (auto &entry : Entity::s_entities) {
                     if (entry.second->stats.has_hp)
-                        entry.second->stats.hp -= random() % 1000;
+                        entry.second->stats.hp -= rand() % 1000;
                 }
                 break;
         }

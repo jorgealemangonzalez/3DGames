@@ -98,7 +98,7 @@ Shader* Shader::Load(const std::string& vsf, const std::string& psf)
 	if (it != s_Shaders.end())
 		return it->second;
 
-    std::string location ="../data/shaders/";
+    std::string location ="data/shaders/";
 	Shader* sh = new Shader();
 	if (!sh->load(location+vsf,location+psf)) {
 		delete sh;

@@ -812,7 +812,7 @@ void EntityStation::updateGUI() {
 //=====================================
 
 float getRandomFloat(){
-    float r = float(random()%1000)/100.0;
+    float r = float(rand()%1000)/100.0;
     return r;
 }
 
@@ -820,7 +820,7 @@ EntityAsteroid::EntityAsteroid(bool dynamic):EntityCollider(dynamic) {
 
     rotationAxis = Vector3(getRandomFloat(),getRandomFloat(),getRandomFloat()).normalize();
     rotationVelocity = getRandomFloat()*3.0 + 3.0;
-    model.rotateLocal(random()/rotationVelocity,rotationAxis);
+    model.rotateLocal(rand()/rotationVelocity,rotationAxis);
 }
 
 EntityAsteroid::~EntityAsteroid() {
@@ -839,6 +839,6 @@ EntityAsteroid* EntityAsteroid::clone() {
     clon->uid = uid;
     clon->rotationAxis = Vector3(getRandomFloat(),getRandomFloat(),getRandomFloat()).normalize();
     clon->rotationVelocity = getRandomFloat()*3.0 + 3.0;
-    clon->model.rotateLocal(random()/rotationVelocity,rotationAxis);
+    clon->model.rotateLocal(rand()/rotationVelocity,rotationAxis);
     return clon;
 }

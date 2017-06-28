@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D25DFFC1-8AEE-45BD-9345-D74387579CA7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>visualstudio</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>..\libs\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>..\..\</OutDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>..\libs\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>..\..\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../libs/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../libs/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;sfml-system.lib;sfml-audio.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\BulletManager.cpp" />
+    <ClCompile Include="..\..\src\camera.cpp" />
+    <ClCompile Include="..\..\src\controller.cpp" />
+    <ClCompile Include="..\..\src\entity.cpp" />
+    <ClCompile Include="..\..\src\explosion.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\box.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\box_bld.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\coldet.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\coldet_bld.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\math3d.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\mytritri.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\sysdep.cpp" />
+    <ClCompile Include="..\..\src\extra\coldet\src\tritri.c" />
+    <ClCompile Include="..\..\src\extra\textparser.cpp" />
+    <ClCompile Include="..\..\src\framework.cpp" />
+    <ClCompile Include="..\..\src\game.cpp" />
+    <ClCompile Include="..\..\src\GUI.cpp" />
+    <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\mesh.cpp" />
+    <ClCompile Include="..\..\src\MusicManager.cpp" />
+    <ClCompile Include="..\..\src\player.cpp" />
+    <ClCompile Include="..\..\src\rendertotexture.cpp" />
+    <ClCompile Include="..\..\src\scene.cpp" />
+    <ClCompile Include="..\..\src\shader.cpp" />
+    <ClCompile Include="..\..\src\texture.cpp" />
+    <ClCompile Include="..\..\src\utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\BulletManager.h" />
+    <ClInclude Include="..\..\src\camera.h" />
+    <ClInclude Include="..\..\src\constants.h" />
+    <ClInclude Include="..\..\src\controller.h" />
+    <ClInclude Include="..\..\src\entity.h" />
+    <ClInclude Include="..\..\src\explosion.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\box.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\coldet.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\coldetimpl.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\math3d.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\mytritri.h" />
+    <ClInclude Include="..\..\src\extra\coldet\src\sysdep.h" />
+    <ClInclude Include="..\..\src\extra\textparser.h" />
+    <ClInclude Include="..\..\src\framework.h" />
+    <ClInclude Include="..\..\src\game.h" />
+    <ClInclude Include="..\..\src\GUI.h" />
+    <ClInclude Include="..\..\src\includes.h" />
+    <ClInclude Include="..\..\src\mesh.h" />
+    <ClInclude Include="..\..\src\MusicManager.h" />
+    <ClInclude Include="..\..\src\player.h" />
+    <ClInclude Include="..\..\src\rendertotexture.h" />
+    <ClInclude Include="..\..\src\scene.h" />
+    <ClInclude Include="..\..\src\shader.h" />
+    <ClInclude Include="..\..\src\texture.h" />
+    <ClInclude Include="..\..\src\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\extra\coldet\doc\html\annotated.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_bld_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_bld_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\box_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Box-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Box.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxedTriangle-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxedTriangle.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxTreeInnerNode-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxTreeInnerNode.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxTreeNode-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_BoxTreeNode.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Check-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Check.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_CollisionModel3D-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_CollisionModel3D.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_CollisionModel3DImpl-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_CollisionModel3DImpl.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Inconsistency.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_RotationState-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_RotationState.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_TimeoutExpired.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Triangle-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_Triangle.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_TriangleDesc-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\class_TriangleDesc.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldetimpl_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldetimpl_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_bld_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_bld_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_dsp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_dsp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\coldet_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\files.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\functions.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\globals.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\hierarchy.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\index.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\makefile_g++-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\makefile_g++.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\math3d_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\math3d_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\math3d_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\math3d_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\mytritri_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\mytritri_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\mytritri_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\mytritri_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Matrix3-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Matrix3.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Matrix3D-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Matrix3D.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Plane-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Plane.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Vector3D-members.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\struct_Vector3D.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\sysdep_cpp-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\sysdep_cpp.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\sysdep_h-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\sysdep_h.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\tritri_c-source.html" />
+    <None Include="..\..\src\extra\coldet\doc\html\tritri_c.html" />
+    <None Include="..\..\src\extra\coldet\doc\quickstart.html" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

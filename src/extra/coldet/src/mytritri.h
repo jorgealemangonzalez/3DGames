@@ -1,5 +1,5 @@
 /*   ColDet - C++ 3D Collision Detection Library
- *   Copyright (C) 2000-2013   Amir Geva
+ *   Copyright (C) 2000   Amir Geva
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,16 +17,14 @@
  * Boston, MA  02111-1307, USA.
  *
  * Any comments, questions and bug reports send to:
- *   amirgeva@gmail.com
+ *   photon@photoneffect.com
  *
- * Or visit the home page: http://sourceforge.net/projects/coldet/
+ * Or visit the home page: http://photoneffect.com/coldet/
  */
 #ifndef H_MYTRITRI
 #define H_MYTRITRI
 
 #include "box.h"
-
-__CD__BEGIN
 
 /** A slower triangle-triangle intersection test, that returns the
     point of intersection. */
@@ -54,6 +52,19 @@ public:
     }
   }
 
+//bug fixed as seen on http://thephotoneffect.yuku.com/topic/614/t/Precision-bug-and-proposed-fix.html
+	bool sameSide(const Vector3D& p1, const Vector3D& p2, const Vector3D& a, const Vector3D& b)
+	{
+		Vector3D cp1 = CrossProduct(b-a, p1-a);
+		Vector3D cp2 = CrossProduct(b-a, p2-a);
+		return ((cp1 * cp2) >= 0);
+	}
+	
+	bool pointInTri(const Vector3D& P)
+	{
+		return (sameSide(P,v1,v2,v3) && sameSide(P,v2,v1,v3) && sameSide(P,v3,v1,v2));
+	}
+/*
   bool pointInTri(const Vector3D& P)
   {
     Vector3D u(P[i1]-v1[i1],
@@ -77,7 +88,7 @@ public:
     }
     return (a>=0 && (a+b)<=1);
   }
-
+*/
   const Vector3D& operator[] (int index) 
   { 
     switch (index)
@@ -93,6 +104,7 @@ public:
   int i1,i2;
 };
 
-__CD__END
+
 
 #endif // H_MYTRITRI
+

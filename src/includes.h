@@ -7,7 +7,7 @@
 #define INCLUDES_H
 
 //under windows we need this file to make opengl work
-#ifdef WIN32 
+#ifdef WIN32
 	#include <windows.h>
 #endif
 

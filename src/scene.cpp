@@ -264,7 +264,7 @@ void Scene::loadScene(const char* filename) {
     float asteroidRadius_peq = Mesh::Load(asteroid_peq.mesh)->info.radius;
     float asteroidRadius_med = Mesh::Load(asteroid_med.mesh)->info.radius;
 
-    for(int try_ = 0 ; try_ < 200 ; ++try_){ //
+    for(int try_ = 0 ; try_ < 200 ; ++try_){
         float asteroidRadius;
         EntityAsteroid* asteroid;
         if(try_ % 2 == 0){
