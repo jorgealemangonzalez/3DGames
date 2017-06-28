@@ -115,7 +115,32 @@ void Game::render(void) {
     float y = window_height - mouse_position.y;
 
     if(this->gameState == PLAYING) {
+        int NentitiesHuman = human->controllableEntities.size();
+        int NentitiesEnemy = enemy->controllableEntities.size();
+        int NentitiesSelected = human->controllingEntities.size();
+        drawText(30,window_height-80, "Allies: "+std::to_string(NentitiesHuman-1), Vector3(0,1,0),3 );
+        drawText(30,window_height-50, "Enemies: "+std::to_string(NentitiesEnemy-1), Vector3(1,0,0),3 );
+        drawText(30,window_height-110, "Selected: "+std::to_string(NentitiesSelected), Vector3(1,1,1),3 );
 
+        float healthWinHuman, maxhealthWinHuman ;
+        float healthWinEnemy, maxhealthWinEnemy ;
+        for(Entity* e : human->getControllableEntities())
+            if(e->stats.mantainAlive){
+                healthWinHuman = e->stats.hp;
+                maxhealthWinHuman = e->stats.maxhp;
+            }
+
+        for(Entity* e : enemy->getControllableEntities())
+            if(e->stats.mantainAlive){
+                healthWinEnemy = e->stats.hp;
+                maxhealthWinEnemy= e->stats.maxhp;
+            }
+        if(healthWinEnemy > 0 && healthWinHuman >0) {
+            std::string healthHuman(int(10 * healthWinHuman / maxhealthWinHuman), '='),
+                    healthEnemy(int(10 * healthWinEnemy / maxhealthWinEnemy), '=');
+            drawText(30, 30, "Ally health: " + healthHuman, Vector3(0, 1, 0), 3);
+            drawText(30, 60, "Enemy health: " + healthEnemy, Vector3(1, 0, 0), 3);
+        }
     }
     else if(this->gameState == GAME_OVER) {
         drawText(100, 100, humanWins ? "GAME OVER! HAS GANADO!" : "GAME OVER! HAS PERDIDO...", Vector3(1,1,0), 4);

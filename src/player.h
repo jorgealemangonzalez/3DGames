@@ -11,10 +11,11 @@
 
 class Player {
 protected:
-    std::vector<UID> controllableEntities;      // Pool of controllable (friendly) entities
+
 
 
 public:
+    std::vector<UID> controllableEntities;  // Pool of controllable (friendly) entities
     std::string team;
     Player(std::string t);
     virtual ~Player();
@@ -29,7 +30,7 @@ public:
 
 class Human: public Player{
 protected:
-    std::vector<UID> controllingEntities;            // Index of controllable pool
+
     float radiusControlling;
     Vector3 centerControlling;
 public:
@@ -39,6 +40,7 @@ public:
     CameraController* cameraController;
     bool updateCenter;
     bool organizeCircle;
+    std::vector<UID> controllingEntities;            // Index of controllable pool
 
     std::vector<Entity*> getControllingEntities(); //Controla si una de las unidades ha desaparecido
     std::vector<Entity*> getControllableEntities();
