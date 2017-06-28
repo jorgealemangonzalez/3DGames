@@ -90,14 +90,19 @@ void Human::selectAllEntities(){
 
 void Human::followEntitie(std::vector<UID>& entities) {
     //It prefers to follow enemy entities rather than others (miquel: haré algún cambio más al tema de seleccionar objetivos para human)
-    UID follow = 0;
+    UID nearest = 0;
+    float minDist = INFINITY;
+    Vector3 cameraPos = Game::instance->camera->eye;
+    Vector3 cameraFront = Game::instance->camera->center - cameraPos;
     for(Entity* e : Entity::getAndCleanEntityVector(entities)){
-        follow = e->uid;
-        if(e->stats.team == ENEMY_TEAM)
-            break;
+        float dist = cameraPos.distance(e->getPosition());
+        if(dist < minDist && cameraFront.dot(e->getPosition() - cameraPos) > 0.0){
+            nearest = e->uid;
+            minDist = dist;
+        }
     }
     for(Entity* control : getControllingEntities()){
-        control->stats.followEntity = follow;
+        control->stats.followEntity = nearest;
     }
 }
 

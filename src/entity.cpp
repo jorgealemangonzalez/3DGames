@@ -499,7 +499,6 @@ void EntityMesh::unitGUI() {
         gui->addLine(initHP+Vector3(hpFraction, 0, 0), initHP+Vector3(2*radius, 0, 0), Vector4(1,0,0,1), true);
     }
 
-    //TODO LINEAS
     if(stats.movable){
         if(stats.followEntity){
             Entity* follow = Entity::getEntity(stats.followEntity);
@@ -707,9 +706,13 @@ void EntityFighter::update(float elapsed_time){
             double distance = gravDir.length();
 
             gravDir.normalize();
-            if(distance < total_radius+100 && Game::instance->getEnemyTeamPlayer(this->stats.team)->team != entityDest->stats.team) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
+            Vector3 collision;
+            Vector3 pos = this->getPosition();
+            if(Game::instance->getEnemyTeamPlayer(this->stats.team)->team != entityDest->stats.team &&
+                    ((EntityCollider*)entityDest)->testSphereCollision(pos, source_radius*12, collision)) { //TODOS LOS RANGOS DE DISPARO TIENEN QUE SER MAYORES A LA MITAD DE ESTO
                 saveFollow = stats.followEntity;
                 stats.followEntity = 0;
+                stats.targetPos = Vector3();
             }
         }
         else stats.followEntity = 0;

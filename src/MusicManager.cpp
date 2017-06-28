@@ -72,7 +72,7 @@ void MusicManager::playPoolSound(sf::Sound* sound, Vector3 position){
 
 void MusicManager::playBullet(Vector3 position){
     sf::Sound* bullet = new sf::Sound();
-    bullet->setAttenuation(0.1);
+    bullet->setAttenuation(0.01);
     bullet->setBuffer(bulletBuffer);
     playPoolSound(bullet,position);
 
@@ -81,14 +81,14 @@ void MusicManager::playBullet(Vector3 position){
 void MusicManager::playExplosion(Vector3 position){
     sf::Sound* explosion = new sf::Sound();
     explosion->setBuffer(explosionBuffer);
-    explosion->setAttenuation(0.1);
+    explosion->setAttenuation(0.01);
     playPoolSound(explosion,position);
 }
 
 void MusicManager::playEnemyDown(Vector3 position){
     sf::Sound* enemyDown = new sf::Sound();
     enemyDown->setBuffer(enemyDownBuffer);
-    enemyDown->setAttenuation(0.01);
+    enemyDown->setAttenuation(0.05);
     enemyDown->setPitch(0.3);
     playPoolSound(enemyDown,position);
 }

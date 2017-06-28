@@ -264,9 +264,16 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event) {
                 human->selectEntities(pointed);
 
             } else if (event.button == SDL_BUTTON_RIGHT) {
+
                 std::vector<UID> pointed = Entity::entityPointed(mouse_when_press, mouse_when_up, window_width,
                                                                  window_height, camera);
-                if(pointed.size()){
+
+                int dif  = mouse_when_press.y - mouse_position.y;
+                std::cout<<ABS(dif)<<"\n";
+                std::cout<<mouse_when_press<<std::endl;
+                std::cout<<mouse_position<<std::endl;
+
+                if(pointed.size() && ABS(dif) < 10){
                     human->followEntitie(pointed);
                     human->updateCenter = true;
                 }else {
