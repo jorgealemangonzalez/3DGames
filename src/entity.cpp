@@ -505,12 +505,12 @@ void EntityMesh::unitGUI() {
             Entity* follow = Entity::getEntity(stats.followEntity);
             if(follow != NULL){
                 if(stats.team == HUMAN_TEAM)
-                    gui->addLine(pos, follow->getPosition(), Vector4(1,1,0,0.2));
+                    gui->addLine(pos, follow->getPosition(), Vector4(1,1,0,0.5));
                 else if(stats.team == ENEMY_TEAM)
-                    gui->addLine(pos, stats.targetPos, Vector4(1,0.5,0,0.2), false, true);
+                    gui->addLine(pos, stats.targetPos, Vector4(1,0.5,0,0.5), false, true);
             }
         }else if(stats.team == HUMAN_TEAM && stats.targetPos){
-            gui->addLine(pos, stats.targetPos, Vector4(1,1,1,0.2));
+            gui->addLine(pos, stats.targetPos, Vector4(1,1,1,1));
         }
     }
 
@@ -568,7 +568,7 @@ void EntityCollider::checkCollisions(float elapsed_time) {
             double distance = gravDir.length();
 
             gravDir.normalize();
-            if(distance < total_radius) {
+            if(entityDest->testSphereCollision(dinamic_pos_source, source_radius*10, collision)) {
                 entitySource->stats.gravity += gravDir * entitySource->stats.maxvel *(((total_radius == 0 ? distance : total_radius))/distance);
                 //std::cout<<distance<< " "<< total_radius<<" grav: "<<entitySource->stats.gravity<<"\n";
                 GUI::getGUI()->addLine(entitySource->getPosition(),entitySource->getPosition()+entitySource->stats.gravity, Vector4(1,1,1,1), false, true);
