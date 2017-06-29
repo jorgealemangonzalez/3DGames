@@ -2,19 +2,11 @@
     *mesh cubemaps/cubemap_stars/box.ASE
     *texture cubemaps/cubemap_stars/stars.tga
 
-*entities 10
+*entities 7
     hunter
         *entity fighter dynamic
         *mesh hunter/hunter.ASE
         *texture hunter/hunter.tga
-    interceptor
-        *entity fighter dynamic
-        *mesh interceptor/x3_interceptor.ASE
-        *texture interceptor/x3_interceptor.tga
-    runner
-        *entity fighter dynamic
-        *mesh runner/x3_runner.ASE
-        *texture runner/x3_runner.tga
 
     asteroide_gran
         *entity asteroid
@@ -28,28 +20,24 @@
         *entity asteroid
         *mesh asteroides/asteroide3.ASE
         *texture asteroides/asteroide.tga
-    asteroides
-        *entity collider static
-        *mesh asteroides/asteroides.ASE
-        *texture asteroides/asteroide.tga
-
-    hunterSpawnerEnemy
-        *entity spawner
-        *spawns hunter
-        *spawntime 1.1
-        *stats true true false false false 3000 0 2000 300 t2
-    hunterSpawnerHuman
-        *entity spawner
-        *spawns hunter
-        *spawntime 1.1
-        *stats true true false true false 5000 0 2000 300 t1
 
     station
         *entity station static
         *mesh station/eve_station.ASE
         *texture station/eve1.tga
 
-*scene level1 79
+    hunterSpawnerEnemy
+        *entity spawner
+        *spawns hunter
+        *spawntime 10
+        *stats true true false false false 3000 0 2000 300 t2
+    hunterSpawnerHuman
+        *entity spawner
+        *spawns hunter
+        *spawntime 10
+        *stats true true false true false 5000 0 2000 300 t1
+
+*scene level1 75
     // ENVIRONMENT 63
 
     // TEAM 1 HUMAN
@@ -77,7 +65,6 @@
     *entity hunter
             *position -8000 -1000 -500
             *stats true true false true false 5000 0 2000 300 t1
-
     *entity hunterSpawnerHuman
             *position -7000 -1000 0
     *entity hunterSpawnerHuman
@@ -110,14 +97,8 @@
     *entity hunter
             *position 8000 1000 -500
             *stats true true false true false 3000 0 2000 300 t2
-
     *entity hunterSpawnerEnemy
             *position 7000 1500 0
-
-
-
-
-
 
 
 

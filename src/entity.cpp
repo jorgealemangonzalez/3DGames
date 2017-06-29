@@ -682,7 +682,7 @@ void EntityFighter::shoot() {
     Vector3 dir = getDirection().normalize();
 
     float radius = Mesh::Load(mesh)->info.radius + 4.0f;
-    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*500,15.0f,10.0f,uid,"No type yet");
+    BulletManager::getManager()->createBullet(actual_pos + dir*radius,actual_pos + dir*radius,dir*700,40.0f,10.0f,uid,"No type yet");
     lastFireSec = 0;
 }
 
