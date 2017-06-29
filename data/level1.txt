@@ -2,11 +2,7 @@
     *mesh cubemaps/cubemap_stars/box.ASE
     *texture cubemaps/cubemap_stars/stars.tga
 
-*entities 11
-    fighter
-        *entity fighter dynamic
-        *mesh fighter/x3_fighter.ASE
-        *texture fighter/x3_fighter.tga
+*entities 10
     hunter
         *entity fighter dynamic
         *mesh hunter/hunter.ASE
@@ -77,17 +73,17 @@
             *stats true true false true false 5000 0 2000 300 t1
     *entity hunter
             *position -8000 -1000 500
-            *stats true true false true false 10000 0 3000 300 t1
+            *stats true true false true false 5000 0 2000 300 t1
     *entity hunter
             *position -8000 -1000 -500
-            *stats true true false true false 10000 0 3000 300 t1
+            *stats true true false true false 5000 0 2000 300 t1
 
     *entity hunterSpawnerHuman
             *position -7000 -1000 0
     *entity hunterSpawnerHuman
             *position -7500 -1000 500
     *entity hunterSpawnerHuman
-            *position -8000 -1000 -1000
+            *position -7500 -1000 -500
 
     // TEAM 2 ENEMY
     *entity station
@@ -95,25 +91,25 @@
             *stats false true false false true 100000 0 0 0 t2
     *entity hunter
             *position 7000 1000 0
-            *stats true true false true false 5000 0 2000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 7500 1000 500
-            *stats true true false true false 5000 0 2000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 7500 1000 -500
-            *stats true true false true false 5000 0 2000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 8000 1000 1000
-            *stats true true false true false 5000 0 2000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 8000 1000 -1000
-            *stats true true false true false 5000 0 2000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 8000 1000 500
-            *stats true true false true false 10000 0 3000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
     *entity hunter
             *position 8000 1000 -500
-            *stats true true false true false 10000 0 3000 300 t2
+            *stats true true false true false 3000 0 2000 300 t2
 
     *entity hunterSpawnerEnemy
             *position 7000 1500 0
