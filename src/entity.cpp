@@ -368,7 +368,7 @@ void Entity::print(int depth) {
 }
 //================================================
 
-EntitySpawner::EntitySpawner(): Entity() {
+EntitySpawner::EntitySpawner(): Entity(), lastSpawn(0){
 
 }
 
@@ -397,6 +397,7 @@ void EntitySpawner::spawnEntity() {
     EntityCollider* newCollider = (EntityCollider*)Entity::getEntity(entitySpawned)->clone();
     newCollider->save();    //Add to s_entities
     newCollider->stats = this->statsSpawned;
+	newCollider->stats.isTemplate = false;
     Game::instance->getTeamPlayer(newCollider->stats.team)->addControllableEntity(newCollider->uid);
 
     newCollider->model.setTranslation(spawnPos.x,spawnPos.y,spawnPos.z);

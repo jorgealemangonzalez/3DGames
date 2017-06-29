@@ -160,7 +160,7 @@ void Scene::loadScene(const char* filename) {
             stats.maxvel = t.getint();
             stats.team = t.getword();
             stats.isTemplate = false;
-            es->statsSpawned = stats;
+			es->statsSpawned = stats;
             e = es;
         } else {
             std::cout << "Error reading entity class type for " << name << std::endl;
@@ -192,7 +192,9 @@ void Scene::loadScene(const char* filename) {
         y = t.getint();
         z = t.getint();
         clone->model.setTranslation(x, y, z);
-        if (!dynamic_cast<EntitySpawner *>(clone)) {
+		if (EntitySpawner* spawner = dynamic_cast<EntitySpawner *>(clone)) {
+			clone->stats.team = spawner->statsSpawned.team;
+		}else{
             t.seek("*stats");
             Stats stats;
             stats.movable = (strcmp(t.getword(), "true") == 0);
@@ -220,7 +222,7 @@ void Scene::loadScene(const char* filename) {
                 if(stats.mantainAlive)
                     enemy->maintainAliveEntities.push_back(clone->uid);
             }
-        }
+		}
         this->addToRoot(clone);
 
 
@@ -294,8 +296,6 @@ void Scene::loadScene(const char* filename) {
 void Scene::update(float elapsed_time) {
     Entity::destroy_entities_to_destroy();
     this->root->update(elapsed_time);
-
-    Camera* camera = Game::instance->camera;
 
     BulletManager::getManager()->update(elapsed_time);
     EntityCollider::checkCollisions(elapsed_time);
